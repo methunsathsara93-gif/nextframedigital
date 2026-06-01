@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>Client Reviews</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+margin:0;
+background:#0a0a0a;
+color:white;
+font-family:Poppins;
+padding:20px;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+color:#ff4d00;
+}
+
+.card{
+background:#111;
+padding:20px;
+border-radius:12px;
+margin-bottom:20px;
+box-shadow:0 0 10px rgba(255,77,0,0.1);
+}
+
+input,textarea{
+width:100%;
+padding:12px;
+margin:10px 0;
+background:#000;
+color:white;
+border:1px solid #333;
+border-radius:8px;
+outline:none;
+}
+
+button{
+padding:12px 20px;
+background:#ff4d00;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+box-shadow:0 0 15px #ff4d00;
+}
+
+/* STARS */
+.stars{
+display:flex;
+gap:5px;
+margin:10px 0;
+cursor:pointer;
+}
+
+.star{
+font-size:25px;
+color:#444;
+transition:0.2s;
+}
+
+.star.active{
+color:#ffcc00;
+}
+
+.review{
+background:#111;
+padding:15px;
+border-radius:10px;
+margin-top:15px;
+transition:0.3s;
+}
+
+.review:hover{
+transform:translateY(-5px);
+}
+
+.review h3{
+margin:0;
+color:#ff4d00;
+}
+
+.rating{
+color:#ffcc00;
+margin:5px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>⭐ Client Reviews</h1>
+
+<!-- FORM -->
+<div class="card">
+
+<input id="name" placeholder="Your Name">
+
+<textarea id="review" placeholder="Write your review"></textarea>
+
+<div class="stars" id="stars">
+  <span class="star" onclick="setRating(1)">★</span>
+  <span class="star" onclick="setRating(2)">★</span>
+  <span class="star" onclick="setRating(3)">★</span>
+  <span class="star" onclick="setRating(4)">★</span>
+  <span class="star" onclick="setRating(5)">★</span>
+</div>
+
+<button onclick="saveReview()">Post Review</button>
+
+</div>
+
+<!-- REVIEWS LIST -->
+<div id="reviews"></div>
+
+</div>
+
+<script>
+
+const supabaseUrl =
+"https://xuxdkjeypwrhccgthepn.supabase.co";
+
+const supabaseKey =
+"sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI";
+
+const { createClient } = supabase;
+
+const client = createClient(supabaseUrl, supabaseKey);
+
+let rating = 0;
+
+/* STAR SELECT */
+function setRating(value){
+rating = value;
+
+document.querySelectorAll(".star").forEach((star, index)=>{
+if(index < value){
+star.classList.add("active");
+}else{
+star.classList.remove("active");
+}
+});
+}
+
+/* SAVE REVIEW */
+async function saveReview(){
+
+const name = document.getElementById("name").value;
+const review = document.getElementById("review").value;
+
+if(!name || !review || rating === 0){
+alert("Please fill all fields + rating");
+return;
+}
+
+const { error } = await client
+.from("feedbacks")
+.insert([{
+name:name,
+review:review,
+rating:rating
+}]);
+
+if(error){
+alert(error.message);
+return;
+}
+
+alert("Review Posted!");
+
+location.reload();
+}
+
+/* LOAD REVIEWS */
+async function loadReviews(){
+
+const { data } = await client
+.from("feedbacks")
+.select("*")
+.order("id",{ascending:false});
+
+let html = "";
+
+data.forEach(item=>{
+
+let stars = "⭐".repeat(item.rating || 0);
+
+// ✅ verified badge
+let verifiedBadge = item.verified
+? `<i class="fa-solid fa-circle-check" style="color:#1DA1F2; margin-left:6px;"></i>`
+: "";
+html += `
+<div class="review">
+<h3>${item.name} ${verifiedBadge}</h3>
+<div class="rating">${stars}</div>
+<p>${item.review}</p>
+</div>
+`;
+
+});
+
+document.getElementById("reviews").innerHTML = html;
+}
+
+
+
+loadReviews();
+
+</script>
+
+</body>
+</html>
