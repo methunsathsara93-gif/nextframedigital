@@ -22,6 +22,124 @@ glow.style.top = e.clientY + "px";
 </script>
 
 <style>
+    .community-btn{
+background:linear-gradient(45deg,#ff4d00,#ff8800);
+color:white;
+border:none;
+padding:14px 30px;
+font-size:16px;
+font-weight:600;
+border-radius:50px;
+cursor:pointer;
+position:relative;
+overflow:hidden;
+transition:0.4s;
+box-shadow:0 0 15px rgba(255,77,0,0.5);
+}
+
+/* Shine effect */
+.community-btn::before{
+content:"";
+position:absolute;
+top:0;
+left:-100%;
+width:100%;
+height:100%;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
+transition:0.6s;
+}
+
+.community-btn:hover::before{
+left:100%;
+}
+
+.community-btn:hover{
+transform:scale(1.07);
+box-shadow:0 0 20px #ff4d00,0 0 40px #ff4d00;
+}
+
+.community-btn:active{
+transform:scale(0.95);
+}
+    #subscribe{
+text-align:center;
+padding:80px 20px;
+}
+
+#subscribe input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border:none;
+border-radius:10px;
+background:#111;
+color:white;
+}
+    /* GALLERY BUTTON */
+.gallery-btn{
+background:linear-gradient(45deg,#ff4d00,#ff8800);
+color:white;
+border:none;
+padding:14px 28px;
+font-size:16px;
+font-weight:600;
+border-radius:50px;
+cursor:pointer;
+position:relative;
+overflow:hidden;
+transition:0.4s;
+box-shadow:0 0 10px rgba(255,77,0,0.5);
+animation:pulse 2s infinite;
+}
+
+/* Shine Effect */
+.gallery-btn::before{
+content:"";
+position:absolute;
+top:0;
+left:-100%;
+width:100%;
+height:100%;
+background:linear-gradient(
+120deg,
+transparent,
+rgba(255,255,255,0.5),
+transparent
+);
+transition:0.6s;
+}
+
+.gallery-btn:hover::before{
+left:100%;
+}
+
+/* Hover */
+.gallery-btn:hover{
+transform:translateY(-5px) scale(1.05);
+box-shadow:
+0 0 15px #ff4d00,
+0 0 30px #ff4d00,
+0 0 60px #ff4d00;
+}
+
+/* Click */
+.gallery-btn:active{
+transform:scale(0.95);
+}
+
+/* Pulse Animation */
+@keyframes pulse{
+0%{
+box-shadow:0 0 10px rgba(255,77,0,0.5);
+}
+50%{
+box-shadow:0 0 25px rgba(255,77,0,1);
+}
+100%{
+box-shadow:0 0 10px rgba(255,77,0,0.5);
+}
+}
+    
     /* CURSOR GLOW */
 #cursor-glow{
 position:fixed;
@@ -236,7 +354,11 @@ footer{text-align:center;padding:20px;background:#000;}
 <li onclick="scrollToSection('portfolio')">Works</li>
 <li onclick="scrollToSection('clients')">Clients</li>
 <li onclick="scrollToSection('team')">Team</li>
+<li onclick="scrollToSection('reviews')">Reviews</li>
 <li onclick="scrollToSection('booking')">Booking</li>
+<li onclick="window.location.href='community.html'">
+Community
+</li>
 <li onclick="scrollToSection('contact')">Contact</li>
 </ul>
 </nav>
@@ -263,16 +385,22 @@ footer{text-align:center;padding:20px;background:#000;}
 </section>
 
 <!-- PORTFOLIO -->
+<!-- PORTFOLIO -->
 <section id="portfolio">
 <h2>Our Works</h2>
+
+<div style="text-align:center; margin-bottom:30px;">
+    <button class="gallery-btn" onclick="window.location.href='gallery.html'">
+        🎬 View Our Portfolio
+    </button>
+</div>
+
 <div class="grid portfolio">
 <img src="work1.jpg" class="hidden">
 <img src="work2.jpg" class="hidden">
-<img src="work3.jpg" class="hidden">
-<img src="work4.jpg" class="hidden">
-<img src="work5.jpg" class="hidden">
-<img src="work6.jpg" class="hidden">
+
 </div>
+
 </section>
 <!-- CLIENTS -->
 <section id="clients">
@@ -313,7 +441,7 @@ footer{text-align:center;padding:20px;background:#000;}
 </section>
 
 <!-- TESTIMONIAL -->
-<section style="text-align: center;">
+<section id="reviews" style="text-align: center;">
   <h2>Client Reviews</h2>
   <p>See what our clients say about us.</p>
 
@@ -352,6 +480,26 @@ footer{text-align:center;padding:20px;background:#000;}
 
 </form>
 </section>
+<!-- FRAME MASTERS COMMUNITY SECTION -->
+<section style="text-align:center;padding:80px 20px;background:#0f0f0f;">
+    
+    <h2 style="color:#ff4d00;font-size:32px;margin-bottom:10px;">
+        🎓 Frame Masters Community
+    </h2>
+
+    <p style="color:#ccc;max-width:700px;margin:auto;line-height:1.6;">
+        Learn photography, videography, drone skills, editing techniques and share your knowledge with others.
+        Join our growing creative community and level up your skills 🚀📸🎥
+    </p>
+
+    <br>
+
+    <!-- BUTTON -->
+    <button onclick="window.location.href='community.html'" class="community-btn">
+        Enter Community
+    </button>
+
+</section>
 
 <!-- CONTACT -->
 <section id="contact" class="contact">
@@ -381,6 +529,25 @@ footer{text-align:center;padding:20px;background:#000;}
 </section>
 
 <footer>
+    <section id="subscribe">
+<h2>Join Our Community</h2>
+
+<p style="max-width:700px;margin:15px auto;color:#ccc;line-height:1.8;">
+Stay Connected With Next Frame Digital
+Join our community to receive exclusive offers, project updates, filmmaking insights, photography tips, and early access to our latest services and portfolio releases. 🚀📸🎬
+</p>
+
+<form id="subscribeForm" style="max-width:500px;margin:auto;">
+<input type="text" id="subName" placeholder="Your Name" required>
+<input type="email" id="subEmail" placeholder="Your Email" required>
+
+<button type="submit" class="pro-btn">
+<span>Subscribe Now</span>
+</button>
+</form>
+
+<p id="subscribeMsg" style="text-align:center;margin-top:15px;"></p>
+</section>
 <p>© 2026 Next Frame Digital</p>
 </footer>
 
@@ -462,5 +629,66 @@ function openTiktok(){ window.open("https://www.tiktok.com/@next.frame.digita?_r
 </script>
 <div id="cursor-glow"></div>
 <script src="//code.tidio.co/icsbvu0lxznni0el9ovbnbeqqafogf5t.js" async></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+const supabaseUrl =
+"https://xuxdkjeypwrhccgthepn.supabase.co";
+
+const supabaseKey =
+"sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI";
+
+const supabase =
+window.supabase.createClient(
+supabaseUrl,
+supabaseKey
+);
+
+const form =
+document.getElementById("subscribeForm");
+
+form.addEventListener("submit", async (e) => {
+
+e.preventDefault();
+
+const name =
+document.getElementById("subName").value.trim();
+
+const email =
+document.getElementById("subEmail").value.trim();
+
+console.log("Submitting...", name, email);
+
+const { data, error } =
+await supabase
+.from("subscribers")
+.insert([
+{
+name: name,
+email: email
+}
+]);
+
+if(error){
+console.error(error);
+
+document.getElementById("subscribeMsg").innerHTML =
+"❌ Error: " + error.message;
+
+return;
+}
+
+document.getElementById("subscribeMsg").innerHTML =
+"✅ Successfully Subscribed!";
+
+form.reset();
+
+});
+
+});
+</script>
+</script>
 </body>
 </html>

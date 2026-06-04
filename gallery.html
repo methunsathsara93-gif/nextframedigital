@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Our Gallery</title>
+
+<style>
+body{
+background:#0a0a0a;
+color:white;
+font-family:Poppins,sans-serif;
+padding:30px;
+margin:0;
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+}
+
+.buttons{
+text-align:center;
+margin-bottom:30px;
+}
+
+.buttons button{
+background:#ff4d00;
+border:none;
+color:white;
+padding:12px 20px;
+margin:5px;
+border-radius:8px;
+cursor:pointer;
+font-size:15px;
+}
+
+.buttons button:hover{
+box-shadow:0 0 15px #ff4d00;
+}
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:20px;
+}
+
+.gallery img{
+width:100%;
+border-radius:15px;
+transition:.3s;
+cursor:pointer;
+}
+
+.gallery img:hover{
+transform:scale(1.05);
+box-shadow:0 0 25px #ff4d00;
+}
+
+.hidden{
+display:none;
+}
+</style>
+</head>
+<body>
+
+<h1>Our Work Gallery</h1>
+
+<div class="buttons">
+<button onclick="showCategory('all')">All</button>
+<button onclick="showCategory('events')">Events</button>
+<button onclick="showCategory('photoshoot')">Photoshoots</button>
+<button onclick="showCategory('drone')">Drone Shoots</button>
+</div>
+
+<div class="gallery">
+
+<!-- EVENTS -->
+<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/event1.jpg" class="events">
+<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/event2.jpg" class="events">
+
+<!-- PHOTOSHOOT -->
+<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/photo1.jpg" class="photoshoot">
+<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/photo2.jpg" class="photoshoot">
+
+<!-- DRONE -->
+<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/drone1.jpg" class="drone">
+<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/drone2.jpg" class="drone">
+
+</div>
+
+<script>
+
+function showCategory(category){
+
+const images = document.querySelectorAll(".gallery img");
+
+images.forEach(img=>{
+
+if(category==="all"){
+img.classList.remove("hidden");
+}
+else{
+if(img.classList.contains(category)){
+img.classList.remove("hidden");
+}
+else{
+img.classList.add("hidden");
+}
+}
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
