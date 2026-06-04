@@ -128,6 +128,45 @@ padding: 10px;
 border-radius: 6px;
 margin-top: 5px;
 }
+
+/* Edit & Delete Buttons Styling */
+.post-actions {
+margin-top: 10px;
+display: flex;
+gap: 10px;
+}
+
+.btn-edit {
+background: #333;
+color: #00ff88;
+font-size: 13px;
+padding: 5px 12px;
+}
+
+.btn-edit:hover {
+background: #444;
+}
+
+.btn-delete {
+background: #333;
+color: #ff4d4d;
+font-size: 13px;
+padding: 5px 12px;
+}
+
+.btn-delete:hover {
+background: #8b0000;
+color: white;
+}
+
+/* Edit Form Wrapper */
+.edit-box {
+background: #1a1a1a;
+padding: 15px;
+border-radius: 8px;
+margin-top: 10px;
+border: 1px solid #00ff88;
+}
 </style>
 </head>
 
@@ -221,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // --- ⚠️ CONFIGURATION: EMAILJS KEYS ⚠️ ---
 const EMAILJS_PUBLIC_KEY = "BfYhVgEzC9u9r-Zmm"; 
-const EMAILJS_SERVICE_ID = "service_gvkx9i8"; // ඔයාගේ ස්ක්‍රීන්ෂොට් එකේ තිබ්බ ID එක දැම්මා
+const EMAILJS_SERVICE_ID = "service_gvkx9i8"; 
 const EMAILJS_SIGNUP_TEMPLATE_ID = "template_lfamcep"; 
 const EMAILJS_RESET_TEMPLATE_ID = "template_k5twnpu"; 
 
@@ -299,7 +338,7 @@ function showNameEdit() {
     document.getElementById("name-confirmed").classList.add("hidden");
 }
 
-// --- SIGN UP FLOW (EmailJS OTP) ---
+// --- SIGN UP FLOW ---
 async function handleSignUp() {
     const email = document.getElementById("auth-email").value.trim();
     const password = document.getElementById("auth-password").value.trim();
@@ -309,7 +348,7 @@ async function handleSignUp() {
     const { data, error } = await supabase.auth.signUp({ email, password });
     if(error) return alert(error.message);
 
-    await supabase.auth.signOut(); // Force logout immediately until verified
+    await supabase.auth.signOut(); 
 
     const uniqueVerificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -317,7 +356,7 @@ async function handleSignUp() {
     sessionStorage.setItem("pending_signup_password", password);
     sessionStorage.setItem("pending_signup_otp", uniqueVerificationCode);
 
-    document.getElementById("verification-token").value = ""; // ඔටෝ ක්ලියර්
+    document.getElementById("verification-token").value = ""; 
 
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_SIGNUP_TEMPLATE_ID, {
         to_email: email,
@@ -361,7 +400,7 @@ async function handleVerifyOTP() {
     }
 }
 
-// --- FORGOT PASSWORD FLOW (EmailJS OTP) ---
+// --- FORGOT PASSWORD FLOW ---
 async function showForgotPasswordPanel() {
     const email = document.getElementById("auth-email").value.trim();
     if (!email) return alert("Please type your Email address first in the input box!");
@@ -371,7 +410,7 @@ async function showForgotPasswordPanel() {
     sessionStorage.setItem("reset_password_email", email);
     sessionStorage.setItem("reset_password_otp", resetOTPCode);
 
-    document.getElementById("verification-token").value = ""; // ඔටෝ ක්ලියර්
+    document.getElementById("verification-token").value = ""; 
 
     alert("Sending verification code via EmailJS...");
     
@@ -401,7 +440,7 @@ async function handleVerifyResetOTP() {
 
     if (enteredCode === correctCode && email) {
         alert("Code verified successfully!");
-        document.getElementById("verification-token").value = ""; // ඔටෝ ක්ලියර්
+        document.getElementById("verification-token").value = ""; 
 
         document.getElementById("verification-otp-box").classList.add("hidden");
         document.getElementById("auth-title").innerText = "Set New Password";
@@ -411,7 +450,6 @@ async function handleVerifyResetOTP() {
     }
 }
 
-// 🔥 මෙන්න සෙෂන් එරර් එක වදින්නේ නැතිවෙන්න හදපු සුපිරිම RPC ලොජික් එක!
 async function handlePasswordUpdate() {
     const newPassword = document.getElementById("new-password-input").value;
     const email = sessionStorage.getItem("reset_password_email");
@@ -420,7 +458,6 @@ async function handlePasswordUpdate() {
 
     alert("Saving your new password securely...");
 
-    // අපි සූපාබේස් එකේ හදපු Database RPC function එක කෙලින්ම කෝල් කරනවා
     const { data, error } = await supabase.rpc('admin_reset_password', {
         user_email: email,
         new_password: newPassword
@@ -428,7 +465,6 @@ async function handlePasswordUpdate() {
 
     if (error) {
         alert("Error updating password: " + error.message);
-        console.log(error.message);
     } else if (data === 'User not found') {
         alert("Error: No account found with this email address.");
     } else {
@@ -463,6 +499,59 @@ async function handleLogout() {
     await supabase.auth.signOut();
 }
 
+// --- 🔥 NEW FEATURE: EDIT & DELETE ARTICLES LOGIC 🔥 ---
+
+// 1. පෝස්ට් එකක් සූපාබේස් එකෙන් මකන ෆන්ක්ෂන් එක
+async function deletePost(postId) {
+    if (!confirm("Are you sure you want to delete this article? This cannot be undone.")) return;
+
+    const { error } = await supabase.from("posts").delete().eq("id", postId);
+
+    if (error) {
+        alert("Error deleting post: " + error.message);
+    } else {
+        alert("🗑️ Article deleted successfully from database!");
+        loadPosts(); // පෝස්ට් ලිස්ට් එක රීෆ්‍රෙෂ් කරනවා
+    }
+}
+
+// 2. එඩිට් කරන්න ඕන පැනල් එක ස්ක්‍රීන් එකේ පෙන්වන ෆන්ක්ෂන් එක
+function showEditForm(postId, currentTitle, currentContent) {
+    const editBox = document.getElementById(`edit-wrapper-${postId}`);
+    
+    // දැනට තියෙන ඩේටා ටෙක්ස්ට් বক্স වලට දාලා පෙන්වනවා
+    editBox.innerHTML = `
+        <div class="edit-box">
+            <h4>✏️ Edit Article</h4>
+            <input id="edit-title-${postId}" value="${currentTitle}" placeholder="Edit Title">
+            <textarea id="edit-content-${postId}" rows="5" placeholder="Edit Content">${currentContent}</textarea>
+            <button onclick="saveEditedPost(${postId})" style="background: #00ff88; color: #000;">Save Changes</button>
+            <button onclick="loadPosts()" style="background: #333; margin-left: 5px;">Cancel</button>
+        </div>
+    `;
+    editBox.classList.remove("hidden");
+}
+
+// 3. වෙනස් කරපු අලුත් ඩේටා ටික සූපාබේස් එකට යවලා සේව් කරන ෆන්ක්ෂන් එක
+async function saveEditedPost(postId) {
+    const updatedTitle = document.getElementById(`edit-title-${postId}`).value.trim();
+    const updatedContent = document.getElementById(`edit-content-${postId}`).value.trim();
+
+    if (!updatedTitle || !updatedContent) return alert("Fields cannot be empty!");
+
+    const { error } = await supabase
+        .from("posts")
+        .update({ title: updatedTitle, content: updatedContent })
+        .eq("id", postId);
+
+    if (error) {
+        alert("Error updating article: " + error.message);
+    } else {
+        alert("✨ Article updated and synced with Database successfully!");
+        loadPosts();
+    }
+}
+
 // --- Post & Feed Actions ---
 async function loadPosts() {
     const { data, error } = await supabase.from("posts").select("*").order("id", { ascending:false });
@@ -477,12 +566,28 @@ async function loadPosts() {
             ? `<div class="comment-form"><input id="cmsg-${post.id}" placeholder="Write a comment..."><button onclick="addComment(${post.id})">Comment</button></div>`
             : `<div class="auth-msg" style="font-size:12px; margin-top:10px;">🔒 Log in to comment on this article.</div>`;
 
+        // 🌟 ලොග් වෙලා ඉන්න කෙනාගේ නමයි, පෝස්ට් එක දාපු කෙනාගේ නමයි සමාන නම් විතරක් බටන්ස් පෙන්වනවා
+        let actionButtonsHTML = "";
+        if (currentUser && userDisplayName && post.author === userDisplayName) {
+            actionButtonsHTML = `
+                <div class="post-actions">
+                    <button class="btn-edit" onclick="showEditForm(${post.id}, \`${post.title.replace(/'/g, "\\'")}\`, \`${post.content.replace(/'/g, "\\'")}\`)">✏️ Edit</button>
+                    <button class="btn-delete" onclick="deletePost(${post.id})">🗑️ Delete</button>
+                </div>
+            `;
+        }
+
         box.innerHTML += `
             <div class="post">
                 <h3>${post.title}</h3>
                 <p>By <strong>${post.author || 'Anonymous'}</strong> ${isVerified ? '<span class="badge">✔ Verified by Next Frame Digital</span>' : ''}</p>
                 <p><strong>Category:</strong> ${post.category}</p>
-                <p>${post.content}</p>
+                <p style="white-space: pre-wrap;">${post.content}</p>
+                
+                <div id="edit-wrapper-${post.id}" class="hidden"></div>
+
+                ${actionButtonsHTML}
+
                 <p class="like" onclick="likePost(${post.id}, ${post.likes || 0})">❤️ ${post.likes || 0}</p>
                 ${commentFormHTML}
                 <div id="comments-${post.id}" style="margin-top: 15px;"></div>
@@ -543,6 +648,11 @@ window.handleVerifyResetOTP = handleVerifyResetOTP;
 window.handlePasswordUpdate = handlePasswordUpdate;
 window.cancelResetMode = cancelResetMode;
 window.handleVerifyOTP = handleVerifyOTP;
+
+// New functions mapping
+window.deletePost = deletePost;
+window.showEditForm = showEditForm;
+window.saveEditedPost = saveEditedPost;
 
 });
 </script>
