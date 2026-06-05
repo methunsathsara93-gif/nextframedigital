@@ -2,263 +2,313 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Frame Masters Community</title>
+<title>Frame Masters Community - Next Frame Digital</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
 <style>
-body{
-margin:0;
-font-family:Poppins;
-background:#0a0a0a;
-color:white;
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;}
+
+/* 🌟 NAVIGATION BAR */
+nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); border-bottom: 1px solid #111;}
+nav h1{font-size: 20px; font-weight: 700; letter-spacing: 1px; color:#ff4d00;}
+nav h1 span{color: #fff; font-weight: 300;}
+
+.container{max-width:950px;margin:auto;padding:30px 20px;}
+
+/* 🌕 POSON COUNTDOWN BANNER */
+.poson-banner {
+    background: linear-gradient(135deg, #111 0%, #221400 100%);
+    border: 1px solid #ffaa00;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 25px rgba(255, 170, 0, 0.1);
 }
+.poson-title { color: #ffaa00; margin-bottom: 12px; font-size: 16px; font-weight: 700; letter-spacing: 1px; }
+.countdown-display { display: flex; justify-content: center; gap: 12px; }
+.countdown-box { background: #000; border: 1px solid #222; padding: 10px 14px; border-radius: 10px; min-width: 65px; }
+.countdown-number { font-size: 22px; font-weight: 700; color: #fff; display: block; }
+.countdown-label { font-size: 9px; color: #aaa; text-transform: uppercase; }
+.poson-wishes { font-size: 16px; color: #ffaa00; font-weight: bold; animation: pulse 2s infinite; line-height: 1.5; }
+@keyframes pulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
 
-header{
-padding:20px;
-text-align:center;
-background:#111;
-position:sticky;
-top:0;
-z-index: 100;
+/* 🔐 PREMIUM AUTH & SETUP CONTAINER */
+.auth-box, .post-box, .post-card{
+    background:#111;
+    padding:25px;
+    border-radius:14px;
+    margin-bottom:25px;
+    border: 1px solid #1a1a1a;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
-
-h1{color:#ff4d00;}
-
-.container{
-max-width:900px;
-margin:auto;
-padding:20px;
-}
-
-.auth-box, .post-box, .post{
-background:#111;
-padding:15px;
-border-radius:10px;
-margin-bottom:15px;
+.auth-box h3, .post-box h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+    border-left: 3px solid #ff4d00;
+    padding-left: 10px;
 }
 
 input, textarea, select{
-width:100%;
-padding:10px;
-margin:5px 0;
-border:none;
-border-radius:8px;
-background:#000;
-color:white;
-box-sizing: border-box;
+    width:100%;
+    padding:12px 15px;
+    margin:8px 0;
+    border:1px solid #222;
+    border-radius:8px;
+    background:#000;
+    color:white;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
 }
+input:focus, textarea:focus, select:focus {
+    border-color: #ff4d00;
+}
+textarea { height: 120px; resize: none; }
 
 button{
-background:#ff4d00;
-border:none;
-padding:10px 20px;
-color:white;
-border-radius:8px;
-cursor:pointer;
-font-weight: 500;
-margin-top: 5px;
+    background:#ff4d00;
+    border:none;
+    padding:12px 24px;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition:all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
-
 button:hover {
-background:#e04300;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 77, 0, 0.3);
 }
 
-.badge{
-color:#00ff88;
-font-size:12px;
-margin-left:8px;
+.auth-msg { color: #888; text-align: center; padding: 20px; font-size: 14px; }
+.hidden { display: none !important; }
+
+.user-info { background: #000; padding: 20px; border-radius: 10px; border: 1px solid #1a1a1a; }
+.user-header-row { display: flex; justify-content: space-between; align-items: center; }
+.name-setup-box { background: #080808; padding: 15px; border-radius: 8px; border: 1px solid #222; margin-top: 15px; }
+
+/* 🎯 DYNAMIC CATEGORY PILLS FILTER */
+.feed-filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+.filter-pill {
+    background: #111;
+    border: 1px solid #222;
+    color: #aaa;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.3s;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #ff4d00;
+    color: #fff;
+    border-color: #ff4d00;
+    box-shadow: 0 4px 12px rgba(255, 77, 0, 0.2);
 }
 
-.like{
-color:#ff4d00;
-cursor:pointer;
-display: inline-block;
-margin-top: 10px;
+/* 📰 DYNAMIC POSTS INTERFACE */
+.post-card {
+    transition: all 0.4s ease;
 }
+.post-card.filter-hide {
+    display: none !important;
+}
+.post-card h2 { font-size: 22px; color: #fff; margin-bottom: 8px; }
+.meta-row { display: flex; gap: 15px; font-size: 12px; color: #888; margin-bottom: 15px; flex-wrap: wrap; }
+.meta-row strong { color: #ff4d00; }
+.badge { background: rgba(0, 255, 136, 0.1); color: #00ff88; padding: 2px 8px; border-radius: 4px; font-size: 11px; border: 1px solid rgba(0,255,136,0.2); }
+.post-body { color: #ccc; font-size: 14px; line-height: 1.6; margin-bottom: 20px; white-space: pre-wrap; }
 
-.comment{
-font-size:14px;
-margin-top:5px;
-padding-left:10px;
-border-left:2px solid #ff4d00;
-}
+/* ❤️ LIKE & ACTION INTERACTIVES */
+.actions-footer { display: flex; gap: 20px; align-items: center; border-top: 1px solid #1a1a1a; padding-top: 15px; }
+.like-trigger { color: #aaa; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; transition: 0.2s; }
+.like-trigger:hover { color: #ff4d00; transform: scale(1.05); }
 
-.comment-form {
-margin-top: 15px;
-background: #1a1a1a;
-padding: 10px;
-border-radius: 8px;
-}
+/* Creator Panel Buttons */
+.creator-control { display: flex; gap: 10px; margin-left: auto; }
+.btn-control { background: #1a1a1a; border: 1px solid #333; color: #ccc; padding: 4px 12px; font-size: 12px; border-radius: 5px; font-weight: 500; }
+.btn-control-edit:hover { background: #ff4d00; border-color: #ff4d00; color: #fff; }
+.btn-control-delete:hover { background: #dc3545; border-color: #dc3545; color: #fff; }
 
-.auth-msg {
-color: #aaa;
-font-style: italic;
-text-align: center;
-padding: 10px;
+/* 💬 COMMENTS ARCHITECTURE */
+.comments-segment { margin-top: 22px; background: #080808; padding: 18px; border-radius: 12px; border: 1px solid #1a1a1a; }
+.comment-node { 
+    font-size: 14px; 
+    padding: 12px 16px; 
+    margin-bottom: 10px; 
+    background: #111; 
+    border-radius: 8px;
+    border: 1px solid #1c1c1c;
+    color: #ddd; 
+    line-height: 1.6; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
+.comment-node:last-child { margin-bottom: 0; }
+.comment-node b { color: #ff4d00; font-weight: 600; font-size: 14px; }
+.comment-content-left { flex: 1; padding-right: 15px; white-space: pre-wrap; }
+.comment-controls { display: flex; gap: 10px; }
+.btn-comment-control { background: transparent; border: none; color: #777; cursor: pointer; font-size: 13px; transition: 0.2s; padding: 5px; }
+.btn-comment-control:hover { color: #ff4d00; }
+.btn-comment-delete:hover { color: #dc3545; }
 
-.hidden {
-display: none !important;
-}
+.comment-form-block { display: flex; gap: 10px; margin-top: 15px; }
+.comment-form-block input { margin: 0; padding: 12px 15px; font-size: 14px; }
+.comment-form-block button { padding: 0 20px; font-size: 14px; }
 
-.user-info {
-display: flex;
-flex-direction: column;
-gap: 10px;
-background: #1a1a1a;
-padding: 15px;
-border-radius: 8px;
-margin-bottom: 15px;
-}
-
-.user-header-row {
-display: flex;
-justify-content: space-between;
-align-items: center;
-}
-
-.name-setup-box {
-background: #222;
-padding: 10px;
-border-radius: 6px;
-margin-top: 5px;
-}
-
-/* Edit & Delete Buttons Styling */
-.post-actions {
-margin-top: 10px;
-display: flex;
-gap: 10px;
-}
-
-.btn-edit {
-background: #333;
-color: #00ff88;
-font-size: 13px;
-padding: 5px 12px;
-}
-
-.btn-edit:hover {
-background: #444;
-}
-
-.btn-delete {
-background: #333;
-color: #ff4d4d;
-font-size: 13px;
-padding: 5px 12px;
-}
-
-.btn-delete:hover {
-background: #8b0000;
-color: white;
-}
-
-/* Edit Form Wrapper */
-.edit-box {
-background: #1a1a1a;
-padding: 15px;
-border-radius: 8px;
-margin-top: 10px;
-border: 1px solid #00ff88;
-}
+/* 🎞️ CINEMATIC MARQUEE */
+.cinematic-marquee { width: 100%; background: #111; border-top: 1px solid #222; border-bottom: 1px solid #222; overflow: hidden; padding: 14px 0; margin-top: 50px; display: flex; }
+.marquee-content { display: flex; white-space: nowrap; gap: 50px; animation: scroll-left 25s linear infinite; }
+.marquee-item { font-size: 14px; font-weight: 700; letter-spacing: 2px; color: #555; text-transform: uppercase; }
+.marquee-item span { color: #ff4d00; }
+@keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 </style>
 </head>
 
 <body>
 
-<header>
-<h1>🎓 Frame Masters Community</h1>
-<p>Learn • Share • Grow</p>
-</header>
+<nav>
+    <h1>Frame Masters <span>Community</span></h1>
+    <span style="font-size:12px; color:#666; font-weight:500;">Learn • Share • Grow</span>
+</nav>
 
 <div class="container">
 
-<div id="auth-section" class="auth-box">
-    
-    <div id="auth-logged-out">
-        <h3 id="auth-title">Sign In / Sign Up</h3>
-        
-        <div id="main-auth-inputs">
-            <input id="auth-email" type="email" placeholder="Email Address">
-            <input id="auth-password" type="password" placeholder="Password">
+    <div class="poson-banner">
+        <div id="poson-countdown-wrapper">
+            <h4 class="poson-title">🌕 පින්බර පොසොන් පුන් පොහෝ දිනට තවත්...</h4>
+            <div class="countdown-display">
+                <div class="countdown-box"><span class="countdown-number" id="days">00</span><span class="countdown-label">Days</span></div>
+                <div class="countdown-box"><span class="countdown-number" id="hours">00</span><span class="countdown-label">Hours</span></div>
+                <div class="countdown-box"><span class="countdown-number" id="minutes">00</span><span class="countdown-label">Mins</span></div>
+                <div class="countdown-box"><span class="countdown-number" id="seconds">00</span><span class="countdown-label">Secs</span></div>
+            </div>
         </div>
-        
-        <div id="verification-otp-box" class="hidden" style="margin: 10px 0; padding: 15px; background: #222; border-radius: 8px; border: 1px solid #ff4d00;">
-            <p id="otp-message-text" style="margin:0 0 8px 0; color: #00ff88; font-size:14px; font-weight: bold;">📬 Enter the 6-Digit Code sent to your email:</p>
-            <input id="verification-token" placeholder="X X X X X X" style="text-align: center; font-size: 18px; letter-spacing: 5px;">
-            
-            <button id="btn-verify-signup" onclick="handleVerifyOTP()" class="hidden" style="background:#00ff88; color:#000; width: 100%;">Verify & Complete Sign Up</button>
-            <button id="btn-verify-reset" onclick="handleVerifyResetOTP()" class="hidden" style="background:#ff4d00; color:#fff; width: 100%;">Verify Recovery Code</button>
-        </div>
-
-        <div id="reset-password-actions" class="hidden">
-            <p style="color: #ff4d00; margin: 0 0 5px 0;">Enter your new secure password:</p>
-            <input id="new-password-input" type="password" placeholder="New Password (At least 6 chars)">
-            <button onclick="handlePasswordUpdate()" style="background: #00ff88; color: #000; width: 100%;">Save New Password</button>
-            <button onclick="cancelResetMode()" style="background: #333; width: 100%; margin-top: 5px;">Cancel</button>
-        </div>
-
-        <div id="auth-action-buttons">
-            <button onclick="handleSignUp()">Sign Up</button>
-            <button onclick="handleLogin()">Log In</button>
-            <button onclick="showForgotPasswordPanel()" style="background: #333; margin-left: 5px;">Forgot Password?</button>
+        <div id="poson-wishes-wrapper" class="hidden">
+            <p class="poson-wishes">✨ මිහින්තලා මහින්දාගමනය සිහිපත් කෙරෙන පින්බර පොසොන් පොහොය දිනයක් වේවා! ✨</p>
         </div>
     </div>
 
-    <div id="auth-logged-in" class="hidden">
-        <div class="user-info">
-            <div class="user-header-row">
-                <span id="user-display-email"></span>
-                <button onclick="handleLogout()" style="background:#444;">Log Out</button>
+    <div id="auth-section" class="auth-box">
+        <div id="auth-logged-out">
+            <h3 id="auth-title">Community Portal</h3>
+            <div id="main-auth-inputs">
+                <input id="auth-email" type="email" placeholder="Email Address">
+                <input id="auth-password" type="password" placeholder="Password">
             </div>
             
-            <div id="name-setup" class="name-setup-box">
-                <p style="margin: 0 0 5px 0; font-size: 14px; color: #ff4d00;">Set your Display Name for articles:</p>
-                <div style="display:flex; gap:10px;">
-                    <input id="custom-display-name" placeholder="Enter your display name...">
-                    <button onclick="saveDisplayName()" style="margin-top:5px; padding: 0 15px;">Save</button>
+            <div id="verification-otp-box" class="hidden" style="margin: 10px 0; padding: 15px; background: #000; border-radius: 8px; border: 1px solid #ff4d00;">
+                <p id="otp-message-text" style="margin:0 0 8px 0; color: #00ff88; font-size:13px; font-weight: bold;">📬 Enter the 6-Digit Code sent to your email:</p>
+                <input id="verification-token" placeholder="X X X X X X" style="text-align: center; font-size: 18px; letter-spacing: 5px;">
+                <button id="btn-verify-signup" onclick="handleVerifyOTP()" class="hidden" style="background:#00ff88; color:#000; width: 100%; margin-top:10px;">Verify & Complete Sign Up</button>
+                <button id="btn-verify-reset" onclick="handleVerifyResetOTP()" class="hidden" style="background:#ff4d00; color:#fff; width: 100%; margin-top:10px;">Verify Recovery Code</button>
+            </div>
+
+            <div id="reset-password-actions" class="hidden">
+                <p style="color: #ff4d00; margin: 0 0 5px 0; font-size:13px;">Enter your new secure password:</p>
+                <input id="new-password-input" type="password" placeholder="New Password (At least 6 chars)">
+                <button onclick="handlePasswordUpdate()" style="background: #00ff88; color: #000; width: 100%;">Save New Password</button>
+                <button onclick="cancelResetMode()" style="background: #222; width: 100%; margin-top: 5px;">Cancel</button>
+            </div>
+
+            <div id="auth-action-buttons" style="margin-top: 10px; display: flex; gap: 8px;">
+                <button onclick="handleSignUp()" style="flex:1;">Sign Up</button>
+                <button onclick="handleLogin()" style="flex:1; background:#222; border:1px solid #333;">Log In</button>
+                <button onclick="showForgotPasswordPanel()" style="background: transparent; color:#888; font-size:12px; text-decoration: underline;">Forgot?</button>
+            </div>
+        </div>
+
+        <div id="auth-logged-in" class="hidden">
+            <div class="user-info">
+                <div class="user-header-row">
+                    <span id="user-display-email" style="font-size:14px; font-weight:500; color:#aaa;"></span>
+                    <button onclick="handleLogout()" style="background:#222; padding:6px 14px; font-size:12px; border:1px solid #333;">Log Out</button>
+                </div>
+                
+                <div id="name-setup" class="name-setup-box">
+                    <p style="margin: 0 0 5px 0; font-size: 13px; color: #ff4d00;">Set your Creator Display Name:</p>
+                    <div style="display:flex; gap:10px;">
+                        <input id="custom-display-name" placeholder="Creator name..." style="margin:0;">
+                        <button onclick="saveDisplayName()" style="padding: 0 20px;">Save</button>
+                    </div>
+                </div>
+                <div id="name-confirmed" class="hidden" style="font-size:13px; color:#00ff88; margin-top:10px;">
+                    ⚡ Posting Live as: <strong id="current-display-name" style="color:#fff;"></strong>
+                    <button onclick="showNameEdit()" style="background:transparent; color:#888; font-size:11px; text-decoration:underline; padding:0; margin-left:10px; box-shadow:none; transform:none;">Change</button>
                 </div>
             </div>
-            <div id="name-confirmed" class="hidden" style="font-size:14px; color:#00ff88;">
-                ✍️ Posting as: <strong id="current-display-name"></strong>
-                <button onclick="showNameEdit()" style="background:transparent; color:#aaa; font-size:11px; text-decoration:underline; padding:0; margin-left:10px;">Change Name</button>
-            </div>
         </div>
     </div>
-</div>
 
-<div id="write-article-box" class="post-box hidden">
-    <h3>Write New Article</h3>
-    <input id="title" placeholder="Title">
-    <select id="category">
-        <option>Photography</option>
-        <option>Videography</option>
-        <option>Drone</option>
-        <option>Editing</option>
-        <option>Business</option>
-        <option>Other</option>
-    </select>
-    <textarea id="content" placeholder="Write your knowledge or Ask questions..."></textarea>
-    <button onclick="createPost()">Publish</button>
-</div>
-<div id="article-auth-fallback" class="auth-box auth-msg">
-    🔒 Please log in to publish an article.
-</div>
+    <div id="write-article-box" class="post-box hidden">
+        <h3 id="form-panel-title">Write New Article</h3>
+        <input id="title" placeholder="Article Title">
+        <select id="category">
+            <option>Photography</option>
+            <option>Videography</option>
+            <option>Drone</option>
+            <option>Editing</option>
+            <option>Business</option>
+            <option>Other</option>
+        </select>
+        <textarea id="content" placeholder="Share your ultimate production workflows or ask a technical question..."></textarea>
+        <button id="publishBtn" onclick="createPost()">Publish Article</button>
+    </div>
+    <div id="article-auth-fallback" class="auth-box auth-msg">
+        🔒 Please log in to publish a knowledge article or reply to discussions.
+    </div>
 
-<div id="posts"></div>
+    <div class="feed-filter-bar">
+        <div class="filter-pill active" onclick="filterCategoryFeed('all', this)">All Discussions</div>
+        <div class="filter-pill" onclick="filterCategoryFeed('Photography', this)">Photography</div>
+        <div class="filter-pill" onclick="filterCategoryFeed('Videography', this)">Videography</div>
+        <div class="filter-pill" onclick="filterCategoryFeed('Drone', this)">Drone Shoots</div>
+        <div class="filter-pill" onclick="filterCategoryFeed('Editing', this)">Editing/Color</div>
+        <div class="filter-pill" onclick="filterCategoryFeed('Business', this)">Production Business</div>
+    </div>
+
+    <div id="posts"></div>
+
+    <div class="cinematic-marquee">
+        <div class="marquee-content">
+            <div class="marquee-item">🎬 NEXT FRAME DIGITAL</div>
+            <div class="marquee-item">⚡ <span>LIGHTS</span> • CAMERA • ACTION</div>
+            <div class="marquee-item">🎥 CINEMATOGRAPHY</div>
+            <div class="marquee-item">🎨 <span>COLOR GRADING</span></div>
+            <div class="marquee-item">🚁 DRONE SHOTS</div>
+            <div class="marquee-item">✂️ PREMIUM EDITING</div>
+            <div class="marquee-item">🎬 NEXT FRAME DIGITAL</div>
+            <div class="marquee-item">⚡ <span>LIGHTS</span> • CAMERA • ACTION</div>
+            <div class="marquee-item">🎥 CINEMATOGRAPHY</div>
+            <div class="marquee-item">🎨 <span>COLOR GRADING</span></div>
+            <div class="marquee-item">🚁 DRONE SHOTS</div>
+            <div class="marquee-item">✂️ PREMIUM EDITING</div>
+        </div>
+    </div>
 
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-// --- ⚠️ CONFIGURATION: EMAILJS KEYS ⚠️ ---
 const EMAILJS_PUBLIC_KEY = "BfYhVgEzC9u9r-Zmm"; 
 const EMAILJS_SERVICE_ID = "service_gvkx9i8"; 
 const EMAILJS_SIGNUP_TEMPLATE_ID = "template_lfamcep"; 
@@ -267,12 +317,21 @@ const EMAILJS_RESET_TEMPLATE_ID = "template_k5twnpu";
 const supabaseUrl = "https://xyclocphoiptjekwfjnc.supabase.co";
 const supabaseKey = "sb_publishable_M4-FbzuUKIxiBmRJicI1jA_zoCu9-IV";
 
-// Initialize APIs
 emailjs.init(EMAILJS_PUBLIC_KEY);
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 let currentUser = null;
 let userDisplayName = "";
+let editPostId = null;
+let editCommentId = null;
+
+// Helper to safely pass text containing quotes or line breaks via HTML attribute
+function safeB64Encode(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+}
+function safeB64Decode(str) {
+    return decodeURIComponent(escape(atob(str)));
+}
 
 supabase.auth.onAuthStateChange((event, session) => {
     if (session) {
@@ -313,7 +372,31 @@ function updateUI(isLoggedIn) {
     }
 }
 
-// --- Display Name Handler ---
+async function handleLogin() {
+    const email = document.getElementById("auth-email").value.trim();
+    const passwordValue = document.getElementById("auth-password").value.trim();
+    
+    if(!email || !passwordValue) return alert("Please enter both email and password.");
+
+    const { data, error } = await supabase.auth.signInWithPassword({ 
+        email: email, 
+        password: passwordValue 
+    });
+    
+    if(error) {
+        alert("Login Failed: " + error.message);
+    } else {
+        alert("Welcome Back! Logged in successfully.");
+        currentUser = data.user;
+        userDisplayName = currentUser.user_metadata?.display_name || "";
+        updateUI(true);
+        loadPosts();
+        
+        document.getElementById("auth-email").value = "";
+        document.getElementById("auth-password").value = "";
+    }
+}
+
 async function saveDisplayName() {
     const chosenName = document.getElementById("custom-display-name").value.trim();
     if(!chosenName) return alert("Please type a valid name!");
@@ -338,7 +421,6 @@ function showNameEdit() {
     document.getElementById("name-confirmed").classList.add("hidden");
 }
 
-// --- SIGN UP FLOW ---
 async function handleSignUp() {
     const email = document.getElementById("auth-email").value.trim();
     const password = document.getElementById("auth-password").value.trim();
@@ -351,11 +433,9 @@ async function handleSignUp() {
     await supabase.auth.signOut(); 
 
     const uniqueVerificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-
     sessionStorage.setItem("pending_signup_email", email);
     sessionStorage.setItem("pending_signup_password", password);
     sessionStorage.setItem("pending_signup_otp", uniqueVerificationCode);
-
     document.getElementById("verification-token").value = ""; 
 
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_SIGNUP_TEMPLATE_ID, {
@@ -364,7 +444,6 @@ async function handleSignUp() {
     })
     .then(() => {
         alert("A 6-digit security code has been sent to your email. Please verify!");
-        
         document.getElementById("main-auth-inputs").classList.add("hidden");
         document.getElementById("auth-action-buttons").classList.add("hidden");
         document.getElementById("otp-message-text").innerText = "📬 Enter the Sign Up Verification Code:";
@@ -372,9 +451,7 @@ async function handleSignUp() {
         document.getElementById("btn-verify-reset").classList.add("hidden");
         document.getElementById("verification-otp-box").classList.remove("hidden");
     })
-    .catch((err) => {
-        alert("EmailJS Sign Up Delivery Error: " + JSON.stringify(err));
-    });
+    .catch((err) => { alert("EmailJS Sign Up Delivery Error: " + JSON.stringify(err)); });
 }
 
 async function handleVerifyOTP() {
@@ -385,33 +462,30 @@ async function handleVerifyOTP() {
 
     if (userEnteredCode === generatedOTP && realEmail) {
         alert("Code confirmed successfully! Logging you in...");
-        const { error } = await supabase.auth.signInWithPassword({ email: realEmail, password: realPassword });
-        if (error) {
-            alert(error.message);
+        const { data, error } = await supabase.auth.signInWithPassword({ email: realEmail, password: realPassword });
+        if (error) { 
+            alert(error.message); 
         } else {
+            currentUser = data.user;
+            userDisplayName = currentUser.user_metadata?.display_name || "";
             document.getElementById("verification-otp-box").classList.add("hidden");
             document.getElementById("main-auth-inputs").classList.remove("hidden");
             document.getElementById("auth-action-buttons").classList.remove("hidden");
             document.getElementById("verification-token").value = ""; 
             sessionStorage.clear();
+            updateUI(true);
         }
-    } else {
-        alert("Incorrect verification code. Please check your email again.");
-    }
+    } else { alert("Incorrect verification code. Please check your email again."); }
 }
 
-// --- FORGOT PASSWORD FLOW ---
 async function showForgotPasswordPanel() {
     const email = document.getElementById("auth-email").value.trim();
     if (!email) return alert("Please type your Email address first in the input box!");
-
     const resetOTPCode = Math.floor(100000 + Math.random() * 900000).toString();
     
     sessionStorage.setItem("reset_password_email", email);
     sessionStorage.setItem("reset_password_otp", resetOTPCode);
-
     document.getElementById("verification-token").value = ""; 
-
     alert("Sending verification code via EmailJS...");
     
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_RESET_TEMPLATE_ID, {
@@ -420,7 +494,6 @@ async function showForgotPasswordPanel() {
     })
     .then(() => {
         alert("A 6-digit password recovery code has been sent to your email!");
-        
         document.getElementById("main-auth-inputs").classList.add("hidden");
         document.getElementById("auth-action-buttons").classList.add("hidden");
         document.getElementById("otp-message-text").innerText = "🔒 Enter the Password Reset Code:";
@@ -428,9 +501,7 @@ async function showForgotPasswordPanel() {
         document.getElementById("btn-verify-signup").classList.add("hidden");
         document.getElementById("verification-otp-box").classList.remove("hidden");
     })
-    .catch((err) => {
-        alert("EmailJS Reset Code Error: " + JSON.stringify(err));
-    });
+    .catch((err) => { alert("EmailJS Reset Code Error: " + JSON.stringify(err)); });
 }
 
 async function handleVerifyResetOTP() {
@@ -441,33 +512,23 @@ async function handleVerifyResetOTP() {
     if (enteredCode === correctCode && email) {
         alert("Code verified successfully!");
         document.getElementById("verification-token").value = ""; 
-
         document.getElementById("verification-otp-box").classList.add("hidden");
         document.getElementById("auth-title").innerText = "Set New Password";
         document.getElementById("reset-password-actions").classList.remove("hidden");
-    } else {
-        alert("Invalid recovery code. Please check your email again.");
-    }
+    } else { alert("Invalid recovery code. Please check your email again."); }
 }
 
 async function handlePasswordUpdate() {
     const newPassword = document.getElementById("new-password-input").value;
     const email = sessionStorage.getItem("reset_password_email");
-    
     if (!newPassword || newPassword.length < 6) return alert("Password must be at least 6 characters.");
 
     alert("Saving your new password securely...");
+    const { data, error } = await supabase.rpc('admin_reset_password', { user_email: email, new_password: newPassword });
 
-    const { data, error } = await supabase.rpc('admin_reset_password', {
-        user_email: email,
-        new_password: newPassword
-    });
-
-    if (error) {
-        alert("Error updating password: " + error.message);
-    } else if (data === 'User not found') {
-        alert("Error: No account found with this email address.");
-    } else {
+    if (error) { alert("Error updating password: " + error.message); } 
+    else if (data === 'User not found') { alert("Error: No account found with this email address."); } 
+    else {
         alert("✨ Password updated successfully! You can now log in with your new password.");
         cancelResetMode();
     }
@@ -487,72 +548,29 @@ function cancelResetMode() {
     updateUI(false);
 }
 
-// --- Standard Login & Logout ---
-async function handleLogin() {
-    const email = document.getElementById("auth-email").value.trim();
-    const passwordValue = document.getElementById("auth-password").value.trim();
-    const { error } = await supabase.auth.signInWithPassword({ email, password: passwordValue });
-    if(error) alert(error.message);
+async function handleLogout() { 
+    await supabase.auth.signOut(); 
+    currentUser = null;
+    userDisplayName = "";
+    updateUI(false);
 }
 
-async function handleLogout() {
-    await supabase.auth.signOut();
+function filterCategoryFeed(category, element) {
+    const pills = document.querySelectorAll(".filter-pill");
+    pills.forEach(p => p.classList.remove("active"));
+    element.classList.add("active");
+
+    const posts = document.querySelectorAll(".post-card");
+    posts.forEach(post => {
+        if(category === "all" || post.getAttribute("data-category") === category) {
+            post.classList.remove("filter-hide");
+        } else {
+            post.classList.add("filter-hide");
+        }
+    });
 }
 
-// --- 🔥 NEW FEATURE: EDIT & DELETE ARTICLES LOGIC 🔥 ---
-
-// 1. පෝස්ට් එකක් සූපාබේස් එකෙන් මකන ෆන්ක්ෂන් එක
-async function deletePost(postId) {
-    if (!confirm("Are you sure you want to delete this article? This cannot be undone.")) return;
-
-    const { error } = await supabase.from("posts").delete().eq("id", postId);
-
-    if (error) {
-        alert("Error deleting post: " + error.message);
-    } else {
-        alert("🗑️ Article deleted successfully from database!");
-        loadPosts(); // පෝස්ට් ලිස්ට් එක රීෆ්‍රෙෂ් කරනවා
-    }
-}
-
-// 2. එඩිට් කරන්න ඕන පැනල් එක ස්ක්‍රීන් එකේ පෙන්වන ෆන්ක්ෂන් එක
-function showEditForm(postId, currentTitle, currentContent) {
-    const editBox = document.getElementById(`edit-wrapper-${postId}`);
-    
-    // දැනට තියෙන ඩේටා ටෙක්ස්ට් বক্স වලට දාලා පෙන්වනවා
-    editBox.innerHTML = `
-        <div class="edit-box">
-            <h4>✏️ Edit Article</h4>
-            <input id="edit-title-${postId}" value="${currentTitle}" placeholder="Edit Title">
-            <textarea id="edit-content-${postId}" rows="5" placeholder="Edit Content">${currentContent}</textarea>
-            <button onclick="saveEditedPost(${postId})" style="background: #00ff88; color: #000;">Save Changes</button>
-            <button onclick="loadPosts()" style="background: #333; margin-left: 5px;">Cancel</button>
-        </div>
-    `;
-    editBox.classList.remove("hidden");
-}
-
-// 3. වෙනස් කරපු අලුත් ඩේටා ටික සූපාබේස් එකට යවලා සේව් කරන ෆන්ක්ෂන් එක
-async function saveEditedPost(postId) {
-    const updatedTitle = document.getElementById(`edit-title-${postId}`).value.trim();
-    const updatedContent = document.getElementById(`edit-content-${postId}`).value.trim();
-
-    if (!updatedTitle || !updatedContent) return alert("Fields cannot be empty!");
-
-    const { error } = await supabase
-        .from("posts")
-        .update({ title: updatedTitle, content: updatedContent })
-        .eq("id", postId);
-
-    if (error) {
-        alert("Error updating article: " + error.message);
-    } else {
-        alert("✨ Article updated and synced with Database successfully!");
-        loadPosts();
-    }
-}
-
-// --- Post & Feed Actions ---
+// 📰 ARTICLES LOAD ENGINE
 async function loadPosts() {
     const { data, error } = await supabase.from("posts").select("*").order("id", { ascending:false });
     if(error) return console.log(error);
@@ -563,70 +581,172 @@ async function loadPosts() {
     for(const post of data){
         const isVerified = post.verified === true;
         const commentFormHTML = currentUser 
-            ? `<div class="comment-form"><input id="cmsg-${post.id}" placeholder="Write a comment..."><button onclick="addComment(${post.id})">Comment</button></div>`
-            : `<div class="auth-msg" style="font-size:12px; margin-top:10px;">🔒 Log in to comment on this article.</div>`;
+            ? `<div class="comment-form-block">
+                <input id="cmsg-${post.id}" placeholder="Write a response...">
+                <button id="cbtn-${post.id}" onclick="addComment(${post.id})">Reply</button>
+               </div>`
+            : `<div class="auth-msg" style="font-size:12px; padding: 10px 0 0 0; text-align:left;">🔒 Log in to respond to this discussion.</div>`;
 
-        // 🌟 ලොග් වෙලා ඉන්න කෙනාගේ නමයි, පෝස්ට් එක දාපු කෙනාගේ නමයි සමාන නම් විතරක් බටන්ස් පෙන්වනවා
-        let actionButtonsHTML = "";
-        if (currentUser && userDisplayName && post.author === userDisplayName) {
-            actionButtonsHTML = `
-                <div class="post-actions">
-                    <button class="btn-edit" onclick="showEditForm(${post.id}, \`${post.title.replace(/'/g, "\\'")}\`, \`${post.content.replace(/'/g, "\\'")}\`)">✏️ Edit</button>
-                    <button class="btn-delete" onclick="deletePost(${post.id})">🗑️ Delete</button>
+        let creatorControlsHTML = "";
+        if (currentUser && (post.user_id === currentUser.id || post.author === userDisplayName || currentUser.email === 'methun2008216@gmail.com')) {
+            // Encode content safely into base64 to avoid line breaks throwing javascript syntax error
+            const encTitle = safeB64Encode(post.title || "");
+            const encContent = safeB64Encode(post.content || "");
+            const encCategory = safeB64Encode(post.category || "");
+
+            creatorControlsHTML = `
+                <div class="creator-control">
+                    <button class="btn-control btn-control-edit" onclick="triggerEditPost(${post.id}, '${encTitle}', '${encCategory}', '${encContent}')"><i class="fa-solid fa-pen"></i> Edit</button>
+                    <button class="btn-control btn-control-delete" onclick="deletePost(${post.id})"><i class="fa-solid fa-trash"></i> Delete</button>
                 </div>
             `;
         }
 
         box.innerHTML += `
-            <div class="post">
-                <h3>${post.title}</h3>
-                <p>By <strong>${post.author || 'Anonymous'}</strong> ${isVerified ? '<span class="badge">✔ Verified by Next Frame Digital</span>' : ''}</p>
-                <p><strong>Category:</strong> ${post.category}</p>
-                <p style="white-space: pre-wrap;">${post.content}</p>
+            <div class="post-card" data-category="${post.category}">
+                <h2>${post.title}</h2>
+                <div class="meta-row">
+                    <span>By <strong>${post.author || 'Anonymous'}</strong></span>
+                    <span>Tag: <span style="color:#fff;">#${post.category}</span></span>
+                    ${isVerified ? '<span class="badge">✔ Next Frame Certified</span>' : ''}
+                </div>
+                <div class="post-body">${post.content}</div>
                 
-                <div id="edit-wrapper-${post.id}" class="hidden"></div>
+                <div class="actions-footer">
+                    <div class="like-trigger" onclick="likePost(${post.id}, ${post.likes || 0})">
+                        <i class="fa-solid fa-heart"></i> <span>${post.likes || 0} Likes</span>
+                    </div>
+                    ${creatorControlsHTML}
+                </div>
 
-                ${actionButtonsHTML}
-
-                <p class="like" onclick="likePost(${post.id}, ${post.likes || 0})">❤️ ${post.likes || 0}</p>
-                ${commentFormHTML}
-                <div id="comments-${post.id}" style="margin-top: 15px;"></div>
+                <div class="comments-segment">
+                    <div id="comments-${post.id}"></div>
+                    ${commentFormHTML}
+                </div>
             </div>`;
         await loadComments(post.id);
     }
+    
+    const activePill = document.querySelector(".filter-pill.active");
+    if(activePill) activePill.click();
 }
 
 async function createPost(){
     if(!currentUser) return alert("You must be logged in to post!");
     if(!userDisplayName) return alert("Please save a Display Name first!");
-    const title = document.getElementById("title").value;
+    const title = document.getElementById("title").value.trim();
     const category = document.getElementById("category").value;
-    const content = document.getElementById("content").value;
+    const content = document.getElementById("content").value.trim();
     if(!title || !content) return alert("Please fill in all fields.");
 
-    await supabase.from("posts").insert([{ title, author: userDisplayName, category, content, likes:0, verified:false }]);
+    if (editPostId) {
+        await supabase.from("posts").update({ title, category, content }).eq("id", editPostId);
+        alert("Article updated successfully!");
+        editPostId = null;
+        document.getElementById("form-panel-title").innerText = "Write New Article";
+        document.getElementById("publishBtn").innerText = "Publish Article";
+    } else {
+        await supabase.from("posts").insert([{ title, author: userDisplayName, user_id: currentUser.id, category, content, likes:0, verified:false }]);
+        alert("Article published successfully!");
+    }
+
     document.getElementById("title").value = "";
     document.getElementById("content").value = "";
+    loadPosts();
+}
+
+function triggerEditPost(id, encTitle, encCategory, encContent) {
+    // Decode safely back to normal text
+    document.getElementById("title").value = safeB64Decode(encTitle);
+    document.getElementById("category").value = safeB64Decode(encCategory);
+    document.getElementById("content").value = safeB64Decode(encContent);
+    
+    editPostId = id;
+    document.getElementById("form-panel-title").innerText = "Edit Your Article 🔄";
+    document.getElementById("publishBtn").innerText = "Save Changes";
+    document.getElementById("write-article-box").scrollIntoView({ behavior: 'smooth' });
+}
+
+async function deletePost(id) {
+    if (!confirm("Are you sure you want to permanently delete this article?")) return;
+    
+    await supabase.from("comments").delete().eq("post_id", id);
+    await supabase.from("posts").delete().eq("id", id);
+    
+    alert("Article deleted successfully!");
     loadPosts();
 }
 
 async function addComment(postId){
     if(!currentUser) return alert("You must be logged in to comment!");
     const commenterName = userDisplayName || currentUser.email.split('@')[0];
-    const comment = document.getElementById("cmsg-"+postId).value;
-    if(!comment) return alert("Comment cannot be empty.");
+    const commentInput = document.getElementById("cmsg-"+postId);
+    const commentText = commentInput.value.trim();
+    if(!commentText) return alert("Comment cannot be empty.");
 
-    await supabase.from("comments").insert([{ post_id: postId, name: commenterName, comment }]);
-    document.getElementById("cmsg-"+postId).value = "";
+    if (editCommentId) {
+        await supabase.from("comments").update({ comment: commentText }).eq("id", editCommentId);
+        alert("Response updated successfully!");
+        editCommentId = null;
+        
+        const btn = document.getElementById("cbtn-"+postId);
+        if(btn) btn.innerText = "Reply";
+    } else {
+        await supabase.from("comments").insert([{ post_id: postId, name: commenterName, user_id: currentUser.id, comment: commentText }]);
+    }
+    
+    commentInput.value = "";
     loadComments(postId);
 }
 
+// 💬 COMMENTS REPLIES ARCHITECTURE
 async function loadComments(postId){
-    const { data } = await supabase.from("comments").select("*").eq("post_id", postId).order("id", { ascending:false });
+    const { data } = await supabase.from("comments").select("*").eq("post_id", postId).order("id", { ascending:true });
     const box = document.getElementById("comments-"+postId);
     if(!box || !data) return;
     box.innerHTML = "";
-    data.forEach(c => { box.innerHTML += `<div class="comment"><b>${c.name}:</b> ${c.comment}</div>`; });
+    
+    data.forEach(c => {
+        let commentControlsHTML = "";
+        if (currentUser && (c.user_id === currentUser.id || c.name === userDisplayName || currentUser.email === 'methun2008216@gmail.com')) {
+            const encComment = safeB64Encode(c.comment || "");
+            commentControlsHTML = `
+                <div class="comment-controls">
+                    <button class="btn-comment-control" onclick="triggerEditComment(${postId}, ${c.id}, '${encComment}')" title="Edit Reply"><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-comment-control btn-comment-delete" onclick="deleteComment(${postId}, ${c.id})" title="Delete Reply"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `;
+        }
+
+        box.innerHTML += `
+            <div class="comment-node">
+                <div class="comment-content-left">
+                    <b>${c.name}:</b> ${c.comment}
+                </div>
+                ${commentControlsHTML}
+            </div>`;
+    });
+}
+
+function triggerEditComment(postId, commentId, encComment) {
+    const inputField = document.getElementById("cmsg-"+postId);
+    if(!inputField) return;
+    
+    inputField.value = safeB64Decode(encComment);
+    inputField.focus();
+    
+    editCommentId = commentId;
+    
+    const btn = document.getElementById("cbtn-"+postId);
+    if(btn) btn.innerText = "Save";
+}
+
+async function deleteComment(postId, commentId) {
+    if (!confirm("Are you sure you want to delete this response?")) return;
+    
+    await supabase.from("comments").delete().eq("id", commentId);
+    alert("Response removed successfully!");
+    loadComments(postId);
 }
 
 async function likePost(id, likes){
@@ -634,10 +754,11 @@ async function likePost(id, likes){
     loadPosts();
 }
 
-// Global scope mapping
 window.addComment = addComment;
 window.likePost = likePost;
 window.createPost = createPost;
+window.triggerEditPost = triggerEditPost;
+window.deletePost = deletePost;
 window.handleSignUp = handleSignUp;
 window.handleLogin = handleLogin;
 window.handleLogout = handleLogout;
@@ -648,14 +769,33 @@ window.handleVerifyResetOTP = handleVerifyResetOTP;
 window.handlePasswordUpdate = handlePasswordUpdate;
 window.cancelResetMode = cancelResetMode;
 window.handleVerifyOTP = handleVerifyOTP;
+window.filterCategoryFeed = filterCategoryFeed;
+window.triggerEditComment = triggerEditComment;
+window.deleteComment = deleteComment;
 
-// New functions mapping
-window.deletePost = deletePost;
-window.showEditForm = showEditForm;
-window.saveEditedPost = saveEditedPost;
+const posonDate = new Date("June 29, 2026 00:00:00").getTime();
+const countdownTimer = setInterval(() => {
+    const now = new Date().getTime();
+    const distance = posonDate - now;
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+    document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+    document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+    document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+
+    if (distance < 0) {
+        clearInterval(countdownTimer);
+        document.getElementById("poson-countdown-wrapper").classList.add("hidden");
+        document.getElementById("poson-wishes-wrapper").classList.remove("hidden");
+    }
+}, 1000);
 
 });
 </script>
-
 </body>
 </html>

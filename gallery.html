@@ -1,116 +1,292 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Our Gallery</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Gallery - Next Frame Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
-body{
-background:#0a0a0a;
-color:white;
-font-family:Poppins,sans-serif;
-padding:30px;
-margin:0;
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;overflow-x: hidden;}
+
+/* 🌟 STICKY NAVIGATION */
+nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); border-bottom: 1px solid #111;}
+nav img{height:45px;}
+nav ul{display:flex;gap:20px;list-style:none;}
+nav li{cursor:pointer;transition: 0.3s;font-weight: 500;}
+nav li:hover{color:#ff4d00;}
+
+section{padding:60px 40px;}
+
+/* 🌌 HERO SECTION */
+.hero-container {
+    position: relative;
+    width: 100%;
+    min-height: 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: linear-gradient(180deg, #000 0%, #0a0a0a 100%);
+    padding: 40px;
 }
 
-h1{
-text-align:center;
-margin-bottom:20px;
+.gallery-svg-container {
+    position: absolute;
+    top: 15%;
+    width: 80px;
+    height: auto;
+    z-index: 1;
+    pointer-events: none;
+    animation: gallery-bob 4s ease-in-out infinite;
 }
 
+@keyframes gallery-bob {
+    0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 0 5px rgba(255,77,0,0.4)); }
+    50% { transform: translateY(-10px) rotate(3deg); filter: drop-shadow(0 0 15px rgba(255,77,0,0.7)); }
+}
+
+/* 🎯 FILTER BUTTONS */
 .buttons{
-text-align:center;
-margin-bottom:30px;
+    text-align:center;
+    margin-bottom:40px;
+    position: relative;
+    z-index: 10;
 }
 
 .buttons button{
-background:#ff4d00;
-border:none;
-color:white;
-padding:12px 20px;
-margin:5px;
-border-radius:8px;
-cursor:pointer;
-font-size:15px;
+    background:#111;
+    border: 1px solid #222;
+    color:#ccc;
+    padding: 12px 24px;
+    margin: 6px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.buttons button:hover{
-box-shadow:0 0 15px #ff4d00;
+.buttons button:hover, .buttons button.active {
+    background: #ff4d00;
+    color: white;
+    border-color: #ff4d00;
+    box-shadow: 0 8px 20px rgba(255, 77, 0, 0.3);
+    transform: translateY(-3px);
 }
 
+/* 📸 GALLERY GRID DESIGN */
 .gallery{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:25px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* IMAGE CARD CONTAINER */
+.gallery-item {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #111;
+    border: 1px solid #1c1c1c;
+    aspect-ratio: 3/2;
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ෆිල්ටර් කරද්දී සිදුවන Smooth ඇනිමේෂන් එක */
+.gallery-item.hidden {
+    opacity: 0;
+    transform: scale(0.8);
+    position: absolute;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
 }
 
 .gallery img{
-width:100%;
-border-radius:15px;
-transition:.3s;
-cursor:pointer;
+    width:100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor:pointer;
+    filter: grayscale(15%);
 }
 
-.gallery img:hover{
-transform:scale(1.05);
-box-shadow:0 0 25px #ff4d00;
+/* Hover Overlay Visual Effect */
+.gallery-item::after {
+    content: 'View Image 🔍';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 77, 0, 0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; letter-spacing: 1px;
+    opacity: 0; transition: 0.4s; pointer-events: none;
 }
 
-.hidden{
-display:none;
+.gallery-item:hover{
+    transform: translateY(-8px);
+    border-color: #ff4d00;
+    box-shadow: 0 12px 30px rgba(255, 77, 0, 0.25);
 }
+
+.gallery-item:hover img {
+    transform: scale(1.06);
+    filter: grayscale(0%);
+}
+
+.gallery-item:hover::after {
+    opacity: 1;
+}
+
+/* 🖼️ LIGHTBOX MODAL STYLING (Full Screen Viewer) */
+.lightbox {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
+    z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+.lightbox.show { opacity: 1; pointer-events: auto; }
+
+.lightbox-content {
+    max-width: 85%;
+    max-height: 80vh;
+    border-radius: 12px;
+    box-shadow: 0 0 40px rgba(255, 77, 0, 0.3);
+    border: 1px solid rgba(255, 77, 0, 0.5);
+    transform: scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.lightbox.show .lightbox-content { transform: scale(1); }
+
+.lightbox-close {
+    position: absolute;
+    top: 30px; right: 40px;
+    color: #fff; font-size: 40px; font-weight: 300;
+    cursor: pointer; transition: 0.3s;
+}
+.lightbox-close:hover { color: #ff4d00; transform: scale(1.1); }
+
+footer{text-align:center;padding:30px;background:#000; border-top: 1px solid #111; margin-top: 60px;}
 </style>
 </head>
 <body>
 
-<h1>Our Work Gallery</h1>
+<nav>
+<img src="logo.png" alt="Next Frame Digital">
+<ul>
+<li onclick="goBack()">← Back</li>
+</ul>
+</nav>
+
+<div class="hero-container">
+    <div class="gallery-svg-container">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z" stroke="#ff4d00" stroke-width="1.5" fill="#111"/>
+            <circle cx="12" cy="12" r="4" stroke="#ffaa00" stroke-width="1.2"/>
+            <path d="M5 18l4.5-4.5 3 3 5-5L19 13" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="8.5" cy="8.5" r="1.5" fill="#ff4d00"/>
+        </svg>
+    </div>
+    <h1 style="font-size: 50px; letter-spacing: 2px; margin-top: 60px; background: linear-gradient(45deg, #fff, #ff4d00); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Our Work Gallery</h1>
+    <p style="color: #ccc; margin-top: 8px; font-size: 16px;">Visual excellence captured across every frame</p>
+</div>
 
 <div class="buttons">
-<button onclick="showCategory('all')">All</button>
-<button onclick="showCategory('events')">Events</button>
-<button onclick="showCategory('photoshoot')">Photoshoots</button>
-<button onclick="showCategory('drone')">Drone Shoots</button>
+<button class="active" onclick="filterGallery('all', this)">All Works</button>
+<button onclick="filterGallery('events', this)">Premium Events</button>
+<button onclick="filterGallery('photoshoot', this)">Commercial Photoshoots</button>
+<button onclick="filterGallery('drone', this)">Cinematic Drone Shoots</button>
 </div>
 
-<div class="gallery">
+<section style="padding-top: 0;">
+    <div class="gallery">
 
-<!-- EVENTS -->
-<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/event1.jpg" class="events">
-<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/event2.jpg" class="events">
+        <div class="gallery-item events">
+            <img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/event1.jpg" alt="Event Coverage" onclick="openLightbox(this.src)">
+        </div>
+        <div class="gallery-item events">
+            <img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/event2.jpg" alt="Event Coverage" onclick="openLightbox(this.src)">
+        </div>
 
-<!-- PHOTOSHOOT -->
-<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/photo1.jpg" class="photoshoot">
-<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/photo2.jpg" class="photoshoot">
+        <div class="gallery-item photoshoot">
+            <img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/photo1.jpg" alt="Commercial Photoshoot" onclick="openLightbox(this.src)">
+        </div>
+        <div class="gallery-item photoshoot">
+            <img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/photo2.jpg" alt="Commercial Photoshoot" onclick="openLightbox(this.src)">
+        </div>
 
-<!-- DRONE -->
-<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/drone1.jpg" class="drone">
-<img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/drone2.jpg" class="drone">
+        <div class="gallery-item drone">
+            <img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/drone1.jpg" alt="Drone Production" onclick="openLightbox(this.src)">
+        </div>
+        <div class="gallery-item drone">
+            <img src="https://xuxdkjeypwrhccgthepn.supabase.co/storage/v1/object/public/gallery/drone2.jpg" alt="Drone Production" onclick="openLightbox(this.src)">
+        </div>
 
+    </div>
+</section>
+
+<div id="lightboxModal" class="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <img class="lightbox-content" id="lightboxImg" alt="Next Frame Large View">
 </div>
+
+<footer>
+<p>© 2026 Next Frame Digital</p>
+</footer>
 
 <script>
-
-function showCategory(category){
-
-const images = document.querySelectorAll(".gallery img");
-
-images.forEach(img=>{
-
-if(category==="all"){
-img.classList.remove("hidden");
-}
-else{
-if(img.classList.contains(category)){
-img.classList.remove("hidden");
-}
-else{
-img.classList.add("hidden");
-}
+// BACK TO PREVIOUS PAGE
+function goBack(){
+    window.history.back();
 }
 
-});
+// 🎯 DYNAMIC SMOOTH FILTER FUNCTION
+function filterGallery(category, buttonElement) {
+    // Active Button Style Switch
+    const buttons = document.querySelectorAll(".buttons button");
+    buttons.forEach(btn => btn.classList.remove("active"));
+    buttonElement.classList.add("active");
 
+    // Grid Animation Engine
+    const items = document.querySelectorAll(".gallery-item");
+    items.forEach(item => {
+        if (category === "all") {
+            item.classList.remove("hidden");
+        } else {
+            if (item.classList.contains(category)) {
+                item.classList.remove("hidden");
+            } else {
+                item.classList.add("hidden");
+            }
+        }
+    });
 }
 
+// 🖼️ LIGHTBOX ENGINE (OPEN/CLOSE FULLSCREEN)
+function openLightbox(src) {
+    const lightbox = document.getElementById("lightboxModal");
+    const lightboxImg = document.getElementById("lightboxImg");
+    lightboxImg.src = src;
+    lightbox.classList.add("show");
+}
+
+function closeLightbox() {
+    const lightbox = document.getElementById("lightboxModal");
+    lightbox.classList.remove("show");
+}
 </script>
 
 </body>

@@ -7,24 +7,164 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;}
-nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);}
+body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;overflow-x: hidden;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);position: sticky; top: 0; z-index: 1000;}
 nav img{height:45px;}
 nav ul{display:flex;gap:20px;list-style:none;}
-nav li{cursor:pointer;}
+nav li{cursor:pointer;transition: 0.3s;}
 nav li:hover{color:#ff4d00;}
+
 section{padding:100px 40px;}
-h2{text-align:center;margin-bottom:30px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
-.card{background:#111;padding:25px;border-radius:12px;transition:0.3s;cursor:pointer;text-align:center;}
-.card:hover{transform:translateY(-10px);}
-.details{background:#000;padding:20px;border-radius:10px;margin-bottom:20px;}
-.details h3{color:#ff4d00;margin-bottom:10px;}
-.details p{color:#ccc;margin:5px 0;}
-.portfolio img{width:100%;border-radius:10px;margin-bottom:15px;transition:0.3s;}
-.portfolio img:hover{transform:scale(1.05);}
+h2{text-align:center;margin-bottom:30px;font-size: 32px; letter-spacing: 1px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
+
+/* 🌟 ANIMATION BASE STYLES (ස්ක්‍රෝල් කරද්දී මතු වෙන්න) */
+.animate-fade {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.animate-fade.appear {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 🎨 PREMIUM CARD STYLES & HOVER EFFECTS */
+.card{
+    background:#111;
+    padding:25px;
+    border-radius:12px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor:pointer;
+    text-align:center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #222;
+}
+
+.card:hover{
+    transform: translateY(-10px);
+    border-color: #ff4d00;
+    box-shadow: 0 10px 25px rgba(255, 77, 0, 0.15);
+}
+
+/* ⚡ STANDARD CARD: Gold Glow Effect */
+.card-standard:hover {
+    border-color: #ffaa00;
+    box-shadow: 0 10px 30px rgba(255, 170, 0, 0.2);
+}
+
+/* 🔥 PREMIUM CARD: Elite Premium Glow Effect */
+.card-premium {
+    border: 1px solid rgba(255, 77, 0, 0.3);
+}
+.card-premium:hover {
+    transform: translateY(-12px) scale(1.02);
+    border-color: #ff4d00;
+    box-shadow: 0 15px 35px rgba(255, 77, 0, 0.3);
+}
+
+/* Ribbon Badges for Packages */
+.badge {
+    position: absolute;
+    top: 15px;
+    right: -35px;
+    background: #ff4d00;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 35px;
+    transform: rotate(45deg);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.details{background:#000;padding:20px;border-radius:10px;margin-bottom:20px; height: 100%; display: flex; flex-direction: column; justify-content: center;}
+.details h3{color:#ff4d00;margin-bottom:15px; font-size: 20px;}
+.details p{color:#ccc;margin:8px 0; font-size: 14px;}
+
+/* 💰 PRICE TAG STYLING */
+.price-tag {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin: 10px 0 15px 0 !important;
+    padding: 5px;
+    background: linear-gradient(90deg, transparent, #111, transparent);
+    border-left: 3px solid #ff4d00;
+    border-right: 3px solid #ff4d00;
+    display: inline-block;
+    width: 100%;
+}
+.card-standard .price-tag { border-color: #ffaa00; }
+.card-premium .price-tag { border-color: #ff4d00; color: #ff4d00; animation: pulse-price 2s infinite; }
+
+@keyframes pulse-price {
+    0% { opacity: 0.9; }
+    50% { opacity: 1; text-shadow: 0 0 10px rgba(255, 77, 0, 0.5); }
+    100% { opacity: 0.9; }
+}
+
+/* 📸 PORTFOLIO WORK IMAGES */
+.portfolio img{width:100%;border-radius:10px;margin-bottom:15px;transition:all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); filter: grayscale(30%);}
+.portfolio img:hover{transform:scale(1.04) translateY(-5px); filter: grayscale(0%); box-shadow: 0 10px 20px rgba(0,0,0,0.5);}
+
+/* 🎬 CLAPPERBOARD HERO ANIMATION STYLES */
+.hero-container {
+    position: relative;
+    width: 100%;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.clapper-container {
+    position: absolute;
+    top: 20%;
+    left: -150px;
+    width: 100px;
+    height: auto;
+    z-index: 5;
+    pointer-events: none;
+    animation: clapper-move 20s linear infinite, clapper-bob 3.5s ease-in-out infinite;
+}
+
+@keyframes clapper-move {
+    0% { left: -150px; transform: scaleX(1); }
+    45% { left: 110%; transform: scaleX(1); }
+    50% { left: 110%; transform: scaleX(-1); }
+    95% { left: -150px; transform: scaleX(-1); }
+    100% { left: -150px; transform: scaleX(1); }
+}
+
+@keyframes clapper-bob {
+    0%, 100% { top: 18%; }
+    50% { top: 26%; }
+}
+
+/* Clapper Board එකේ උඩ කොටස ඇනිමේට් වීම (Clapping Effect) */
+@keyframes clapper-snap {
+    0%, 100%, 80% { transform: rotate(0deg); }
+    40%, 50% { transform: rotate(-25deg); }
+}
+
+.clapper-top {
+    transform-origin: 4px 7px;
+    animation: clapper-snap 1.8s ease-in-out infinite;
+}
+
+.clapper-svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 8px rgba(255, 77, 0, 0.5));
+}
+
 .contact p{margin:8px 0;color:#ccc;}
-footer{text-align:center;padding:20px;background:#000;}
+footer{text-align:center;padding:20px;background:#000; border-top: 1px solid #111;}
 </style>
 </head>
 <body>
@@ -39,47 +179,67 @@ footer{text-align:center;padding:20px;background:#000;}
 </ul>
 </nav>
 
-<section id="hero">
-<h1 style="text-align:center;font-size:50px;">Film Production</h1>
-<p style="text-align:center;color:#ccc;margin-top:10px;">Professional film production for commercials, short films, and documentaries</p>
+<section id="hero" style="padding: 0;">
+    <div class="hero-container">
+        
+        <div class="clapper-container">
+            <svg class="clapper-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g class="clapper-top">
+                    <path d="M4 4h16l-2 3H6L4 4z" fill="#ff4d00"/>
+                    <path d="M7 4l2 3M12 4l2 3M17 4l2 3" stroke="#fff" stroke-width="1"/>
+                </g>
+                <path d="M4 7h16v11a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" fill="#111" stroke="#ff4d00" stroke-width="1.5"/>
+                <path d="M4 7l2 2M9 7l2 2M14 7l2 2M19 7l1.5 1.5" stroke="#fff" stroke-width="1"/>
+                <circle cx="12" cy="14" r="2.5" stroke="#ff4d00" stroke-width="1" stroke-dasharray="2"/>
+                <circle cx="12" cy="14" r="1" fill="#fff"/>
+            </svg>
+        </div>
+
+        <h1 style="text-align:center;font-size:55px; letter-spacing: 2px; background: linear-gradient(45deg, #fff, #ff4d00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; position: relative; z-index: 10;">Film Production</h1>
+        <p style="text-align:center;color:#ccc;margin-top:10px; font-size: 18px; position: relative; z-index: 10;">Professional film production for commercials, short films, and documentaries</p>
+    </div>
 </section>
 
-<section id="packages">
+<section id="packages" class="animate-fade">
 <h2>Film Production Packages & Prices</h2>
 <div class="grid">
-<div class="card">
-<div class="details">
-<h3>Short Film</h3>
-<p>Price: Rs.70,000</p>
-<p>Full Production</p>
-<p>1-5 Minute Film</p>
-<p>Full Cinematic Quality</p>
-</div>
-</div>
+    
+    <div class="card">
+        <div class="details">
+            <h3>Short Film</h3>
+            <p class="price-tag">Rs. 70,000</p>
+            <p>Full Production</p>
+            <p>1-5 Minute Film</p>
+            <p style="color: #ff4d00; font-weight: bold;">Full Cinematic Quality</p>
+        </div>
+    </div>
 
-<div class="card">
-<div class="details">
-<h3>Commercial / Ad Film</h3>
-<p>Price: Rs.90,000</p>
-<p>Full Production</p>
-<p>10-15 Minute Film</p>
-<p>Full Cinematic Quality</p>
-</div>
-</div>
+    <div class="card card-standard">
+        <div class="badge" style="background: #ffaa00; color: #000;">Trending</div>
+        <div class="details">
+            <h3 style="color: #ffaa00;">Commercial / Ad Film</h3>
+            <p class="price-tag">Rs. 90,000</p>
+            <p>Full Production Team</p>
+            <p>10-15 Minute Film</p>
+            <p style="color: #ffaa00; font-weight: bold;">Full Cinematic Quality</p>
+        </div>
+    </div>
 
-<div class="card">
-<div class="details">
-<h3>Documentary / Custom Film</h3>
-<p>Price: Rs.100,000</p>
-<p>Full Production</p>
-<p>30-40 Minute Film</p>
-<p>High-End Cinematic Editing</p>
-</div>
-</div>
+    <div class="card card-premium">
+        <div class="badge">Masterpiece</div>
+        <div class="details">
+            <h3>Documentary / Custom Film</h3>
+            <p class="price-tag">Rs. 100,000</p>
+            <p>Full Production Timeline</p>
+            <p>30-40 Minute Film</p>
+            <p style="color: #ff4d00; font-weight: bold;">High-End Cinematic Editing</p>
+        </div>
+    </div>
+    
 </div>
 </section>
 
-<section id="portfolio">
+<section id="portfolio" class="animate-fade">
 <h2>Our Film Works</h2>
 <div class="grid portfolio">
 <img src="film1.jpg" alt="Film Portfolio">
@@ -89,13 +249,15 @@ footer{text-align:center;padding:20px;background:#000;}
 </div>
 </section>
 
-<section id="contact">
+<section id="contact" class="animate-fade">
 <h2>Contact Us</h2>
+<div style="text-align: center; background: #111; padding: 30px; border-radius: 12px; max-width: 500px; margin: 0 auto;">
 <p>Email: nextframedigital@email.com</p>
-<p>Phone: +94XXXXXXXXX</p>
+<p>Phone: +94705131882</p>
 <p>Instagram: @nextframe_digital</p>
 <p>Facebook: Next Frame Digital</p>
 <p>Location: Sri Lanka</p>
+</div>
 </section>
 
 <footer>
@@ -103,8 +265,38 @@ footer{text-align:center;padding:20px;background:#000;}
 </footer>
 
 <script>
-function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
-function goBack(){window.history.back();}
+function scrollToSection(id){
+document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+function goBack(){
+window.history.back();
+}
+
+/* 🌟 SCROLL ANIMATION ENGINE (Intersection Observer) */
+document.addEventListener("DOMContentLoaded", () => {
+    const scrollElements = document.querySelectorAll(".animate-fade");
+
+    const elementInView = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("appear");
+                observer.unobserve(entry.target); 
+            }
+        });
+    };
+
+    const options = {
+        root: null,
+        threshold: 0.15 
+    };
+
+    const observer = new IntersectionObserver(elementInView, options);
+
+    scrollElements.forEach(element => {
+        observer.observe(element);
+    });
+});
 </script>
+
 </body>
 </html>

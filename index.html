@@ -5,350 +5,407 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Next Frame Digital</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<!-- EmailJS Library -->
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
     document.addEventListener("mousemove", e=>{
-const glow = document.getElementById("cursor-glow");
-glow.style.left = e.clientX + "px";
-glow.style.top = e.clientY + "px";
-});
+        const glow = document.getElementById("cursor-glow");
+        if(glow) {
+            glow.style.left = e.clientX + "px";
+            glow.style.top = e.clientY + "px";
+        }
+    });
 
-(function(){
-    emailjs.init("esQFLOliVZrSQ_TNK"); // <-- replace with your EmailJS public key
-})();
+    (function(){
+        emailjs.init("esQFLOliVZrSQ_TNK");
+    })();
 </script>
 
 <style>
-    .community-btn{
-background:linear-gradient(45deg,#ff4d00,#ff8800);
-color:white;
-border:none;
-padding:14px 30px;
-font-size:16px;
-font-weight:600;
-border-radius:50px;
-cursor:pointer;
-position:relative;
-overflow:hidden;
-transition:0.4s;
-box-shadow:0 0 15px rgba(255,77,0,0.5);
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+    background: #0a0a0a;
+    color:#fff;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
 }
 
-/* Shine effect */
-.community-btn::before{
-content:"";
-position:absolute;
-top:0;
-left:-100%;
-width:100%;
-height:100%;
-background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
-transition:0.6s;
-}
+/* 🪐 SCROLLBAR ANIMATION */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-pipe { background: #111; }
+::-webkit-scrollbar-thumb { background: #ff4d00; border-radius: 10px; }
 
-.community-btn:hover::before{
-left:100%;
-}
-
-.community-btn:hover{
-transform:scale(1.07);
-box-shadow:0 0 20px #ff4d00,0 0 40px #ff4d00;
-}
-
-.community-btn:active{
-transform:scale(0.95);
-}
-    #subscribe{
-text-align:center;
-padding:80px 20px;
-}
-
-#subscribe input{
-width:100%;
-padding:12px;
-margin:10px 0;
-border:none;
-border-radius:10px;
-background:#111;
-color:white;
-}
-    /* GALLERY BUTTON */
-.gallery-btn{
-background:linear-gradient(45deg,#ff4d00,#ff8800);
-color:white;
-border:none;
-padding:14px 28px;
-font-size:16px;
-font-weight:600;
-border-radius:50px;
-cursor:pointer;
-position:relative;
-overflow:hidden;
-transition:0.4s;
-box-shadow:0 0 10px rgba(255,77,0,0.5);
-animation:pulse 2s infinite;
-}
-
-/* Shine Effect */
-.gallery-btn::before{
-content:"";
-position:absolute;
-top:0;
-left:-100%;
-width:100%;
-height:100%;
-background:linear-gradient(
-120deg,
-transparent,
-rgba(255,255,255,0.5),
-transparent
-);
-transition:0.6s;
-}
-
-.gallery-btn:hover::before{
-left:100%;
-}
-
-/* Hover */
-.gallery-btn:hover{
-transform:translateY(-5px) scale(1.05);
-box-shadow:
-0 0 15px #ff4d00,
-0 0 30px #ff4d00,
-0 0 60px #ff4d00;
-}
-
-/* Click */
-.gallery-btn:active{
-transform:scale(0.95);
-}
-
-/* Pulse Animation */
-@keyframes pulse{
-0%{
-box-shadow:0 0 10px rgba(255,77,0,0.5);
-}
-50%{
-box-shadow:0 0 25px rgba(255,77,0,1);
-}
-100%{
-box-shadow:0 0 10px rgba(255,77,0,0.5);
-}
-}
-    
-    /* CURSOR GLOW */
+/* 🛸 CURSOR GLOW */
 #cursor-glow{
-position:fixed;
-width:200px;
-height:200px;
-background:radial-gradient(circle, rgba(255,77,0,0.25), transparent 60%);
-pointer-events:none;
-transform:translate(-50%,-50%);
-z-index:999;
+    position:fixed;
+    width:250px;
+    height:250px;
+    background:radial-gradient(circle, rgba(255,77,0,0.2) 0%, transparent 70%);
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    z-index:9999;
 }
 
-    /* ANIMATED LIGHT BACKGROUND */
+/* 🎥 ANIMATED LIGHT BACKGROUND */
 body::before{
-content:"";
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background: radial-gradient(circle at 20% 30%, rgba(255,77,0,0.15), transparent 40%),
-            radial-gradient(circle at 80% 70%, rgba(255,77,0,0.1), transparent 40%);
-animation: moveLights 8s infinite alternate;
-z-index:-1;
+    content:"";
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: radial-gradient(circle at 20% 30%, rgba(255,77,0,0.12), transparent 45%),
+                radial-gradient(circle at 80% 70%, rgba(255,77,0,0.08), transparent 45%);
+    animation: moveLights 12s infinite alternate ease-in-out;
+    z-index:-2;
 }
 
 @keyframes moveLights{
-0%{
-transform:translate(0,0);
-}
-100%{
-transform:translate(-50px, 50px);
-}
+    0%{ transform:translate(0,0) scale(1); }
+    100%{ transform:translate(-30px, 30px) scale(1.1); }
 }
 
-    body::after{
-content:"";
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:url('https://www.transparenttextures.com/patterns/asfalt-light.png');
-opacity:0.05;
-pointer-events:none;
+body::after{
+    content:"";
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+    opacity:0.04;
+    pointer-events:none;
+    z-index: -1;
 }
 
-    /* GLOW BUTTON EFFECT */
-.btn{
-position:relative;
-overflow:hidden;
-z-index:1;
+/* 🌟 PREMIUM NAVIGATION BAR */
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 40px;
+    position:fixed;
+    width:100%;
+    background:rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,77,0,0.1);
+    z-index:1000;
+    transition: 0.4s;
 }
-
-.btn::before{
-content:"";
-position:absolute;
-top:0;
-left:-100%;
-width:100%;
-height:100%;
-background:linear-gradient(120deg, transparent, #ff4d00, transparent);
-transition:0.5s;
-}
-
-.btn:hover::before{
-left:100%;
-}
-
-/* GLOW SHADOW */
-.btn:hover{
-box-shadow:0 0 10px #ff4d00,
-            0 0 20px #ff4d00,
-            0 0 40px #ff4d00;
-transform:scale(1.05);
-}
-.btn{
-box-shadow:0 0 5px #ff4d00;
-}
-
-.btn:hover{
-box-shadow:0 0 15px #ff4d00,
-            0 0 30px #ff4d00,
-            0 0 60px #ff4d00;
-}
-
-    /* PRO BOOKING BUTTON */
-.pro-btn{
-position:relative;
-padding:14px 30px;
-border:none;
-border-radius:30px;
-background:linear-gradient(45deg,#ff4d00,#ff8800);
-color:#fff;
-font-size:16px;
-cursor:pointer;
-overflow:hidden;
-transition:0.3s;
-box-shadow:0 0 15px rgba(255,77,0,0.5);
-}
-
-.pro-btn span{
-position:relative;
-z-index:2;
-}
-
-.pro-btn:hover{
-transform:scale(1.08);
-box-shadow:0 0 25px rgba(255,77,0,0.9);
-}
-
-/* GLOW ANIMATION */
-.pro-btn::before{
-content:'';
-position:absolute;
-top:0;
-left:-100%;
-width:100%;
-height:100%;
-background:linear-gradient(120deg,transparent,rgba(255,255,255,0.5),transparent);
-transition:0.5s;
-}
-
-.pro-btn:hover::before{
-left:100%;
-}
-
-/* CLICK RIPPLE */
-.pro-btn:active{
-transform:scale(0.95);
-}
-
-    /* CLIENTS */
-.client{
-text-align:center;
-background:#111;
-padding:20px;
-border-radius:12px;
-transition:0.3s;
-}
-
-.client img{
-width:100px;
-height:100px;
-object-fit:contain;
-margin-bottom:10px;
-filter:grayscale(100%);
-transition:0.3s;
-}
-
-.client:hover img{
-filter:grayscale(0%);
-transform:scale(1.1);
-}
-
-.client p{
-color:#ccc;
-font-size:14px;
-}
-
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{
-background: #0a0a0a;
-background-image: 
-radial-gradient(circle at 20% 30%, rgba(255,77,0,0.1), transparent 40%),
-radial-gradient(circle at 80% 70%, rgba(255,77,0,0.08), transparent 40%);
-color:#fff;
-}
-
-nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;position:fixed;width:100%;background:rgba(0,0,0,0.8);z-index:1000;}
-nav img{height:45px;}
-nav ul{display:flex;gap:20px;list-style:none;}
-nav li{cursor:pointer;}
+nav img{height:42px; transition: 0.3s;}
+nav img:hover{ transform: scale(1.05); }
+nav ul{display:flex;gap:25px;list-style:none;}
+nav li{cursor:pointer; font-size: 14px; font-weight: 500; color: #aaa; transition: 0.3s; position: relative;}
 nav li:hover{color:#ff4d00;}
-.hero{height:100vh;background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.9)), url('backround1.jpg') center/cover;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
-.hero h1{font-size:60px;}
-.hero span{color:#ff4d00;}
-.btn{padding:12px 25px;background:#ff4d00;border:none;color:#fff;cursor:pointer;margin-top:20px;}
-section{padding:100px 40px;}
-h2{text-align:center;margin-bottom:30px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
-.card{background:#111;padding:25px;border-radius:12px;transition:0.3s;cursor:pointer;text-align:center;}
-.card:hover{transform:translateY(-10px);}
-.member{text-align:center;}
-.member img{width:100%;border-radius:10px;}
-.member p{color:#aaa;font-size:14px;}
-.portfolio img{width:100%;border-radius:10px;transition:0.3s;}
-.portfolio img:hover{transform:scale(1.05);}
-.testimonial{background:#111;padding:20px;border-radius:10px;font-size:14px;}
-.contact p{margin:8px 0;color:#ccc;}
-footer{text-align:center;padding:20px;background:#000;}
-.hidden{opacity:0;transform:translateY(40px);transition:0.8s;}
-.show{opacity:1;transform:translateY(0);}
-.floating-buttons{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:10px;z-index:999;}
-.floating-buttons a{width:50px;height:50px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:20px;text-decoration:none;color:#fff;}
+nav li::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: #ff4d00;
+    transition: width 0.3s ease;
+}
+nav li:hover::after { width: 100%; }
+
+/* 🔥 HERO SECTION */
+.hero{
+    height:100vh;
+    background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.95)), url('backround1.jpg') center/cover;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding: 0 20px;
+}
+.hero h1{
+    font-size:65px; 
+    font-weight: 700; 
+    letter-spacing: -1px; 
+    animation: fadeInDown 1s ease;
+}
+.hero h1 span{color:#ff4d00; text-shadow: 0 0 30px rgba(255,77,0,0.5);}
+.hero p{
+    font-size: 18px; 
+    color: #ccc; 
+    margin-top: 10px; 
+    letter-spacing: 2px;
+    animation: fadeInUp 1.2s ease;
+}
+
+/* ⚡ PREMIUM BUTTON INTERACTIVES */
+.btn{
+    padding:14px 32px;
+    background:#ff4d00;
+    border:none;
+    color:#fff;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor:pointer;
+    margin-top:25px;
+    position:relative;
+    overflow:hidden;
+    z-index:1;
+    box-shadow:0 0 10px rgba(255,77,0,0.3);
+    transition: all 0.4s ease;
+}
+.btn::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition:0.5s;
+}
+.btn:hover::before{ left:100%; }
+.btn:hover{
+    box-shadow:0 0 20px #ff4d00, 0 0 40px rgba(255,77,0,0.5);
+    transform:translateY(-3px) scale(1.03);
+}
+.btn:active{ transform: scale(0.97); }
+
+/* 🛠️ SERVICES & PRODUCTION SECTIONS */
+section{padding:100px 40px; max-width: 1200px; margin: auto;}
+h2{
+    text-align:center;
+    margin-bottom:50px;
+    font-size: 36px;
+    font-weight: 700;
+    position: relative;
+}
+h2::after{
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 3px;
+    background: #ff4d00;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;}
+
+/* 💎 CARDS GLOW DESIGN */
+.card{
+    background:#111;
+    padding:35px 25px;
+    border-radius:14px;
+    border: 1px solid #1a1a1a;
+    transition:all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor:pointer;
+    text-align:center;
+}
+.card h3 { font-size: 20px; margin-bottom: 8px; transition: 0.3s; }
+.card p { color: #666; font-size: 13px; transition: 0.3s; }
+.card:hover{
+    transform:translateY(-10px);
+    border-color: #ff4d00;
+    box-shadow: 0 15px 30px rgba(255,77,0,0.15);
+}
+.card:hover h3 { color: #ff4d00; }
+.card:hover p { color: #aaa; }
+
+/* 🎬 PORTFOLIO GALLERY BUTTON */
+.gallery-btn{
+    background:linear-gradient(45deg,#ff4d00,#ff8800);
+    color:white;
+    border:none;
+    padding:15px 35px;
+    font-size:16px;
+    font-weight:600;
+    border-radius:50px;
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+    transition:0.4s;
+    box-shadow:0 0 15px rgba(255,77,0,0.4);
+    animation:pulse 2s infinite;
+}
+.gallery-btn::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
+    transition:0.6s;
+}
+.gallery-btn:hover::before{ left:100%; }
+.gallery-btn:hover{
+    transform:translateY(-5px) scale(1.05);
+    box-shadow: 0 0 20px #ff4d00, 0 0 40px rgba(255,77,0,0.6);
+}
+@keyframes pulse{
+    0%, 100%{ box-shadow:0 0 15px rgba(255,77,0,0.4); }
+    50%{ box-shadow:0 0 30px rgba(255,77,0,0.8); }
+}
+
+.portfolio img{width:100%; border-radius:12px; transition:0.5s ease; border: 1px solid #1a1a1a;}
+.portfolio img:hover{transform:scale(1.04); border-color:#ff4d00; box-shadow: 0 10px 25px rgba(0,0,0,0.5);}
+
+/* 🤝 BEST CLIENTS MATRICES */
+.client{
+    text-align:center;
+    background:#111;
+    padding:30px 20px;
+    border-radius:14px;
+    border: 1px solid #161616;
+    transition:0.4s;
+}
+.client img{
+    width:90px;
+    height:90px;
+    object-fit:contain;
+    margin-bottom:15px;
+    filter:grayscale(100%);
+    opacity: 0.6;
+    transition:0.4s ease;
+}
+.client p{ color:#888; font-size:13px; font-weight:500; transition: 0.3s; }
+.client:hover { border-color: #ff4d00; background: #141414; }
+.client:hover img{ filter:grayscale(0%); opacity: 1; transform:scale(1.08); }
+.client:hover p { color: #fff; }
+
+/* 👥 DYNAMIC CREW MEMBERS */
+.member{text-align:center; background: #111; padding: 20px; border-radius: 14px; border: 1px solid #161616; transition: 0.3s;}
+.member img{width:100%; border-radius:10px; transition: 0.4s;}
+.member h3 { font-size: 16px; margin-top: 15px; }
+.member p{color:#ff4d00; font-size:12px; margin-top: 4px; font-weight: 500;}
+.member:hover { border-color: #222; transform: translateY(-5px); }
+.member:hover img { transform: scale(1.02); }
+
+/* ✍️ DYNAMIC BOOKING & CONTACT ENGINE */
+.contact-form, #booking-form{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    max-width:500px;
+    margin:40px auto;
+    background: #111;
+    padding: 35px;
+    border-radius: 16px;
+    border: 1px solid #1a1a1a;
+}
+.contact-form input, .contact-form textarea, #booking-form input, #booking-form textarea, #booking-form select{
+    padding:14px;
+    border:1px solid #222;
+    border-radius:8px;
+    background:#050505;
+    color:#fff;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+.contact-form input:focus, .contact-form textarea:focus, #booking-form input:focus, #booking-form textarea:focus, #booking-form select:focus {
+    border-color: #ff4d00;
+}
+.contact-form textarea, #booking-form textarea{height:110px; resize:none;}
+
+/* 👑 PRO BOOKING BUTTON */
+.pro-btn{
+    position:relative;
+    padding:14px 30px;
+    border:none;
+    border-radius:8px;
+    background:linear-gradient(45deg,#ff4d00,#ff8800);
+    color:#fff;
+    font-size:15px;
+    font-weight: 600;
+    cursor:pointer;
+    overflow:hidden;
+    transition:0.3s;
+    box-shadow:0 0 15px rgba(255,77,0,0.4);
+}
+.pro-btn span{ position:relative; z-index:2; }
+.pro-btn::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
+    transition:0.5s;
+}
+.pro-btn:hover::before{ left:100%; }
+.pro-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 25px rgba(255,77,0,0.8);
+}
+.pro-btn:active{ transform:scale(0.97); }
+
+/* 🎓 FRAME MASTERS SECTION */
+.community-btn{
+    background:linear-gradient(45deg,#ff4d00,#ff8800);
+    color:white;
+    border:none;
+    padding:15px 35px;
+    font-size:15px;
+    font-weight:600;
+    border-radius:50px;
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+    transition:0.4s;
+    box-shadow:0 0 15px rgba(255,77,0,0.4);
+}
+.community-btn::before{
+    content:""; position:absolute; top:0; left:-100%; width:100%; height:100%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent); transition:0.6s;
+}
+.community-btn:hover::before{ left:100%; }
+.community-btn:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 25px #ff4d00, 0 0 50px rgba(255,77,0,0.5);
+}
+
+#subscribe{ text-align:center; padding:60px 20px; border-top: 1px solid #111; }
+#subscribe input{ width:100%; padding:14px; margin:12px 0; border:1px solid #222; border-radius:8px; background:#050505; color:white; outline: none;}
+#subscribe input:focus { border-color: #ff4d00; }
+
+.contact p{margin:12px 0; color:#aaa; font-size: 15px; text-align: center;}
+.contact p i { color: #ff4d00; margin-right: 8px; }
+
+footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px solid #111; font-size: 13px; color: #555;}
+
+/* 🚀 INTERSECTION OBSERVER REVEAL ANIMATIONS */
+.hidden{ opacity:0; transform:translateY(50px); transition: all 1s cubic-bezier(0.165, 0.84, 0.44, 1); }
+.show{ opacity:1; transform:translateY(0); }
+
+/* 📱 FLOATING CONTROLS */
+.floating-buttons{position:fixed;bottom:25px;right:25px;display:flex;flex-direction:column;gap:12px;z-index:999;}
+.floating-buttons a{width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:22px;text-decoration:none;color:#fff;box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s;}
+.floating-buttons a:hover { transform: scale(1.1) translateY(-3px); }
 .whatsapp{background:#25D366;}
 .call{background:#ff4d00;}
-.contact-form, #booking-form{display:flex;flex-direction:column;gap:10px;max-width:400px;margin:20px auto;}
-.contact-form input,.contact-form textarea,#booking-form input,#booking-form textarea,#booking-form select{padding:10px;border:none;border-radius:8px;background:#111;color:#fff;}
-.contact-form textarea,#booking-form textarea{height:100px;resize:none;}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 </style>
 </head>
 
 <body>
 
-<!-- NAV -->
+<div id="cursor-glow"></div>
+
 <nav>
-<img src="logo.png">
+<img src="logo.png" alt="Next Frame Logo">
 <ul>
-    
 <li onclick="scrollToSection('home')">Home</li>
 <li onclick="scrollToSection('services')">Services</li>
 <li onclick="scrollToSection('portfolio')">Works</li>
@@ -356,96 +413,75 @@ footer{text-align:center;padding:20px;background:#000;}
 <li onclick="scrollToSection('team')">Team</li>
 <li onclick="scrollToSection('reviews')">Reviews</li>
 <li onclick="scrollToSection('booking')">Booking</li>
-<li onclick="window.location.href='community.html'">
-Community
-</li>
+<li onclick="window.location.href='community.html'">Community</li>
 <li onclick="scrollToSection('contact')">Contact</li>
 </ul>
 </nav>
 
-<!-- HERO -->
 <section id="home" class="hero">
 <h1>Next <span>Frame</span> Digital</h1>
 <p>We Capture Stories, Not Just Moments</p>
-<button class="btn" onclick="scrollToSection('services')">Explore</button>
+<button class="btn" onclick="scrollToSection('services')">Explore Work</button>
 </section>
 
-<!-- SERVICES -->
 <section id="services">
 <h2>Our Services</h2>
 <div class="grid">
-<div class="card hidden" onclick="openPage('photography.html')"><h3>Photography</h3><p>Click to view details</p></div>
-<div class="card hidden" onclick="openPage('videography.html')"><h3>Videography</h3><p>Click to view details</p></div>
-<div class="card hidden" onclick="openPage('drone.html')"><h3>Drone Shoots</h3><p>Click to view details</p></div>
-<div class="card hidden" onclick="openPage('event.html')"><h3>Event Coverage</h3><p>Click to view details</p></div>
-<div class="card hidden" onclick="openPage('social.html')"><h3>Social Media Management</h3><p>Click to view details</p></div>
-<div class="card hidden" onclick="openPage('ads.html')"><h3>Advertising</h3><p>Click to view details</p></div>
-<div class="card hidden" onclick="openPage('film.html')"><h3>Film Production</h3><p>Click to view details</p></div>
+<div class="card hidden" onclick="openPage('photography.html')"><h3>Photography</h3><p>Click to view production details</p></div>
+<div class="card hidden" onclick="openPage('videography.html')"><h3>Videography</h3><p>Click to view production details</p></div>
+<div class="card hidden" onclick="openPage('drone.html')"><h3>Drone Shoots</h3><p>Click to view production details</p></div>
+<div class="card hidden" onclick="openPage('event.html')"><h3>Event Coverage</h3><p>Click to view production details</p></div>
+<div class="card hidden" onclick="openPage('social.html')"><h3>Social Media Management</h3><p>Click to view production details</p></div>
+<div class="card hidden" onclick="openPage('ads.html')"><h3>Advertising</h3><p>Click to view production details</p></div>
+<div class="card hidden" onclick="openPage('film.html')"><h3>Film Production</h3><p>Click to view production details</p></div>
 </div>
 </section>
 
-<!-- PORTFOLIO -->
-<!-- PORTFOLIO -->
 <section id="portfolio">
 <h2>Our Works</h2>
-
-<div style="text-align:center; margin-bottom:30px;">
+<div style="text-align:center; margin-bottom:40px;">
     <button class="gallery-btn" onclick="window.location.href='gallery.html'">
-        🎬 View Our Portfolio
+        🎬 View Full Cinematic Portfolio
     </button>
 </div>
-
 <div class="grid portfolio">
-<img src="work1.jpg" class="hidden">
-<img src="work2.jpg" class="hidden">
-
+<img src="work1.jpg" class="hidden" alt="Portfolio 1">
+<img src="work2.jpg" class="hidden" alt="Portfolio 2">
 </div>
-
 </section>
-<!-- CLIENTS -->
+
 <section id="clients">
 <h2>Our Best Clients</h2>
-
 <div class="grid">
-
 <div class="client hidden">
 <img src="client1.png" alt="Client 1">
-<p>ET ARACHCHI (TUTOR IN SIPWIN KURUNEGALA) </p>
+<p>ET ARACHCHI (TUTOR IN SIPWIN KURUNEGALA)</p>
 </div>
-
 <div class="client hidden">
 <img src="client2.png" alt="Client 2">
 <p>MITHILA FDO (OWNER OF DULMIN CONSTRUCTION)</p>
 </div>
-
 <div class="client hidden">
 <img src="client3.png" alt="Client 3">
-<p>AKEN KETHAKA (KALAMBARA CHANEL)</p>
+<p>AKEN KETHAKA (KALAMBARA CHANNEL)</p>
 </div>
-
-
-
 </div>
 </section>
 
-<!-- TEAM -->
 <section id="team">
 <h2>Our Team</h2>
 <div class="grid">
 <div class="member hidden"><img src="team1.jpg"><h3>METHUN SATHSARA (CEO)</h3><p>Creative Director & Filmmaker</p></div>
-<div class="member hidden"><img src="team2.jpg"><h3>VENURA SAPUMAL (CO.CEO)</h3><p>Photographer & videographer</p></div>
+<div class="member hidden"><img src="team2.jpg"><h3>VENURA SAPUMAL (CO.CEO)</h3><p>Photographer & Videographer</p></div>
 <div class="member hidden"><img src="team3.jpg"><h3>SANUJA SAVITHMA</h3><p>Photographer & Lighting Assistant</p></div>
-<div class="member hidden"><img src="team4.jpg"><h3>LOVINDU ERANDITH</h3><p>Photographer & videographer</p></div>
-<div class="member hidden"><img src="team5.jpg"><h3>KAVINDU GEETHANJANA</h3><p>Graphic designer </p></div>
+<div class="member hidden"><img src="team4.jpg"><h3>LOVINDU ERANDITH</h3><p>Photographer & Videographer</p></div>
+<div class="member hidden"><img src="team5.jpg"><h3>KAVINDU GEETHANJANA</h3><p>Graphic Designer</p></div>
 </div>
 </section>
 
-<!-- TESTIMONIAL -->
 <section id="reviews" style="text-align: center;">
   <h2>Client Reviews</h2>
-  <p>See what our clients say about us.</p>
-
-  <!-- Centered Button Wrapper -->
+  <p style="color:#888; margin-bottom: 20px;">See what our clients say about our visual deliverables.</p>
   <div style="display: flex; justify-content: center; width: 100%;">
     <button onclick="window.location.href='reviews.html'" class="btn">
       View & Write Reviews
@@ -453,9 +489,6 @@ Community
   </div>
 </section>
 
-</section>
-
-<!-- BOOKING -->
 <section id="booking">
 <h2>Book a Service</h2>
 <form id="booking-form">
@@ -463,7 +496,7 @@ Community
 <input type="email" id="email" placeholder="Your Email" required>
 <input type="tel" id="phone" placeholder="Phone Number" required>
 <select id="service" required>
-<option value="">Select Service</option>
+<option value="">Select Target Service</option>
 <option>Photography</option>
 <option>Videography</option>
 <option>Drone Shoots</option>
@@ -473,92 +506,75 @@ Community
 <option>Film Production</option>
 </select>
 <input type="date" id="date" required>
-<textarea id="message" placeholder="Details (location, event, etc.)"></textarea>
+<textarea id="message" placeholder="Details (Location, Set Requirements, Event Overview, etc.)"></textarea>
 <button type="submit" class="pro-btn">
 <span>Book Now</span>
 </button>
-
 </form>
 </section>
-<!-- FRAME MASTERS COMMUNITY SECTION -->
-<section style="text-align:center;padding:80px 20px;background:#0f0f0f;">
-    
-    <h2 style="color:#ff4d00;font-size:32px;margin-bottom:10px;">
-        🎓 Frame Masters Community
-    </h2>
 
-    <p style="color:#ccc;max-width:700px;margin:auto;line-height:1.6;">
+<section style="text-align:center;padding:80px 20px;background:#0f0f0f; border-top: 1px solid #111; border-bottom: 1px solid #111;">
+    <h2 style="color:#ff4d00;font-size:32px;margin-bottom:10px; border:none;">🎓 Frame Masters Community</h2>
+    <p style="color:#ccc;max-width:700px;margin:auto;line-height:1.6; font-size: 14px;">
         Learn photography, videography, drone skills, editing techniques and share your knowledge with others.
         Join our growing creative community and level up your skills 🚀📸🎥
     </p>
-
     <br>
-
-    <!-- BUTTON -->
     <button onclick="window.location.href='community.html'" class="community-btn">
-        Enter Community
+        Enter Community Portal
     </button>
-
 </section>
 
-<!-- CONTACT -->
 <section id="contact" class="contact">
 <h2>Contact Us</h2>
-<h3 style="text-align:center;">Send Us a Message</h3>
+<h3 style="text-align:center; font-weight: 500; font-size: 18px; margin-bottom: 10px; color:#ff4d00;">Send Us a Message</h3>
 <form class="contact-form" onsubmit="sendMessage(event)">
 <input type="text" placeholder="Your Name" required>
 <input type="email" placeholder="Your Email" required>
-<textarea placeholder="Your Message" required></textarea>
-<button type="submit" class="btn">Send Message</button>
+<textarea placeholder="Your Message Content..." required></textarea>
+<button type="submit" class="btn">Send Message via WhatsApp</button>
 </form>
 
-<p>Email:contactnextframedigital@gmail.com </p>
-<p>Phone: +94705131882</p>
-<p>Location: Sri Lanka</p>
+<div style="margin: 30px auto; max-width: 400px; background: #111; padding: 20px; border-radius: 12px; border: 1px solid #1a1a1a;">
+    <p><i class="fa-solid fa-envelope"></i> contactnextframedigital@gmail.com</p>
+    <p><i class="fa-solid fa-phone"></i> +94705131882</p>
+    <p><i class="fa-solid fa-location-dot"></i> Sri Lanka</p>
+</div>
 
-<p>Instagram: @nextframe_digitallk</p>
-<p>Facebook: Next Frame Digital lk</p>
-<p>Tiktok: Next frame digital Lk</p>
-
-<div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:15px;justify-content:center;">
-<button onclick="openWhatsApp()" class="btn">WhatsApp Us</button>
-<button onclick="openInstagram()" class="btn">Instagram</button>
-<button onclick="openFacebook()" class="btn">Facebook</button>
-<button onclick="openTiktok()" class="btn">Tiktok</button>
+<p style="font-weight: 600; margin-bottom: 15px;">Follow Our Production Feed</p>
+<div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
+<button onclick="openWhatsApp()" class="btn" style="background:#25D366; box-shadow:none;"><i class="fa-brands fa-whatsapp"></i> WhatsApp Us</button>
+<button onclick="openInstagram()" class="btn" style="background:#E1306C; box-shadow:none;"><i class="fa-brands fa-instagram"></i> Instagram</button>
+<button onclick="openFacebook()" class="btn" style="background:#1877F2; box-shadow:none;"><i class="fa-brands fa-facebook"></i> Facebook</button>
+<button onclick="openTiktok()" class="btn" style="background:#000000; border: 1px solid #333; box-shadow:none;"><i class="fa-brands fa-tiktok"></i> Tiktok</button>
 </div>
 </section>
 
 <footer>
-    <section id="subscribe">
-<h2>Join Our Community</h2>
-
-<p style="max-width:700px;margin:15px auto;color:#ccc;line-height:1.8;">
-Stay Connected With Next Frame Digital
-Join our community to receive exclusive offers, project updates, filmmaking insights, photography tips, and early access to our latest services and portfolio releases. 🚀📸🎬
+<section id="subscribe">
+<h2>Join Our Newsletter</h2>
+<p style="max-width:700px;margin:15px auto;color:#aaa;line-height:1.8; font-size:14px;">
+Stay Connected With Next Frame Digital. Join our community to receive exclusive offers, project updates, filmmaking insights, photography tips, and early access to our latest services. 🚀📸🎬
 </p>
-
 <form id="subscribeForm" style="max-width:500px;margin:auto;">
 <input type="text" id="subName" placeholder="Your Name" required>
 <input type="email" id="subEmail" placeholder="Your Email" required>
-
-<button type="submit" class="pro-btn">
+<button type="submit" class="pro-btn" style="width:100%; margin-top: 10px;">
 <span>Subscribe Now</span>
 </button>
 </form>
-
-<p id="subscribeMsg" style="text-align:center;margin-top:15px;"></p>
+<p id="subscribeMsg" style="text-align:center;margin-top:15px; font-weight: 600; font-size: 14px;"></p>
 </section>
-<p>© 2026 Next Frame Digital</p>
+<p>© 2026 Next Frame Digital. All Rights Reserved.</p>
 </footer>
 
-<!-- FLOATING CONTACT BUTTONS -->
 <div class="floating-buttons">
-<a href="https://wa.me/94705131882" target="_blank" class="whatsapp">💬</a>
-<a href="tel:+94705131882" class="call">📞</a>
+<a href="https://wa.me/94705131882" target="_blank" class="whatsapp" title="WhatsApp Chat"><i class="fa-brands fa-whatsapp"></i></a>
+<a href="tel:+94705131882" class="call" title="Call Us Direct"><i class="fa-solid fa-phone"></i></a>
 </div>
 
 <script>
-// BOOKING FORM WITH AUTO-REPLY
+// BOOKING CORE ENGINE WITH DUAL EMAILJS TRANSFERS
 document.getElementById("booking-form").addEventListener("submit", function(e){
     e.preventDefault();
 
@@ -571,12 +587,10 @@ document.getElementById("booking-form").addEventListener("submit", function(e){
         message: document.getElementById("message").value
     };
 
-    // 1️⃣ Send email to admin
     emailjs.send("service_k8vuk9i", "template_9o537ag", formData)
     .then(function(response){
-        console.log("Admin email sent:", response);
+        console.log("Admin email delivered:", response);
 
-        // 2️⃣ Auto-reply to client
         emailjs.send("service_k8vuk9i", "template_7g1gmpa", formData)
         .then(function(res){
             alert("Booking sent successfully! ✅ Client confirmation sent!");
@@ -593,7 +607,7 @@ document.getElementById("booking-form").addEventListener("submit", function(e){
     });
 });
 
-// CONTACT FORM VIA WHATSAPP
+// INSTANT WHATSAPP ROUTING
 function sendMessage(e){
     e.preventDefault();
     let name = document.querySelector(".contact-form input[type=text]").value;
@@ -603,92 +617,67 @@ function sendMessage(e){
     window.open(`https://wa.me/94705131882?text=${fullMessage}`, "_blank");
 }
 
-// SCROLL
 function scrollToSection(id){
-    document.getElementById(id).scrollIntoView({behavior:'smooth'});
+    const target = document.getElementById(id);
+    if(target) {
+        target.scrollIntoView({behavior:'smooth'});
+    }
 }
 
-// OPEN SUB-PAGES
-function openPage(url){
-    window.location.href = url;
-}
+function openPage(url){ window.location.href = url; }
 
-// ANIMATION
+// INTERSECTION INTERACTION ENGINE
 const observer = new IntersectionObserver(entries=>{
     entries.forEach(entry=>{
         if(entry.isIntersecting){ entry.target.classList.add('show'); }
     });
-});
+}, { threshold: 0.1 });
+
 document.querySelectorAll('.hidden').forEach(el=>observer.observe(el));
 
-// SOCIAL BUTTONS
 function openWhatsApp(){ window.open("https://wa.me/94705131882", "_blank"); }
 function openInstagram(){ window.open("https://www.instagram.com/nextframedigitallk", "_blank"); }
 function openFacebook(){ window.open("https://www.facebook.com/share/17ae9LuDu1/", "_blank"); }
 function openTiktok(){ window.open("https://www.tiktok.com/@next.frame.digita?_r=1&_t=ZS-95L4ZpTt0VR", "_blank"); }
 </script>
-<div id="cursor-glow"></div>
+
 <script src="//code.tidio.co/icsbvu0lxznni0el9ovbnbeqqafogf5t.js" async></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+    const supabaseUrl = "https://xuxdkjeypwrhccgthepn.supabase.co";
+    const supabaseKey = "sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-const supabaseUrl =
-"https://xuxdkjeypwrhccgthepn.supabase.co";
+    const form = document.getElementById("subscribeForm");
 
-const supabaseKey =
-"sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI";
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("subName").value.trim();
+        const email = document.getElementById("subEmail").value.trim();
+        const msgBox = document.getElementById("subscribeMsg");
 
-const supabase =
-window.supabase.createClient(
-supabaseUrl,
-supabaseKey
-);
+        msgBox.style.color = "#ff4d00";
+        msgBox.innerHTML = "Submitting secure payload...";
 
-const form =
-document.getElementById("subscribeForm");
+        // 🚀 RLS On කරපු ඩේටාබේස් එකකට දැන් මේ INSERT එක සුරක්ෂිතව සිදුවේ.
+        const { data, error } = await supabase
+            .from("subscribers")
+            .insert([{ name: name, email: email }]);
 
-form.addEventListener("submit", async (e) => {
+        if(error){
+            console.error(error);
+            msgBox.style.color = "#dc3545";
+            msgBox.innerHTML = "❌ Error: " + error.message;
+            return;
+        }
 
-e.preventDefault();
-
-const name =
-document.getElementById("subName").value.trim();
-
-const email =
-document.getElementById("subEmail").value.trim();
-
-console.log("Submitting...", name, email);
-
-const { data, error } =
-await supabase
-.from("subscribers")
-.insert([
-{
-name: name,
-email: email
-}
-]);
-
-if(error){
-console.error(error);
-
-document.getElementById("subscribeMsg").innerHTML =
-"❌ Error: " + error.message;
-
-return;
-}
-
-document.getElementById("subscribeMsg").innerHTML =
-"✅ Successfully Subscribed!";
-
-form.reset();
-
+        msgBox.style.color = "#00ff88";
+        msgBox.innerHTML = "✅ Successfully Subscribed to Next Frame family!";
+        form.reset();
+    });
 });
-
-});
-</script>
 </script>
 </body>
 </html>

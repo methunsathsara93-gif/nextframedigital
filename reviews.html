@@ -1,229 +1,312 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<title>Client Reviews</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Reviews - Next Frame Digital</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
-body{
-margin:0;
-background:#0a0a0a;
-color:white;
-font-family:Poppins;
-padding:20px;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;overflow-x: hidden;}
+
+/* 🌟 NAVIGATION */
+nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); border-bottom: 1px solid #111;}
+nav img{height:45px;}
+nav ul{display:flex;gap:20px;list-style:none;}
+nav li{cursor:pointer;transition: 0.3s;font-weight: 500;}
+nav li:hover{color:#ff4d00;}
 
 .container{
-max-width:800px;
-margin:auto;
+    max-width: 750px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
 
-h1{
-text-align:center;
-color:#ff4d00;
+h1 {
+    text-align: center;
+    font-size: 36px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #fff, #ff4d00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.sub-title {
+    text-align: center;
+    color: #ccc;
+    font-size: 14px;
+    margin-bottom: 40px;
 }
 
+/* 📝 FORM CARD */
 .card{
-background:#111;
-padding:20px;
-border-radius:12px;
-margin-bottom:20px;
-box-shadow:0 0 10px rgba(255,77,0,0.1);
+    background: #111;
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 40px;
+    border: 1px solid #222;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: border-color 0.4s;
+}
+.card:focus-within {
+    border-color: #ff4d00;
 }
 
-input,textarea{
-width:100%;
-padding:12px;
-margin:10px 0;
-background:#000;
-color:white;
-border:1px solid #333;
-border-radius:8px;
-outline:none;
+input, textarea {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    background: #000;
+    color: white;
+    border: 1px solid #262626;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+    transition: all 0.3s;
 }
+input:focus, textarea:focus {
+    border-color: #555;
+    background: #050505;
+}
+
+textarea { height: 110px; resize: none; }
+
+.stars-selector-label { font-size: 13px; color: #888; margin-top: 10px; }
+.stars{ display: flex; gap: 8px; margin: 8px 0 20px 0; cursor: pointer; }
+.star{ font-size: 32px; color: #252525; transition: all 0.2s ease-in-out; }
+.star:hover { transform: scale(1.15); }
+.star.active{ color: #ffcc00; text-shadow: 0 0 15px rgba(255, 204, 0, 0.6); }
 
 button{
-padding:12px 20px;
-background:#ff4d00;
-color:white;
-border:none;
-border-radius:8px;
-cursor:pointer;
-transition:0.3s;
+    width: 100%; padding: 14px; background: #ff4d00; color: white; border: none; border-radius: 10px;
+    cursor: pointer; font-size: 15px; font-weight: 700; letter-spacing: 0.5px; transition: 0.3s;
 }
+button:hover{ transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 77, 0, 0.35); }
 
-button:hover{
-transform:scale(1.05);
-box-shadow:0 0 15px #ff4d00;
-}
-
-/* STARS */
-.stars{
-display:flex;
-gap:5px;
-margin:10px 0;
-cursor:pointer;
-}
-
-.star{
-font-size:25px;
-color:#444;
-transition:0.2s;
-}
-
-.star.active{
-color:#ffcc00;
-}
-
+/* 💬 REVIEWS FEED */
 .review{
-background:#111;
-padding:15px;
-border-radius:10px;
-margin-top:15px;
-transition:0.3s;
+    background: #111; padding: 22px; border-radius: 14px; margin-top: 20px; border: 1px solid #1a1a1a;
+    display: flex; gap: 16px; align-items: flex-start; transition: all 0.4s ease; position: relative;
+}
+.review:hover{ transform: translateY(-4px); border-color: rgba(255, 77, 0, 0.3); }
+
+.client-avatar {
+    width: 48px; height: 48px; background: linear-gradient(135deg, #222, #111); border: 1px solid #333;
+    color: #ff4d00; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0;
 }
 
-.review:hover{
-transform:translateY(-5px);
-}
+.review-content { flex-grow: 1; }
+.review-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 5px; }
+.review h3{ font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; }
+.rating{ color: #ffcc00; font-size: 13px; letter-spacing: 2px; margin: 4px 0 10px 0; }
+.review p{ color: #bbb; font-size: 14px; line-height: 1.6; }
 
-.review h3{
-margin:0;
-color:#ff4d00;
+/* 🛠️ EDIT & DELETE BUTTONS STYLE */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
 }
+.btn-action {
+    width: auto;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 6px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #ccc;
+    transition: 0.2s;
+}
+.btn-edit:hover { background: #ff4d00; border-color: #ff4d00; color: #fff; }
+.btn-delete:hover { background: #dc3545; border-color: #dc3545; color: #fff; }
 
-.rating{
-color:#ffcc00;
-margin:5px 0;
-}
+footer{text-align:center;padding:30px;background:#000; border-top: 1px solid #111; margin-top: 80px;}
 </style>
 </head>
 
 <body>
 
+<nav>
+<img src="logo.png" alt="Next Frame Digital">
+<ul>
+<li onclick="goBack()">← Back</li>
+</ul>
+</nav>
+
 <div class="container">
 
-<h1>⭐ Client Reviews</h1>
+<h1>Client Testimonials</h1>
+<p class="sub-title">See what our partners say about Next Frame Digital production</p>
 
-<!-- FORM -->
 <div class="card">
+    <input id="name" placeholder="Your Name or Company">
+    <textarea id="review" placeholder="Share your experience working with us..."></textarea>
+    
+    <div class="stars-selector-label">Select Your Rating:</div>
+    <div class="stars" id="stars">
+      <span class="star" onclick="setRating(1)">★</span>
+      <span class="star" onclick="setRating(2)">★</span>
+      <span class="star" onclick="setRating(3)">★</span>
+      <span class="star" onclick="setRating(4)">★</span>
+      <span class="star" onclick="setRating(5)">★</span>
+    </div>
 
-<input id="name" placeholder="Your Name">
-
-<textarea id="review" placeholder="Write your review"></textarea>
-
-<div class="stars" id="stars">
-  <span class="star" onclick="setRating(1)">★</span>
-  <span class="star" onclick="setRating(2)">★</span>
-  <span class="star" onclick="setRating(3)">★</span>
-  <span class="star" onclick="setRating(4)">★</span>
-  <span class="star" onclick="setRating(5)">★</span>
+    <button id="submitBtn" onclick="saveReview()">Post Review</button>
 </div>
 
-<button onclick="saveReview()">Post Review</button>
-
-</div>
-
-<!-- REVIEWS LIST -->
 <div id="reviews"></div>
 
 </div>
 
+<footer>
+<p>© 2026 Next Frame Digital</p>
+</footer>
+
 <script>
-
-const supabaseUrl =
-"https://xuxdkjeypwrhccgthepn.supabase.co";
-
-const supabaseKey =
-"sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI";
-
+const supabaseUrl = "https://xuxdkjeypwrhccgthepn.supabase.co";
+const supabaseKey = "sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI";
 const { createClient } = supabase;
 
-const client = createClient(supabaseUrl, supabaseKey);
+// 🌟 LocalStorage එකෙන් Owner Token එක මුලින්ම සෙට් කරගන්නවා (RLS ආරක්ෂාව සඳහා)
+let token = localStorage.getItem("nfd_review_token");
+if (!token) {
+    token = "token_" + Math.random().toString(36).substr(2, 9) + Date.now();
+    localStorage.setItem("nfd_review_token", token);
+}
+
+// 🚀 Supabase Client එක හදනකොට ග්ලෝබල් හෙඩර් එකක් විදිහට 'x-owner-token' එක පාස් කරනවා
+const client = createClient(supabaseUrl, supabaseKey, {
+  global: {
+    headers: {
+      'x-owner-token': token
+    }
+  }
+});
 
 let rating = 0;
+let editModeId = null;
 
-/* STAR SELECT */
+function goBack(){ window.history.back(); }
+
 function setRating(value){
-rating = value;
-
-document.querySelectorAll(".star").forEach((star, index)=>{
-if(index < value){
-star.classList.add("active");
-}else{
-star.classList.remove("active");
-}
-});
+    rating = value;
+    document.querySelectorAll(".star").forEach((star, index)=>{
+        if(index < value) star.classList.add("active");
+        else star.classList.remove("active");
+    });
 }
 
-/* SAVE REVIEW */
+/* 🚀 SAVE OR UPDATE REVIEW */
 async function saveReview(){
+    const name = document.getElementById("name").value.trim();
+    const review = document.getElementById("review").value.trim();
 
-const name = document.getElementById("name").value;
-const review = document.getElementById("review").value;
+    if(!name || !review || rating === 0){
+        alert("Please fill out all fields and select a rating!");
+        return;
+    }
 
-if(!name || !review || rating === 0){
-alert("Please fill all fields + rating");
-return;
+    if (editModeId) {
+        // UPDATE EXISTING REVIEW (RLS එකෙන් Database මට්ටමෙන්ම Owner Token එක සමානද කියලා බලනවා)
+        const { error } = await client
+        .from("feedbacks")
+        .update({ name: name, review: review, rating: rating })
+        .eq("id", editModeId);
+
+        if(error) { alert("RLS Error: " + error.message); return; }
+        alert("Review Updated!");
+        editModeId = null;
+        document.getElementById("submitBtn").innerText = "Post Review";
+    } else {
+        // INSERT NEW REVIEW
+        const { error } = await client
+        .from("feedbacks")
+        .insert([{ name: name, review: review, rating: rating, owner_token: token }]);
+
+        if(error) { alert("RLS Error: " + error.message); return; }
+        alert("Review Posted!");
+    }
+
+    location.reload();
 }
 
-const { error } = await client
-.from("feedbacks")
-.insert([{
-name:name,
-review:review,
-rating:rating
-}]);
-
-if(error){
-alert(error.message);
-return;
+/* ✏️ TRIGGER EDIT MODE */
+function triggerEdit(id, name, review, currentRating) {
+    document.getElementById("name").value = name;
+    document.getElementById("review").value = review;
+    setRating(currentRating);
+    
+    editModeId = id;
+    document.getElementById("submitBtn").innerText = "Update My Review 🔄";
+    document.querySelector(".card").scrollIntoView({ behavior: 'smooth' });
 }
 
-alert("Review Posted!");
+/* 🗑️ DELETE REVIEW */
+async function deleteReview(id) {
+    if (!confirm("Are you sure you want to delete this review?")) return;
 
-location.reload();
+    // DELETE REVIEW (RLS එකෙන් Database මට්ටමෙන්ම බ්ලොක් කරනවා වෙන කෙනෙක් මකන්න හැදුවොත්)
+    const { error } = await client
+    .from("feedbacks")
+    .delete()
+    .eq("id", id);
+
+    if (error) { alert("RLS Error: " + error.message); return; }
+    
+    alert("Review Deleted!");
+    location.reload();
 }
 
-/* LOAD REVIEWS */
+/* 💬 FETCH & RENDER REVIEWS */
 async function loadReviews(){
+    const { data, error } = await client
+    .from("feedbacks")
+    .select("*")
+    .order("id", {ascending: false});
 
-const { data } = await client
-.from("feedbacks")
-.select("*")
-.order("id",{ascending:false});
+    if (error || !data) return;
 
-let html = "";
+    let html = "";
 
-data.forEach(item=>{
+    data.forEach(item => {
+        let starsDisplay = "★".repeat(item.rating || 0) + "☆".repeat(5 - (item.rating || 0));
+        let firstLetter = item.name ? item.name.charAt(0).toUpperCase() : "C";
+        let verifiedBadge = item.verified ? `<i class="fa-solid fa-circle-check" style="color:#00daff; margin-left:6px; font-size:13px;"></i>` : "";
 
-let stars = "⭐".repeat(item.rating || 0);
+        // UI එකේ Edit/Delete බොත්තම් පෙන්වන්නේ මේ බ්‍රවුසර් එකේ ටෝකන් එකට අදාල රිවීව්ස් වලට විතරයි
+        let actionButtons = "";
+        if (item.owner_token && item.owner_token === token) {
+            actionButtons = `
+                <div class="action-buttons">
+                    <button class="btn-action btn-edit" onclick="triggerEdit(${item.id}, '${item.name.replace(/'/g, "\\'")}', '${item.review.replace(/'/g, "\\'")}', ${item.rating})"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                    <button class="btn-action btn-delete" onclick="deleteReview(${item.id})"><i class="fa-solid fa-trash"></i> Delete</button>
+                </div>
+            `;
+        }
 
-// ✅ verified badge
-let verifiedBadge = item.verified
-? `<i class="fa-solid fa-circle-check" style="color:#1DA1F2; margin-left:6px;"></i>`
-: "";
-html += `
-<div class="review">
-<h3>${item.name} ${verifiedBadge}</h3>
-<div class="rating">${stars}</div>
-<p>${item.review}</p>
-</div>
-`;
+        html += `
+        <div class="review">
+            <div class="client-avatar">${firstLetter}</div>
+            <div class="review-content">
+                <div class="review-header">
+                    <h3>${item.name} ${verifiedBadge}</h3>
+                </div>
+                <div class="rating">${starsDisplay}</div>
+                <p>${item.review}</p>
+                ${actionButtons}
+            </div>
+        </div>
+        `;
+    });
 
-});
-
-document.getElementById("reviews").innerHTML = html;
+    document.getElementById("reviews").innerHTML = html;
 }
-
-
 
 loadReviews();
-
 </script>
 
 </body>

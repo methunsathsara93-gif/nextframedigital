@@ -7,29 +7,168 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;}
-nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);}
+body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;overflow-x: hidden;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);position: sticky; top: 0; z-index: 1000;}
 nav img{height:45px;}
 nav ul{display:flex;gap:20px;list-style:none;}
-nav li{cursor:pointer;}
+nav li{cursor:pointer;transition: 0.3s;}
 nav li:hover{color:#ff4d00;}
+
 section{padding:100px 40px;}
-h2{text-align:center;margin-bottom:30px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
-.card{background:#111;padding:25px;border-radius:12px;transition:0.3s;cursor:pointer;text-align:center;}
-.card:hover{transform:translateY(-10px);}
-.details{background:#000;padding:20px;border-radius:10px;margin-bottom:20px;}
-.details h3{color:#ff4d00;margin-bottom:10px;}
-.details p{color:#ccc;margin:5px 0;}
-.portfolio img{width:100%;border-radius:10px;margin-bottom:15px;transition:0.3s;}
-.portfolio img:hover{transform:scale(1.05);}
+h2{text-align:center;margin-bottom:30px;font-size: 32px; letter-spacing: 1px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
+
+/* 🌟 ANIMATION BASE STYLES (ස්ක්‍රෝල් කරද්දී මතු වෙන්න) */
+.animate-fade {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.animate-fade.appear {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 🎨 PREMIUM CARD STYLES & HOVER EFFECTS */
+.card{
+    background:#111;
+    padding:25px;
+    border-radius:12px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor:pointer;
+    text-align:center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #222;
+}
+
+.card:hover{
+    transform: translateY(-10px);
+    border-color: #ff4d00;
+    box-shadow: 0 10px 25px rgba(255, 77, 0, 0.15);
+}
+
+/* ⚡ STANDARD CARD: Gold Glow Effect */
+.card-standard:hover {
+    border-color: #ffaa00;
+    box-shadow: 0 10px 30px rgba(255, 170, 0, 0.2);
+}
+
+/* 🔥 PREMIUM CARD: Elite Premium Glow Effect */
+.card-premium {
+    border: 1px solid rgba(255, 77, 0, 0.3);
+}
+.card-premium:hover {
+    transform: translateY(-12px) scale(1.02);
+    border-color: #ff4d00;
+    box-shadow: 0 15px 35px rgba(255, 77, 0, 0.3);
+}
+
+/* Ribbon Badges for Packages */
+.badge {
+    position: absolute;
+    top: 15px;
+    right: -35px;
+    background: #ff4d00;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 35px;
+    transform: rotate(45deg);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.details{background:#000;padding:20px;border-radius:10px;margin-bottom:20px; height: 100%; display: flex; flex-direction: column; justify-content: center;}
+.details h3{color:#ff4d00;margin-bottom:15px; font-size: 20px;}
+.details p{color:#ccc;margin:8px 0; font-size: 14px;}
+
+/* 💰 PRICE TAG STYLING */
+.price-tag {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin: 10px 0 15px 0 !important;
+    padding: 5px;
+    background: linear-gradient(90deg, transparent, #111, transparent);
+    border-left: 3px solid #ff4d00;
+    border-right: 3px solid #ff4d00;
+    display: inline-block;
+    width: 100%;
+}
+.card-standard .price-tag { border-color: #ffaa00; }
+.card-premium .price-tag { border-color: #ff4d00; color: #ff4d00; animation: pulse-price 2s infinite; }
+
+@keyframes pulse-price {
+    0% { opacity: 0.9; }
+    50% { opacity: 1; text-shadow: 0 0 10px rgba(255, 77, 0, 0.5); }
+    100% { opacity: 0.9; }
+}
+
+/* 📸 PORTFOLIO WORK IMAGES */
+.portfolio img{width:100%;border-radius:10px;margin-bottom:15px;transition:all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); filter: grayscale(30%);}
+.portfolio img:hover{transform:scale(1.04) translateY(-5px); filter: grayscale(0%); box-shadow: 0 10px 20px rgba(0,0,0,0.5);}
+
+/* 📷 APERTURE LENS HERO ANIMATION STYLES */
+.hero-container {
+    position: relative;
+    width: 100%;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.lens-container {
+    position: absolute;
+    top: 20%;
+    left: -150px;
+    width: 95px;
+    height: auto;
+    z-index: 5;
+    pointer-events: none;
+    animation: lens-move 20s linear infinite, lens-bob 4s ease-in-out infinite;
+}
+
+@keyframes lens-move {
+    0% { left: -150px; transform: scaleX(1); }
+    45% { left: 110%; transform: scaleX(1); }
+    50% { left: 110%; transform: scaleX(-1); }
+    95% { left: -150px; transform: scaleX(-1); }
+    100% { left: -150px; transform: scaleX(1); }
+}
+
+@keyframes lens-bob {
+    0%, 100% { top: 22%; }
+    50% { top: 30%; }
+}
+
+/* ඇපර්චර් බ්ලේඩ්ස් කැරකෙමින් ඇරෙන/වැහෙන ඇනිමේෂන් එක (Aperture Iris Effect) */
+@keyframes iris-shut {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(45deg) scale(0.85); }
+}
+
+.lens-iris {
+    transform-origin: center;
+    animation: iris-shut 3s ease-in-out infinite;
+}
+
+.lens-svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(255, 77, 0, 0.6));
+}
+
 .contact p{margin:8px 0;color:#ccc;}
-footer{text-align:center;padding:20px;background:#000;}
+footer{text-align:center;padding:20px;background:#000; border-top: 1px solid #111;}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
 <img src="logo.png">
 <ul>
@@ -40,53 +179,72 @@ footer{text-align:center;padding:20px;background:#000;}
 </ul>
 </nav>
 
-<!-- HERO -->
-<section id="hero">
-<h1 style="text-align:center;font-size:50px;">Photography</h1>
-<p style="text-align:center;color:#ccc;margin-top:10px;">Capture the perfect moments with Next Frame Digital</p>
+<section id="hero" style="padding: 0;">
+    <div class="hero-container">
+        
+        <div class="lens-container">
+            <svg class="lens-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="9" stroke="#ff4d00" stroke-width="1.5" fill="#111"/>
+                <circle cx="12" cy="12" r="7" stroke="#fff" stroke-width="0.75" stroke-dasharray="2"/>
+                <g class="lens-iris">
+                    <path d="M12 5l3 4H9l3-4z" fill="#ff4d00" opacity="0.9"/>
+                    <path d="M19 12l-4 3v-6l4 3z" fill="#ff4d00" opacity="0.9"/>
+                    <path d="M12 19l-3-4h6l-3 4z" fill="#ff4d00" opacity="0.9"/>
+                    <path d="M5 12l4-3v6l-4-3z" fill="#ff4d00" opacity="0.9"/>
+                    <circle cx="12" cy="12" r="3" fill="#000" stroke="#00ff88" stroke-width="1"/>
+                    <circle cx="11" cy="11" r="0.8" fill="#fff" opacity="0.8"/>
+                </g>
+            </svg>
+        </div>
+
+        <h1 style="text-align:center;font-size:55px; letter-spacing: 2px; background: linear-gradient(45deg, #fff, #ff4d00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; position: relative; z-index: 10;">Photography</h1>
+        <p style="text-align:center;color:#ccc;margin-top:10px; font-size: 18px; position: relative; z-index: 10;">Capture the perfect moments with Next Frame Digital</p>
+    </div>
 </section>
 
-<!-- PACKAGES -->
-<section id="packages">
+<section id="packages" class="animate-fade">
 <h2>Photography Packages & Prices</h2>
 <div class="grid">
-<div class="card">
-<div class="details">
-<h3>Basic Photography</h3>
-<p>Price: Rs.15,000</p>
-<p>Up to 3 hours coverage</p>
-<p>30 Edited Photos</p>
-<p>Digital Delivery</p>
-<p>One photographer</p>
-</div>
-</div>
+    
+    <div class="card">
+        <div class="details">
+            <h3>Basic Photography</h3>
+            <p class="price-tag">Rs. 15,000</p>
+            <p>Up to 3 Hours Coverage</p>
+            <p>30 Edited Photos</p>
+            <p>One Photographer</p>
+            <p style="color: #ff4d00;">Digital Delivery</p>
+        </div>
+    </div>
 
-<div class="card">
-<div class="details">
-<h3>Standard Photography</h3>
-<p>Price: Rs.28,000</p>
-<p>Up to 5 hours</p>
-<p>60 edited photos</p>
-<p>Digital + USB Delivery</p>
-<p>Two photographers</p>
-</div>
-</div>
+    <div class="card card-standard">
+        <div class="badge" style="background: #ffaa00; color: #000;">Best Seller</div>
+        <div class="details">
+            <h3 style="color: #ffaa00;">Standard Photography</h3>
+            <p class="price-tag">Rs. 28,000</p>
+            <p>Up to 5 Hours Coverage</p>
+            <p>60 Edited Photos</p>
+            <p>Two Photographers</p>
+            <p style="color: #ffaa00;">Digital + USB Delivery</p>
+        </div>
+    </div>
 
-<div class="card">
-<div class="details">
-<h3>Premium Package</h3>
-<p>Price: Rs.65,000+</p>
-<p>Full day (8 hrs)</p>
-<p>100 edited photos</p>
-<p>USB + online gallery</p>
-<p>Two photographers</p>
-</div>
-</div>
+    <div class="card card-premium">
+        <div class="badge">Elite Shoot</div>
+        <div class="details">
+            <h3>Premium Package</h3>
+            <p class="price-tag">Rs. 65,000+</p>
+            <p>Full Day (8 Hours) Coverage</p>
+            <p>100 Edited Photos</p>
+            <p>Two Photographers</p>
+            <p style="color: #ff4d00; font-weight: bold;">USB + Online Gallery</p>
+        </div>
+    </div>
+    
 </div>
 </section>
 
-<!-- PORTFOLIO -->
-<section id="portfolio">
+<section id="portfolio" class="animate-fade">
 <h2>Our Photography Works</h2>
 <div class="grid portfolio">
 <img src="photo1.jpg" alt="Portfolio Image">
@@ -96,14 +254,15 @@ footer{text-align:center;padding:20px;background:#000;}
 </div>
 </section>
 
-<!-- CONTACT -->
-<section id="contact">
+<section id="contact" class="animate-fade">
 <h2>Contact Us</h2>
+<div style="text-align: center; background: #111; padding: 30px; border-radius: 12px; max-width: 500px; margin: 0 auto;">
 <p>Email: contactnextframedigital@gmail.com</p>
-<p>Phone: +94 705131882</p>
+<p>Phone: +94705131882</p>
 <p>Instagram: @nextframe_digital</p>
 <p>Facebook: Next Frame Digital</p>
 <p>Location: Sri Lanka</p>
+</div>
 </section>
 
 <footer>
@@ -117,6 +276,31 @@ document.getElementById(id).scrollIntoView({behavior:'smooth'});
 function goBack(){
 window.history.back();
 }
+
+/* 🌟 SCROLL ANIMATION ENGINE (Intersection Observer) */
+document.addEventListener("DOMContentLoaded", () => {
+    const scrollElements = document.querySelectorAll(".animate-fade");
+
+    const elementInView = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("appear");
+                observer.unobserve(entry.target); 
+            }
+        });
+    };
+
+    const options = {
+        root: null,
+        threshold: 0.15 
+    };
+
+    const observer = new IntersectionObserver(elementInView, options);
+
+    scrollElements.forEach(element => {
+        observer.observe(element);
+    });
+});
 </script>
 
 </body>

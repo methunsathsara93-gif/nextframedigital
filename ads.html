@@ -6,25 +6,186 @@
 <title>Advertising - Next Frame Digital</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
+    /* --- Flying Rocket Animation Styles --- */
+.hero-container {
+    position: relative;
+    width: 100%;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* රොකට් එක පිටට යද්දී ස්ක්‍රෝල් බාර් එන එක නවත්වන්න */
+}
+
+.rocket-container {
+    position: absolute;
+    top: 25%;
+    left: -150px; /* ස්ක්‍රීන් එකෙන් පිටින් පටන් ගන්නවා */
+    width: 100px;
+    height: auto;
+    z-index: 5;
+    pointer-events: none;
+    /* ඇනිමේෂන් දෙකම එකතු කරනවා: වමේ සිට දකුණට යාම සහ උඩ පල්ලෙහා පාවීම */
+    animation: rocket-fly 20s linear infinite, rocket-bob 4s ease-in-out infinite;
+}
+
+/* රොකට් එක වමේ සිට දකුණට ගොස් නැවත පැමිණීමේ ඇනිමේෂනය */
+@keyframes rocket-fly {
+    0% {
+        left: -150px;
+        transform: scaleX(1); /* ඉස්සරහ බලාගෙන යනවා */
+    }
+    45% {
+        left: 110%;
+        transform: scaleX(1);
+    }
+    50% {
+        left: 110%;
+        transform: scaleX(-1); /* හැරෙනවා */
+    }
+    95% {
+        left: -150px;
+        transform: scaleX(-1);
+    }
+    100% {
+        left: -150px;
+        transform: scaleX(1);
+    }
+}
+
+/* රොකට් එක ස්මූත් විදිහට පාවෙන ඉෆෙක්ට් එක (Floating Effect) */
+@keyframes rocket-bob {
+    0%, 100% {
+        top: 22%;
+    }
+    50% {
+        top: 30%;
+    }
+}
+
+/* රොකට් එකේ පිටිපස්සෙන් එන ගින්දර ඇනිමේෂන් එක */
+@keyframes rocket-flame {
+    0%, 100% { transform: scaleY(1); opacity: 0.8; }
+    50% { transform: scaleY(1.3); opacity: 1; filter: drop-shadow(0 0 12px #ff4d00); }
+}
+
+.flame {
+    transform-origin: left center;
+    animation: rocket-flame 0.2s ease-in-out infinite;
+}
+
+.rocket-svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 8px rgba(255, 77, 0, 0.5));
+}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;}
-nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);}
+body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;overflow-x: hidden;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);position: sticky; top: 0; z-index: 1000;}
 nav img{height:45px;}
 nav ul{display:flex;gap:20px;list-style:none;}
-nav li{cursor:pointer;}
+nav li{cursor:pointer;transition: 0.3s;}
 nav li:hover{color:#ff4d00;}
+
 section{padding:100px 40px;}
-h2{text-align:center;margin-bottom:30px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
-.card{background:#111;padding:25px;border-radius:12px;transition:0.3s;cursor:pointer;text-align:center;}
-.card:hover{transform:translateY(-10px);}
-.details{background:#000;padding:20px;border-radius:10px;margin-bottom:20px;}
-.details h3{color:#ff4d00;margin-bottom:10px;}
-.details p{color:#ccc;margin:5px 0;}
-.portfolio img{width:100%;border-radius:10px;margin-bottom:15px;transition:0.3s;}
-.portfolio img:hover{transform:scale(1.05);}
+h2{text-align:center;margin-bottom:30px;font-size: 32px; letter-spacing: 1px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
+
+/* 🌟 ANIMATION BASE STYLES (ස්ක්‍රෝල් කරද්දී මතු වෙන්න) */
+.animate-fade {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.animate-fade.appear {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 🎨 PREMIUM CARD STYLES & HOVER EFFECTS */
+.card{
+    background:#111;
+    padding:25px;
+    border-radius:12px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor:pointer;
+    text-align:center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #222;
+}
+
+.card:hover{
+    transform: translateY(-10px);
+    border-color: #ff4d00;
+    box-shadow: 0 10px 25px rgba(255, 77, 0, 0.15);
+}
+
+/* ⚡ STANDARD CARD: Gold Glow Effect */
+.card-standard:hover {
+    border-color: #ffaa00;
+    box-shadow: 0 10px 30px rgba(255, 170, 0, 0.2);
+}
+
+/* 🔥 PREMIUM CARD: Elite Premium Glow Effect */
+.card-premium {
+    border: 1px solid rgba(255, 77, 0, 0.3);
+}
+.card-premium:hover {
+    transform: translateY(-12px) scale(1.02);
+    border-color: #ff4d00;
+    box-shadow: 0 15px 35px rgba(255, 77, 0, 0.3);
+}
+
+/* Ribbon Badges for Packages */
+.badge {
+    position: absolute;
+    top: 15px;
+    right: -35px;
+    background: #ff4d00;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 35px;
+    transform: rotate(45deg);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.details{background:#000;padding:20px;border-radius:10px;margin-bottom:20px; height: 100%; display: flex; flex-direction: column; justify-content: center;}
+.details h3{color:#ff4d00;margin-bottom:15px; font-size: 20px;}
+.details p{color:#ccc;margin:8px 0; font-size: 14px;}
+
+/* 💰 ADVERTISING PRICE TAG STYLING */
+.price-tag {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin: 10px 0 15px 0 !important;
+    padding: 5px;
+    background: linear-gradient(90deg, transparent, #111, transparent);
+    border-left: 3px solid #ff4d00;
+    border-right: 3px solid #ff4d00;
+    display: inline-block;
+    width: 100%;
+}
+.card-standard .price-tag { border-color: #ffaa00; }
+.card-premium .price-tag { border-color: #ff4d00; color: #ff4d00; animation: pulse-price 2s infinite; }
+
+@keyframes pulse-price {
+    0% { opacity: 0.9; }
+    50% { opacity: 1; text-shadow: 0 0 10px rgba(255, 77, 0, 0.5); }
+    100% { opacity: 0.9; }
+}
+
+/* 📸 PORTFOLIO WORK IMAGES */
+.portfolio img{width:100%;border-radius:10px;margin-bottom:15px;transition:all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); filter: grayscale(30%);}
+.portfolio img:hover{transform:scale(1.04) translateY(-5px); filter: grayscale(0%); box-shadow: 0 10px 20px rgba(0,0,0,0.5);}
+
 .contact p{margin:8px 0;color:#ccc;}
-footer{text-align:center;padding:20px;background:#000;}
+footer{text-align:center;padding:20px;background:#000; border-top: 1px solid #111;}
 </style>
 </head>
 <body>
@@ -39,47 +200,65 @@ footer{text-align:center;padding:20px;background:#000;}
 </ul>
 </nav>
 
-<section id="hero">
-<h1 style="text-align:center;font-size:50px;">Advertising</h1>
-<p style="text-align:center;color:#ccc;margin-top:10px;">Promote your brand with professional advertising campaigns</p>
+<section id="hero" style="padding: 0;">
+    <div class="hero-container">
+        
+        <div class="rocket-container">
+            <svg class="rocket-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="flame" d="M3 12l4-2v4l-4-2z" fill="#ff4d00"/>
+                <path class="flame" d="M5 12l2-1v2l-2-1z" fill="#ffaa00"/>
+                <path d="M6 10h10l5 2-5 2H6v-4z" fill="#fff"/>
+                <path d="M7 10L5 6h4l2 4M7 14l-2 4h4l2-4" fill="#ff4d00"/>
+                <path d="M16 10l5 2-5 2v-4z" fill="#ff4d00"/>
+                <circle cx="12" cy="12" r="1.5" fill="#00ff88"/>
+            </svg>
+        </div>
+
+        <h1 style="text-align:center;font-size:55px; letter-spacing: 2px; background: linear-gradient(45deg, #fff, #ff4d00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; position: relative; z-index: 10;">Advertising</h1>
+        <p style="text-align:center;color:#ccc;margin-top:10px; font-size: 18px; position: relative; z-index: 10;">Promote your brand with professional advertising campaigns</p>
+    </div>
 </section>
 
-<section id="packages">
+<section id="packages" class="animate-fade">
 <h2>Advertising Packages & Prices</h2>
 <div class="grid">
-<div class="card">
-<div class="details">
-<h3>Basic Ads</h3>
-<p>Price: Rs.20,000</p>
-<p>Social Media video Ad Design & post Ad Design  </p>
-<p>3 Platform (Facebook/Instagram/Tiktok)</p>
-<p>20 Ad video and 20 Ad post</p>
-</div>
-</div>
+    
+    <div class="card">
+        <div class="details">
+            <h3>Basic Ads</h3>
+            <p class="price-tag">Rs. 20,000</p>
+            <p>Social Media video Ad Design & post Ad Design</p>
+            <p>3 Platforms (Facebook / Instagram / TikTok)</p>
+            <p style="color: #ff4d00; font-weight: bold;">20 Ad Videos & 20 Ad Posts</p>
+        </div>
+    </div>
 
-<div class="card">
-<div class="details">
-<h3>Standard Ads</h3>
-<p>Price: Rs.40,000</p>
-<p>Multi-Platform Ads</p>
-<p>Social Media video Ad Design & post Ad Design</p>
-<p>50 Ad video and 50 Ad post</p>
-</div>
-</div>
+    <div class="card card-standard">
+        <div class="badge" style="background: #ffaa00; color: #000;">Best Growth</div>
+        <div class="details">
+            <h3 style="color: #ffaa00;">Standard Ads</h3>
+            <p class="price-tag">Rs. 40,000</p>
+            <p>Multi-Platform Target Ads</p>
+            <p>Social Media video Ad Design & post Ad Design</p>
+            <p style="color: #ffaa00; font-weight: bold;">50 Ad Videos & 50 Ad Posts</p>
+        </div>
+    </div>
 
-<div class="card">
-<div class="details">
-<h3>Premium Ads</h3>
-<p>Price: Rs.65,000</p>
-<p>Multi-Platform Ads</p>
-<p>Social Media video Ad Design & post Ad Design</p>
-<p>70 Ad video and 70 Ad post</p>
-</div>
-</div>
+    <div class="card card-premium">
+        <div class="badge">Ultimate Campaign</div>
+        <div class="details">
+            <h3>Premium Ads</h3>
+            <p class="price-tag">Rs. 65,000</p>
+            <p>Full Scale Multi-Platform Ads</p>
+            <p>Social Media video Ad Design & post Ad Design</p>
+            <p style="color: #ff4d00; font-weight: bold;">70 Ad Videos & 70 Ad Posts</p>
+        </div>
+    </div>
+    
 </div>
 </section>
 
-<section id="portfolio">
+<section id="portfolio" class="animate-fade">
 <h2>Advertising Works</h2>
 <div class="grid portfolio">
 <img src="ads1.jpg" alt="Ads Portfolio">
@@ -89,13 +268,15 @@ footer{text-align:center;padding:20px;background:#000;}
 </div>
 </section>
 
-<section id="contact">
+<section id="contact" class="animate-fade">
 <h2>Contact Us</h2>
+<div style="text-align: center; background: #111; padding: 30px; border-radius: 12px; max-width: 500px; margin: 0 auto;">
 <p>Email: contactnextframedigital@gmail.com</p>
 <p>Phone: +94705131882</p>
 <p>Instagram: @nextframe_digital</p>
 <p>Facebook: Next Frame Digital</p>
 <p>Location: Sri Lanka</p>
+</div>
 </section>
 
 <footer>
@@ -103,8 +284,38 @@ footer{text-align:center;padding:20px;background:#000;}
 </footer>
 
 <script>
-function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
-function goBack(){window.history.back();}
+function scrollToSection(id){
+document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+function goBack(){
+window.history.back();
+}
+
+/* 🌟 SCROLL ANIMATION ENGINE (Intersection Observer) */
+document.addEventListener("DOMContentLoaded", () => {
+    const scrollElements = document.querySelectorAll(".animate-fade");
+
+    const elementInView = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("appear");
+                observer.unobserve(entry.target); 
+            }
+        });
+    };
+
+    const options = {
+        root: null,
+        threshold: 0.15 
+    };
+
+    const observer = new IntersectionObserver(elementInView, options);
+
+    scrollElements.forEach(element => {
+        observer.observe(element);
+    });
+});
 </script>
+
 </body>
 </html>

@@ -7,24 +7,163 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;}
-nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);}
+body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;overflow-x: hidden;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);position: sticky; top: 0; z-index: 1000;}
 nav img{height:45px;}
 nav ul{display:flex;gap:20px;list-style:none;}
-nav li{cursor:pointer;}
+nav li{cursor:pointer;transition: 0.3s;}
 nav li:hover{color:#ff4d00;}
+
 section{padding:100px 40px;}
-h2{text-align:center;margin-bottom:30px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
-.card{background:#111;padding:25px;border-radius:12px;transition:0.3s;cursor:pointer;text-align:center;}
-.card:hover{transform:translateY(-10px);}
-.details{background:#000;padding:20px;border-radius:10px;margin-bottom:20px;}
-.details h3{color:#ff4d00;margin-bottom:10px;}
-.details p{color:#ccc;margin:5px 0;}
-.portfolio img{width:100%;border-radius:10px;margin-bottom:15px;transition:0.3s;}
-.portfolio img:hover{transform:scale(1.05);}
+h2{text-align:center;margin-bottom:30px;font-size: 32px; letter-spacing: 1px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
+
+/* 🌟 ANIMATION BASE STYLES (ස්ක්‍රෝල් කරද්දී මතු වෙන්න) */
+.animate-fade {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.animate-fade.appear {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 🎨 PREMIUM CARD STYLES & HOVER EFFECTS */
+.card{
+    background:#111;
+    padding:25px;
+    border-radius:12px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor:pointer;
+    text-align:center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #222;
+}
+
+.card:hover{
+    transform: translateY(-10px);
+    border-color: #ff4d00;
+    box-shadow: 0 10px 25px rgba(255, 77, 0, 0.15);
+}
+
+/* ⚡ STANDARD CARD: Gold Glow Effect */
+.card-standard:hover {
+    border-color: #ffaa00;
+    box-shadow: 0 10px 30px rgba(255, 170, 0, 0.2);
+}
+
+/* 🔥 PREMIUM CARD: Elite Premium Glow Effect */
+.card-premium {
+    border: 1px solid rgba(255, 77, 0, 0.3);
+}
+.card-premium:hover {
+    transform: translateY(-12px) scale(1.02);
+    border-color: #ff4d00;
+    box-shadow: 0 15px 35px rgba(255, 77, 0, 0.3);
+}
+
+/* Ribbon Badges for Packages */
+.badge {
+    position: absolute;
+    top: 15px;
+    right: -35px;
+    background: #ff4d00;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 35px;
+    transform: rotate(45deg);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.details{background:#000;padding:20px;border-radius:10px;margin-bottom:20px; height: 100%; display: flex; flex-direction: column; justify-content: center;}
+.details h3{color:#ff4d00;margin-bottom:15px; font-size: 20px;}
+.details p{color:#ccc;margin:8px 0; font-size: 14px;}
+
+/* 💰 PRICE TAG STYLING */
+.price-tag {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin: 10px 0 15px 0 !important;
+    padding: 5px;
+    background: linear-gradient(90deg, transparent, #111, transparent);
+    border-left: 3px solid #ff4d00;
+    border-right: 3px solid #ff4d00;
+    display: inline-block;
+    width: 100%;
+}
+.card-standard .price-tag { border-color: #ffaa00; }
+.card-premium .price-tag { border-color: #ff4d00; color: #ff4d00; animation: pulse-price 2s infinite; }
+
+@keyframes pulse-price {
+    0% { opacity: 0.9; }
+    50% { opacity: 1; text-shadow: 0 0 10px rgba(255, 77, 0, 0.5); }
+    100% { opacity: 0.9; }
+}
+
+/* 📸 PORTFOLIO WORK IMAGES */
+.portfolio img{width:100%;border-radius:10px;margin-bottom:15px;transition:all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); filter: grayscale(30%);}
+.portfolio img:hover{transform:scale(1.04) translateY(-5px); filter: grayscale(0%); box-shadow: 0 10px 20px rgba(0,0,0,0.5);}
+
+/* 🎥 CAMERA FLASH HERO ANIMATION STYLES */
+.hero-container {
+    position: relative;
+    width: 100%;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.camera-container {
+    position: absolute;
+    top: 20%;
+    left: -150px;
+    width: 110px;
+    height: auto;
+    z-index: 5;
+    pointer-events: none;
+    animation: camera-move 22s linear infinite, camera-bob 4s ease-in-out infinite;
+}
+
+@keyframes camera-move {
+    0% { left: -150px; transform: scaleX(1); }
+    45% { left: 110%; transform: scaleX(1); }
+    50% { left: 110%; transform: scaleX(-1); }
+    95% { left: -150px; transform: scaleX(-1); }
+    100% { left: -150px; transform: scaleX(1); }
+}
+
+@keyframes camera-bob {
+    0%, 100% { top: 20%; }
+    50% { top: 28%; }
+}
+
+/* කැමරා ලෙන්ස් එක මැදින් වදින Flash ඇනිමේෂන් එක */
+@keyframes flash-glow {
+    0%, 85%, 100% { opacity: 0.2; filter: drop-shadow(0 0 2px #00ff88); }
+    90% { opacity: 1; filter: drop-shadow(0 0 15px #fff) cubic-bezier(0.1, 0.8, 0.3, 1); }
+}
+
+.camera-lens-flash {
+    animation: flash-glow 2.5s infinite;
+}
+
+.camera-svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 8px rgba(255, 77, 0, 0.4));
+}
+
 .contact p{margin:8px 0;color:#ccc;}
-footer{text-align:center;padding:20px;background:#000;}
+footer{text-align:center;padding:20px;background:#000; border-top: 1px solid #111;}
 </style>
 </head>
 <body>
@@ -39,47 +178,65 @@ footer{text-align:center;padding:20px;background:#000;}
 </ul>
 </nav>
 
-<section id="hero">
-<h1 style="text-align:center;font-size:50px;">Event Coverage</h1>
-<p style="text-align:center;color:#ccc;margin-top:10px;">Capture your events with full professional coverage</p>
+<section id="hero" style="padding: 0;">
+    <div class="hero-container">
+        
+        <div class="camera-container">
+            <svg class="camera-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 7h3l1.5-2h7L17 7h3a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2z" fill="#111" stroke="#ff4d00" stroke-width="1.5"/>
+                <path d="M9 7V6h6v1" stroke="#ff4d00" stroke-width="1.5"/>
+                <circle cx="12" cy="14" r="4" fill="#000" stroke="#ff4d00" stroke-width="1.5"/>
+                <circle class="camera-lens-flash" cx="12" cy="14" r="2" fill="#fff"/>
+                <circle cx="18" cy="10" r="0.8" fill="#ff0000"/>
+            </svg>
+        </div>
+
+        <h1 style="text-align:center;font-size:55px; letter-spacing: 2px; background: linear-gradient(45deg, #fff, #ff4d00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; position: relative; z-index: 10;">Event Coverage</h1>
+        <p style="text-align:center;color:#ccc;margin-top:10px; font-size: 18px; position: relative; z-index: 10;">Capture your events with full professional coverage</p>
+    </div>
 </section>
 
-<section id="packages">
+<section id="packages" class="animate-fade">
 <h2>Event Packages & Prices</h2>
 <div class="grid">
-<div class="card">
-<div class="details">
-<h3>Half Day Event</h3>
-<p>Price: Rs.30,000</p>
-<p>4 hours coverage</p>
-<p>Photo + Video Highlights</p>
-<p>Digital Delivery</p>
-</div>
-</div>
+    
+    <div class="card">
+        <div class="details">
+            <h3>Half Day Event</h3>
+            <p class="price-tag">Rs. 30,000</p>
+            <p>4 Hours Coverage</p>
+            <p>Photo + Video Highlights</p>
+            <p>Digital Delivery</p>
+        </div>
+    </div>
 
-<div class="card">
-<div class="details">
-<h3>Full Day Event</h3>
-<p>Price: Rs.60,000</p>
-<p>Full day coverage</p>
-<p>Photos + 1 Edited Video</p>
-<p>Drone Shots Included</p>
-<p>Digital + USB Delivery</p>
-</div>
-</div>
+    <div class="card card-standard">
+        <div class="badge" style="background: #ffaa00; color: #000;">Most Popular</div>
+        <div class="details">
+            <h3 style="color: #ffaa00;">Full Day Event</h3>
+            <p class="price-tag">Rs. 60,000</p>
+            <p>Full Day Coverage</p>
+            <p>Photos + 1 Edited Video</p>
+            <p style="color: #ffaa00;">Drone Shots Included</p>
+            <p>Digital + USB Delivery</p>
+        </div>
+    </div>
 
-<div class="card">
-<div class="details">
-<h3>Corporate / Seminars Event</h3>
-<p>Price: Rs.100,000</p>
-<p>Multi-Camera, Drone Shots, Cinematic Editing</p>
-<p>Corporate, Wedding, or Special Events</p>
-</div>
-</div>
+    <div class="card card-premium">
+        <div class="badge">Elite Choice</div>
+        <div class="details">
+            <h3>Corporate / Seminars Event</h3>
+            <p class="price-tag">Rs. 100,000</p>
+            <p>Multi-Camera & Drone Shots</p>
+            <p>Cinematic Premium Editing</p>
+            <p style="color: #ff4d00; font-weight: bold;">Corporate, Wedding, or Special Events</p>
+        </div>
+    </div>
+    
 </div>
 </section>
 
-<section id="portfolio">
+<section id="portfolio" class="animate-fade">
 <h2>Our Event Works</h2>
 <div class="grid portfolio">
 <img src="event1.jpg" alt="Event Portfolio">
@@ -89,13 +246,15 @@ footer{text-align:center;padding:20px;background:#000;}
 </div>
 </section>
 
-<section id="contact">
+<section id="contact" class="animate-fade">
 <h2>Contact Us</h2>
+<div style="text-align: center; background: #111; padding: 30px; border-radius: 12px; max-width: 500px; margin: 0 auto;">
 <p>Email: contactnextframedigital@gmail.com</p>
 <p>Phone: +94705131882</p>
 <p>Instagram: @nextframe_digital</p>
 <p>Facebook: Next Frame Digital</p>
 <p>Location: Sri Lanka</p>
+</div>
 </section>
 
 <footer>
@@ -103,8 +262,38 @@ footer{text-align:center;padding:20px;background:#000;}
 </footer>
 
 <script>
-function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
-function goBack(){window.history.back();}
+function scrollToSection(id){
+document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+function goBack(){
+window.history.back();
+}
+
+/* 🌟 SCROLL ANIMATION ENGINE (Intersection Observer) */
+document.addEventListener("DOMContentLoaded", () => {
+    const scrollElements = document.querySelectorAll(".animate-fade");
+
+    const elementInView = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("appear");
+                observer.unobserve(entry.target); 
+            }
+        });
+    };
+
+    const options = {
+        root: null,
+        threshold: 0.15 
+    };
+
+    const observer = new IntersectionObserver(elementInView, options);
+
+    scrollElements.forEach(element => {
+        observer.observe(element);
+    });
+});
 </script>
+
 </body>
 </html>
