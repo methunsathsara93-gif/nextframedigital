@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Frame Executive AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #070708;
+            --panel-dark: #111115;
+            --primary-orange: #ff4d00;
+            --primary-glow: rgba(255, 77, 0, 0.15);
+            --text-main: #f3f4f6;
+            --text-muted: #858699;
+            --glass-border: rgba(255, 77, 0, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: var(--bg-dark); 
+            color: var(--text-main); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 🌌 BACKGROUND MODERN GLOWS */
+        body::before {
+            content: ""; position: absolute; width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(255, 77, 0, 0.08) 0%, transparent 70%);
+            top: -50px; right: -50px; z-index: 0;
+        }
+        body::after {
+            content: ""; position: absolute; width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(255, 77, 0, 0.05) 0%, transparent 70%);
+            bottom: -100px; left: -100px; z-index: 0;
+        }
+
+        /* 📱 PREMIUM CHAT CONTAINER */
+        .chat-box { 
+            width: 100%; max-width: 520px; height: 88vh; 
+            background: rgba(17, 17, 21, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); 
+            border-radius: 24px; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 77, 0, 0.02);
+            z-index: 1;
+            margin: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        /* 👑 HEADER DESIGN */
+        .header { 
+            background: rgba(22, 22, 28, 0.8); 
+            padding: 20px 24px; 
+            border-bottom: 1px solid var(--glass-border); 
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .header-avatar {
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, var(--primary-orange), #ff7700);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 18px;
+            box-shadow: 0 0 20px rgba(255, 77, 0, 0.3);
+        }
+        .header-info { flex: 1; }
+        .header-info h2 { 
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px; font-weight: 600; letter-spacing: 0.3px; 
+        }
+        .status-tag {
+            font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; margin-top: 2px;
+        }
+        .status-dot {
+            width: 6px; height: 6px; background: #00ffaa; border-radius: 50%;
+            box-shadow: 0 0 10px #00ffaa;
+            animation: pulse 2s infinite;
+        }
+
+        /* 📜 MESSAGES AREA */
+        .messages { 
+            flex: 1; padding: 24px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 16px;
+            scroll-behavior: smooth;
+        }
+        
+        .msg { 
+            max-width: 82%; padding: 14px 18px; 
+            font-size: 14.5px; line-height: 1.5; 
+            word-wrap: break-word;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        .msg.bot { 
+            background: #17171f; 
+            align-self: flex-start; 
+            color: #e5e7eb; 
+            border-radius: 4px 18px 18px 18px;
+            border-left: 3px solid var(--primary-orange);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .msg.user { 
+            background: linear-gradient(135deg, var(--primary-orange), #ff6200); 
+            align-self: flex-end; 
+            color: #fff; 
+            font-weight: 500;
+            border-radius: 18px 18px 4px 18px;
+            box-shadow: 0 8px 20px rgba(255, 77, 0, 0.15);
+        }
+
+        /* ⌨️ INPUT AREA DESIGN */
+        .input-area { 
+            padding: 18px 24px; 
+            background: rgba(22, 22, 28, 0.9); 
+            display: flex; 
+            gap: 12px; 
+            border-top: 1px solid var(--glass-border);
+            align-items: center;
+        }
+        
+        .input-wrapper {
+            flex: 1; position: relative; display: flex; align-items: center;
+        }
+        
+        input { 
+            width: 100%;
+            background: #0d0d11; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            padding: 14px 18px; 
+            border-radius: 14px; 
+            color: #fff; 
+            font-size: 14px;
+            outline: none; 
+            transition: all 0.3s ease;
+        }
+        
+        input:focus { 
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 15px rgba(255, 77, 0, 0.1);
+            background: #09090c;
+        }
+        
+        button { 
+            background: linear-gradient(135deg, var(--primary-orange), #ff6200); 
+            border: none; 
+            color: #fff; 
+            width: 48px; height: 48px;
+            border-radius: 14px; 
+            cursor: pointer; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 77, 0, 0.2);
+        }
+        
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 77, 0, 0.3);
+        }
+        button:active { transform: translateY(0); }
+
+        /* SCROLLBAR CUSTOMIZATION */
+        .messages::-webkit-scrollbar { width: 5px; }
+        .messages::-webkit-scrollbar-track { background: transparent; }
+        .messages::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        .messages::-webkit-scrollbar-thumb:hover { background: var(--primary-orange); }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 170, 0.5); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(0, 255, 170, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 170, 0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-box">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-avatar">
+            <i class="fa-solid fa-bolt"></i>
+        </div>
+        <div class="header-info">
+            <h2>Next Frame Executive AI</h2>
+            <div class="status-tag"><span class="status-dot"></span> Active Assistant</div>
+        </div>
+    </div>
+
+    <!-- Message Window -->
+    <div class="messages" id="chatWindow">
+        <div class="msg bot">Hello! I am the Next Frame AI assistant. You can ask me ANYTHING in English, සිංහල, or தமிழ்! How can I help you today?</div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+        <div class="input-wrapper">
+            <input type="text" id="userInput" placeholder="Ask any question here..." autocomplete="off" onkeypress="handleKeyPress(event)">
+        </div>
+        <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- Import Gemini SDK directly into frontend -->
+<script type="module">
+    import { GoogleGenAI } from "https://esm.run/@google/genai";
+
+    // ⚠️ ඔයාගේ API KEY එක මෙතන සුරක්ෂිතව තියෙනවා මචං
+    const ai = new GoogleGenAI({ apiKey: "AQ.Ab8RN6JJdYlmfCsBSIFNxsVDfbzMCqHjbQjipiZaRTnqfw7O9A" });
+
+    window.sendMessage = async function() {
+        const userInput = document.getElementById('userInput');
+        const chatWindow = document.getElementById('chatWindow');
+        const text = userInput.value.trim();
+        
+        if (!text) return;
+
+        // 1. User මැසේජ් එක screen එකට දානවා
+        appendMessage(text, 'user');
+        userInput.value = '';
+
+        // 2. Modern "Thinking..." Loading එකක් දානවා
+        const thinkingDiv = appendMessage('<i class="fa-solid fa-circle-notch fa-spin"></i> Analyzing context...', 'bot');
+
+        try {
+            // 3. Gemini AI එකට කෙලින්ම මැසේජ් එක යවනවා
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash', 
+                contents: [
+                    { role: 'user', parts: [{ text: `
+                        System Instruction: You are the intelligent AI assistant for 'Next Frame Digital' company. You can answer ANY general knowledge or dynamic questions perfectly. However, if the user asks about our packages, creative team, or videography works, use this context to guide them dynamically. Respond naturally in the language the user speaks (Sinhala, English, or Tamil).
+                        
+                        Our Context:
+                        - CEO & Creative Director: Methun Sathsara
+                        - Co-CEO & Lead Videographer: Venura Sapumal
+                        - Crew: Sanuja Savithma (Lighting/Photo), Lovindu Erandith (Photo/Video), Kavindu Geethanjana (Graphics)
+                        - Services: Cinematic Films, Commercial Ads, Premium Event Coverage (with outdoor router integrations for high-speed delivery). We use DaVinci Resolve (XML, LUTs) and DJI RS 3/4 Pro gimbals.
+                        - Portfolio: High-end content for mentors like Et Arachchi and Sri Lankan podcasts like 'Kalaabara Channel'.
+                        - Our Contact Number: 0705131882
+                        - Bot Name: Nova AI 
+                        User Question: ${text}
+                    `}]}
+                ]
+            });
+
+            // 4. Loading එක අයින් කරලා AI උත්තරේ දානවා
+            thinkingDiv.innerHTML = response.text;
+
+        } catch (error) {
+            console.error(error);
+            thinkingDiv.innerText = "Error connecting to AI. Please check your network.";
+        }
+    }
+
+    function appendMessage(text, sender) {
+        const div = document.createElement('div');
+        div.className = `msg ${sender}`;
+        div.innerHTML = text;
+        const chatWindow = document.getElementById('chatWindow');
+        chatWindow.appendChild(div);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        return div;
+    }
+
+    // Enter Key එකෙන් මැසේජ් යවන්න
+    window.handleKeyPress = function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+</script>
+
+</body>
+</html>
