@@ -3,55 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Next Frame Digital | Client Access</title>
+    <title>Next Frame Digital | Client Portal</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+        
+        :root {
+            --bg-color: #050505;
+            --container-bg: rgba(20, 20, 20, 0.7);
+            --text-main: #fff;
+            --text-secondary: #aaa;
+            --accent: #ff4a11;
+            --success: #00ffaa;
+        }
+        .light-mode {
+            --bg-color: #f4f4f4;
+            --container-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #111;
+            --text-secondary: #555;
+            --accent: #ff4a11;
+            --success: #008855;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #050505; color: #fff; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { background: var(--bg-color); color: var(--text-main); padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; transition: 0.3s; }
         .container { max-width: 500px; width: 100%; text-align: center; }
-        .glass { background: rgba(20, 20, 20, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); border-radius: 25px; padding: 40px; }
+        .glass { background: var(--container-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 40px; }
         
-        /* Status Badge */
-        .status-badge { display: inline-block; padding: 5px 15px; background: rgba(255, 74, 17, 0.1); color: #ff4a11; border-radius: 20px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; margin-bottom: 15px; border: 1px solid rgba(255, 74, 17, 0.2); }
+        .theme-btn { position: absolute; top: 20px; right: 20px; background: none; border: 1px solid var(--accent); color: var(--accent); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; }
+        .status-badge { display: inline-block; padding: 5px 15px; background: rgba(255, 74, 17, 0.1); color: var(--accent); border-radius: 20px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; margin-bottom: 20px; border: 1px solid rgba(255, 74, 17, 0.2); }
         
-        .circle-wrap { width: 120px; height: 120px; background: #111; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 20px auto; border: 4px solid #ff4a11; font-weight: 600; font-size: 1.2rem; }
-        .progress-bar { height: 6px; background: #222; border-radius: 3px; margin: 15px 0; overflow: hidden; }
-        #fill { height: 100%; width: 0%; background: #ff4a11; transition: 2s; }
+        .timeline { display: flex; justify-content: space-between; margin: 30px 0; position: relative; padding: 0 5px; }
+        .timeline::before { content: ''; position: absolute; top: 10px; left: 5%; width: 90%; height: 2px; background: #333; z-index: 1; }
+        .step { position: relative; z-index: 2; font-size: 0.55rem; color: var(--text-secondary); width: 20%; text-align: center; }
+        .step-dot { width: 20px; height: 20px; background: #333; border-radius: 50%; margin: 0 auto 8px auto; transition: 0.3s; }
+        .step.active .step-dot { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+        .step.active { color: var(--accent); }
+
+        .box { font-size: 0.85rem; color: var(--text-secondary); background: #111; padding: 15px; border-radius: 15px; border-left: 3px solid var(--accent); text-align: left; margin-bottom: 20px; }
+        .finance-box { background: #111; padding: 15px; border-radius: 15px; margin-bottom: 20px; font-size: 0.8rem; text-align: left; color: var(--text-secondary); }
+        .fin-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
         
-        .note-box { font-size: 0.85rem; color: #aaa; background: #111; padding: 15px; border-radius: 15px; border-left: 3px solid #ff4a11; text-align: left; margin-bottom: 20px; }
-        .btn-dl { display: block; width: 100%; padding: 18px; background: #ff4a11; color: white; border-radius: 15px; text-decoration: none; font-weight: 600; transition: 0.3s; }
+        .btn-dl { display: block; width: 100%; padding: 18px; background: var(--accent); color: white; border-radius: 15px; text-decoration: none; font-weight: 600; transition: 0.3s; margin-bottom: 10px; cursor: pointer; border: none; }
+        .btn-wa { display: block; width: 100%; padding: 15px; background: #25D366; color: white; border-radius: 15px; text-decoration: none; font-weight: 600; font-size: 0.8rem; }
         .btn-disabled { background: #333; color: #666; cursor: not-allowed; pointer-events: none; }
-        .logout-btn { background: none; border: none; color: #666; margin-top: 30px; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
-        .contact-link { display: block; margin-top: 20px; color: #ff4a11; font-size: 0.8rem; text-decoration: underline; }
+        
+        .terms-btn { background: none; border: none; color: #fff; text-decoration: underline; font-size: 0.7rem; cursor: pointer; margin-bottom: 15px; display: block; width: 100%; }
+        .logout-btn { background: none; border: none; color: #666; margin-top: 10px; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: #111; padding: 25px; border-radius: 20px; max-width: 400px; color: #fff; font-size: 0.8rem; text-align: left; border: 1px solid var(--accent); }
     </style>
 </head>
 <body>
+<div id="toast" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--accent); color:white; padding:15px 25px; border-radius:50px; font-size:0.8rem; font-weight:600; z-index:999; box-shadow:0 10px 20px rgba(0,0,0,0.3);">
+    🚀 Project Updated: Check your new status!
+</div>
+<div id="toast" style="display:none; position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--accent); color:white; padding:15px 25px; border-radius:50px; font-size:0.8rem; font-weight:600; z-index:999; box-shadow:0 10px 20px rgba(0,0,0,0.3);">
+    🚀 Project Updated: Check your new status!
+</div>
+
+<button class="theme-btn" onclick="toggleTheme()">DARK / LIGHT</button>
+
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+        <h4 style="color:var(--accent); margin-bottom:10px;">TERMS & CONDITIONS</h4>
+        <p style="margin-bottom:15px; line-height: 1.6;">1. All project assets remain the property of Next Frame Digital until final payment.<br>2. Revisions are limited to 3 cycles per project.<br>3. Payments are non-refundable once production commences.<br>4. Turnaround times are estimates and subject to project complexity.</p>
+        <button onclick="document.getElementById('termsModal').style.display='none'" style="width:100%; padding:10px; background:var(--accent); border:none; color:#fff; border-radius:10px; cursor:pointer;">CLOSE</button>
+    </div>
+</div>
 
 <div class="container">
     <div class="glass">
         <div style="letter-spacing: 4px; font-size: 0.6rem; color: #666; margin-bottom: 20px;">NEXT FRAME DIGITAL</div>
         
-        <!-- Status Badge -->
         <div class="status-badge" id="status-text">Loading...</div>
-        
         <h2 id="name">Hi, Client!</h2>
-        
-        <div class="circle-wrap" id="prog-circle">0%</div>
-        <div class="progress-bar"><div id="fill"></div></div>
-        <p id="countdown" style="font-size: 0.75rem; color: #ff4a11; margin-bottom: 20px;">Delivery: Calculating...</p>
 
-        <div class="note-box" id="editor-notes">Loading project status...</div>
+        <div style="margin-bottom: 20px;">
+            <div style="font-size: 0.6rem; color: #666; letter-spacing: 1px; text-transform: uppercase;">Estimated Delivery</div>
+            <div id="delivery-date" style="font-size: 1.1rem; font-weight: 600; color: var(--accent);">Loading...</div>
+        </div>
+
+        <div class="timeline">
+            <div class="step" id="step-0"> <div class="step-dot"></div> Order </div>
+            <div class="step" id="step-1"> <div class="step-dot"></div> Edit </div>
+            <div class="step" id="step-2"> <div class="step-dot"></div> Color </div>
+            <div class="step" id="step-3"> <div class="step-dot"></div> Final </div>
+            <div class="step" id="step-4"> <div class="step-dot"></div> Ready </div>
+        </div>
+
+        <div class="box" id="editor-notes">Loading project status...</div>
+        
+        <div class="finance-box">
+            <div class="fin-row"><span>Total:</span> <span id="total-val">LKR 0</span></div>
+            <div class="fin-row"><span>Paid:</span> <span id="paid-val" style="color: var(--success);">LKR 0</span></div>
+            <div style="border-top: 1px solid #333; margin: 8px 0;"></div>
+            <div class="fin-row" style="font-weight: 600; color: var(--accent);"><span>Balance:</span> <span id="due-val">LKR 0</span></div>
+        </div>
+
+        <div class="box" style="border-left: 3px solid var(--success);">
+            <h4 style="margin-bottom: 10px; font-size: 0.7rem; color: var(--success); letter-spacing: 1px;">PAYMENT HISTORY</h4>
+            <div id="payment-list" style="font-size: 0.75rem;"></div>
+        </div>
+
+        <div class="box" style="border-left: 3px solid #666;">
+            <h4 style="margin-bottom: 10px; font-size: 0.7rem; color: #666; letter-spacing: 1px;">PROJECT HISTORY</h4>
+            <div id="history-list" style="font-size: 0.75rem;"></div>
+        </div>
         
         <a href="#" id="dl-btn" class="btn-dl btn-disabled">DOWNLOAD GALLERY</a>
-        <a href="https://wa.me/947XXXXXXXX" class="contact-link">If you have any questions, please contact us</a>
+        <button id="invoice-btn" class="btn-dl" style="background:#333; font-size:0.7rem; padding:10px;" onclick="generateInvoice()">DOWNLOAD INVOICE PDF</button>
+        <a href="#" id="wa-btn" class="btn-wa" target="_blank">WHATSAPP SUPPORT</a>
         
+        <button class="terms-btn" onclick="document.getElementById('termsModal').style.display='flex'">View Terms & Conditions</button>
         <button class="logout-btn" onclick="signOut()">LOGOUT ACCOUNT</button>
     </div>
 </div>
 
 <script>
     const client = supabase.createClient("https://xuxdkjeypwrhccgthepn.supabase.co", "sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI");
+
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+    }
+    if(localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
 
     async function load() {
         const { data: { user } } = await client.auth.getUser();
@@ -61,32 +139,136 @@
         
         if(data) {
             document.getElementById('name').innerText = "Hi, " + data.client_name + "!";
-            document.getElementById('status-text').innerText = data.status || "In Progress"; // Status එක පෙන්වයි
-            document.getElementById('prog-circle').innerText = data.progress + "%";
-            document.getElementById('fill').style.width = data.progress + "%";
-            document.getElementById('editor-notes').innerText = data.notes || "No updates yet.";
+            document.getElementById('status-text').innerText = data.status;
+            document.getElementById('editor-notes').innerText = data.notes;
 
-            const dlBtn = document.getElementById('dl-btn');
+            if(data.delivery_date) {
+                const dDate = new Date(data.delivery_date);
+                document.getElementById('delivery-date').innerText = dDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            } else { document.getElementById('delivery-date').innerText = "To be confirmed"; }
+
+            let activeStep = 0;
+            if(data.progress >= 25) activeStep = 1;
+            if(data.progress >= 50) activeStep = 2;
+            if(data.progress >= 75) activeStep = 3;
+            if(data.progress >= 100) activeStep = 4;
+            document.querySelectorAll('.step').forEach((el, index) => { if(index <= activeStep) el.classList.add('active'); });
+
+            if(data.payment_history) {
+                document.getElementById('payment-list').innerHTML = data.payment_history.split('|').map(p => 
+                    `<div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span>${p.split(':')[0]}</span><span style="color:var(--text-main);">${p.split(':')[1]}</span></div>`).join('');
+            }
+            if(data.history) {
+                document.getElementById('history-list').innerHTML = data.history.split('|').map(h => `<div style="margin-bottom:3px;">• ${h}</div>`).join('');
+            }
+
+            document.getElementById('total-val').innerText = "LKR " + (data.total_amount || 0).toLocaleString();
+            document.getElementById('paid-val').innerText = "LKR " + (data.paid_amount || 0).toLocaleString();
+            document.getElementById('due-val').innerText = "LKR " + (data.total_amount - data.paid_amount).toLocaleString();
+
             if(data.progress >= 100) {
+                const dlBtn = document.getElementById('dl-btn');
                 dlBtn.classList.remove('btn-disabled');
                 dlBtn.href = data.download_link;
                 dlBtn.innerText = "DOWNLOAD FULL ALBUM ↓";
             }
-
-            if(data.delivery_date) {
-                const diff = Math.ceil((new Date(data.delivery_date) - new Date()) / (1000 * 60 * 60 * 24));
-                document.getElementById('countdown').innerText = diff > 0 ? "Delivery in: " + diff + " Days" : "Delivery: Ready/Overdue";
-            }
+            document.getElementById('wa-btn').href = `https://wa.me/947XXXXXXXX?text=${encodeURIComponent(`Hi, I'm ${data.client_name}. I have a question about my project.`)}`;
         }
     }
 
-    async function signOut() { 
-        await client.auth.signOut(); 
-        window.location.href = "login.html"; 
+    async function generateInvoice() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+        const { data } = await client.from('client_galleries').select('*').eq('client_email', (await client.auth.getUser()).data.user.email).single();
+
+        // 1. Header Section - වඩාත් පිරිසිදු පෙනුමකට
+        doc.setFillColor(20, 20, 20);
+        doc.rect(0, 0, 210, 40, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(26);
+        doc.text("INVOICE", 170, 25, { align: 'right' });
+        doc.setFontSize(11);
+        doc.setTextColor(255, 74, 17);
+        doc.text("NEXT FRAME DIGITAL", 20, 20);
+        doc.setTextColor(200, 200, 200);
+        doc.text("Professional Cinematography & Post-Production", 20, 26);
+
+        // 2. Client Details
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(9);
+        doc.text("BILL TO:", 20, 55);
+        doc.setFontSize(16);
+        doc.text(data.client_name.toUpperCase(), 20, 65);
+        
+        doc.setDrawColor(255, 74, 17);
+        doc.setLineWidth(0.5);
+        doc.line(20, 70, 190, 70);
+
+        // 3. Project Info
+        doc.setFontSize(10);
+        doc.setTextColor(80, 80, 80);
+        doc.text("Project: " + data.status, 20, 80);
+        doc.text("Date: " + new Date().toLocaleDateString(), 190, 80, { align: 'right' });
+
+        // 4. Financial Table - Print එකට අනුකූල වන පරිදි
+        doc.setFillColor(248, 248, 248);
+        doc.rect(20, 95, 170, 60, 'F');
+        doc.setDrawColor(230, 230, 230);
+        doc.rect(20, 95, 170, 60);
+        
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(12);
+        doc.text("Description", 30, 105);
+        doc.text("Amount (LKR)", 165, 105, { align: 'right' });
+        
+        doc.line(20, 110, 190, 110);
+        
+        doc.setFontSize(11);
+        doc.text("Professional Production Services", 30, 120);
+        doc.text(data.total_amount.toLocaleString() + ".00", 165, 120, { align: 'right' });
+        
+        doc.setTextColor(0, 150, 80);
+        doc.text("Paid Amount", 30, 130);
+        doc.text("- " + data.paid_amount.toLocaleString() + ".00", 165, 130, { align: 'right' });
+        
+        doc.setDrawColor(200, 200, 200);
+        doc.line(30, 135, 180, 135);
+        // Payment End Logic
+        const balance = data.total_amount - data.paid_amount;
+        doc.setTextColor(255, 74, 17);
+        doc.setFontSize(15);
+        if (balance <= 0) {
+            doc.text("PAYMENT COMPLETED", 30, 145);
+        } else {
+            doc.text("BALANCE DUE", 30, 145);
+            doc.text("LKR " + balance.toLocaleString() + ".00", 165, 145, { align: 'right' });
+        }
+
+        // 5. Footer - Print කරන විට පහළින්ම තිබෙන පරිදි
+        doc.setTextColor(80, 80, 80);
+        doc.setFontSize(9);
+        doc.text("THANK YOU FOR YOUR TRUST!", 20, 260);
+        doc.setFontSize(8);
+        doc.text("We truly appreciate your business and are thrilled to have worked with you on this project.", 20, 266);
+        doc.text("We hope our services met your expectations and look forward to our next collaboration.", 20, 271);
+        
+        doc.setDrawColor(230, 230, 230);
+        doc.line(20, 278, 190, 278);
+
+        doc.setFontSize(7);
+        doc.setTextColor(150, 150, 150);
+        doc.text("This is a system-generated invoice and does not require a physical signature.", 105, 285, { align: 'center' });
+        doc.text("Next Frame Digital | Professional Cinematography & Post-Production | Sri Lanka", 105, 289, { align: 'center' });
+        
+        doc.save("Invoice_" + data.client_name.replace(/\s+/g, '_') + ".pdf");
     }
-    
+
+    async function signOut() { await client.auth.signOut(); window.location.href = "login.html"; }
     load();
-    setInterval(load, 30000);
+    // Show Notification Toast
+const toast = document.getElementById('toast');
+toast.style.display = 'block';
+setTimeout(() => { toast.style.display = 'none'; }, 4000);
 </script>
 </body>
 </html>
