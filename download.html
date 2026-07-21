@@ -153,7 +153,30 @@
             if(data.progress >= 75) activeStep = 3;
             if(data.progress >= 100) activeStep = 4;
             document.querySelectorAll('.step').forEach((el, index) => { if(index <= activeStep) el.classList.add('active'); });
+// 100% සම්පූර්ණ වූ විට විශේෂ alert එකක් පෙන්වීමට
+if (data.progress >= 100) {
+    const glassContainer = document.querySelector('.glass');
+    const successBanner = document.createElement('div');
+    successBanner.style.background = 'linear-gradient(45deg, #00ffaa, #008855)';
+    successBanner.style.padding = '20px';
+    successBanner.style.borderRadius = '15px';
+    successBanner.style.marginBottom = '20px';
+    successBanner.style.color = '#000';
+    successBanner.style.fontWeight = 'bold';
+    successBanner.style.textAlign = 'center';
+    successBanner.innerHTML = '🎉 CONGRATULATIONS! YOUR PROJECT IS COMPLETE.';
+    
+    // glass div එකේ ඉහළින්ම මෙය ඇතුලත් වේ
+    glassContainer.insertBefore(successBanner, glassContainer.firstChild);
 
+    // Download Button එකේ පෙනුම වෙනස් කිරීම
+    const dlBtn = document.getElementById('dl-btn');
+    dlBtn.classList.remove('btn-disabled');
+    dlBtn.style.background = '#00ffaa';
+    dlBtn.style.color = '#000';
+    dlBtn.href = data.download_link;
+    dlBtn.innerText = "DOWNLOAD FINAL ASSETS ↓";
+}
             if(data.payment_history) {
                 document.getElementById('payment-list').innerHTML = data.payment_history.split('|').map(p => 
                     `<div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span>${p.split(':')[0]}</span><span style="color:var(--text-main);">${p.split(':')[1]}</span></div>`).join('');
@@ -172,7 +195,7 @@
                 dlBtn.href = data.download_link;
                 dlBtn.innerText = "DOWNLOAD FULL ALBUM ↓";
             }
-            document.getElementById('wa-btn').href = `https://wa.me/947XXXXXXXX?text=${encodeURIComponent(`Hi, I'm ${data.client_name}. I have a question about my project.`)}`;
+            document.getElementById('wa-btn').href = `https://wa.me/94705131882?text=${encodeURIComponent(`Hi, I'm ${data.client_name}. I have a question about my project.`)}`;
         }
     }
 

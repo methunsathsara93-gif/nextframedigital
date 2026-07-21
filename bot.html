@@ -30,7 +30,6 @@
             position: relative;
         }
 
-        /* 🌌 BACKGROUND MODERN GLOWS */
         body::before {
             content: ""; position: absolute; width: 350px; height: 350px;
             background: radial-gradient(circle, rgba(255, 77, 0, 0.08) 0%, transparent 70%);
@@ -42,7 +41,6 @@
             bottom: -100px; left: -100px; z-index: 0;
         }
 
-        /* 📱 PREMIUM CHAT CONTAINER */
         .chat-box { 
             width: 100%; max-width: 520px; height: 88vh; 
             background: rgba(17, 17, 21, 0.75);
@@ -56,10 +54,8 @@
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 77, 0, 0.02);
             z-index: 1;
             margin: 15px;
-            transition: all 0.3s ease;
         }
         
-        /* 👑 HEADER DESIGN */
         .header { 
             background: rgba(22, 22, 28, 0.8); 
             padding: 20px 24px; 
@@ -90,7 +86,6 @@
             animation: pulse 2s infinite;
         }
 
-        /* 📜 MESSAGES AREA */
         .messages { 
             flex: 1; padding: 24px; 
             overflow-y: auto; 
@@ -125,7 +120,6 @@
             box-shadow: 0 8px 20px rgba(255, 77, 0, 0.15);
         }
 
-        /* ⌨️ INPUT AREA DESIGN */
         .input-area { 
             padding: 18px 24px; 
             background: rgba(22, 22, 28, 0.9); 
@@ -176,13 +170,11 @@
         }
         button:active { transform: translateY(0); }
 
-        /* SCROLLBAR CUSTOMIZATION */
         .messages::-webkit-scrollbar { width: 5px; }
         .messages::-webkit-scrollbar-track { background: transparent; }
         .messages::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
         .messages::-webkit-scrollbar-thumb:hover { background: var(--primary-orange); }
 
-        /* ANIMATIONS */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -197,7 +189,6 @@
 <body>
 
 <div class="chat-box">
-    <!-- Header -->
     <div class="header">
         <div class="header-avatar">
             <i class="fa-solid fa-bolt"></i>
@@ -208,12 +199,10 @@
         </div>
     </div>
 
-    <!-- Message Window -->
     <div class="messages" id="chatWindow">
-        <div class="msg bot">Hello! I am the Next Frame AI assistant. You can ask me ANYTHING in English, සිංහල, or தமிழ்! How can I help you today?</div>
+        <div class="msg bot">Hello! I am the Next Frame AI assistant. You can ask me anything about Next Frame Digital services, packages, or crew! How can I help you today?</div>
     </div>
 
-    <!-- Input Area -->
     <div class="input-area">
         <div class="input-wrapper">
             <input type="text" id="userInput" placeholder="Ask any question here..." autocomplete="off" onkeypress="handleKeyPress(event)">
@@ -222,55 +211,37 @@
     </div>
 </div>
 
-<!-- Import Gemini SDK directly into frontend -->
-<script type="module">
-    import { GoogleGenAI } from "https://esm.run/@google/genai";
-
-    // ⚠️ ඔයාගේ API KEY එක මෙතන සුරක්ෂිතව තියෙනවා මචං
-    const ai = new GoogleGenAI({ apiKey: "AQ.Ab8RN6KvYZ9yqoBeQ5Z5auKV95icUYLAWgqPUi-4-qkWC_cUGg" });
-
-    window.sendMessage = async function() {
+<script>
+    async function sendMessage() {
         const userInput = document.getElementById('userInput');
-        const chatWindow = document.getElementById('chatWindow');
         const text = userInput.value.trim();
         
         if (!text) return;
 
-        // 1. User මැසේජ් එක screen එකට දානවා
         appendMessage(text, 'user');
         userInput.value = '';
 
-        // 2. Modern "Thinking..." Loading එකක් දානවා
-        const thinkingDiv = appendMessage('<i class="fa-solid fa-circle-notch fa-spin"></i> Analyzing context...', 'bot');
+        const thinkingDiv = appendMessage('<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...', 'bot');
 
-        try {
-            // 3. Gemini AI එකට කෙලින්ම මැසේජ් එක යවනවා
-            const response = await ai.models.generateContent({
-                model: 'gemini-2.5-flash', 
-                contents: [
-                    { role: 'user', parts: [{ text: `
-                        System Instruction: You are the intelligent AI assistant for 'Next Frame Digital' company. You can answer ANY general knowledge or dynamic questions perfectly. However, if the user asks about our packages, creative team, or videography works, use this context to guide them dynamically. Respond naturally in the language the user speaks (Sinhala, English, or Tamil).
-                        
-                        Our Context:
-                        - CEO & Creative Director: Methun Sathsara
-                        - Co-CEO & Lead Videographer: Venura Sapumal
-                        - Crew: Sanuja Savithma (Lighting/Photo), Lovindu Erandith (Photo/Video), Kavindu Geethanjana (Graphics)
-                        - Services: Cinematic Films, Commercial Ads, Premium Event Coverage (with outdoor router integrations for high-speed delivery). We use DaVinci Resolve (XML, LUTs) and DJI RS 3/4 Pro gimbals.
-                        - Portfolio: High-end content for mentors like Et Arachchi and Sri Lankan podcasts like 'Kalaabara Channel'.
-                        - Our Contact Number: 0705131882
-                        - Bot Name: Nova AI 
-                        User Question: ${text}
-                    `}]}
-                ]
-            });
+        // Simulate intelligent response for Next Frame Digital context
+        setTimeout(() => {
+            const query = text.toLowerCase();
+            let reply = "I'm here to assist you with Next Frame Digital productions! For direct bookings or urgent inquiries, you can reach us at 0705131882.";
 
-            // 4. Loading එක අයින් කරලා AI උත්තරේ දානවා
-            thinkingDiv.innerHTML = response.text;
+            if (query.includes('ceo') || query.includes('founder') || query.includes('methun')) {
+                reply = "The CEO & Creative Director of Next Frame Digital is Methun Sathsara, and our Co-CEO & Lead Videographer is Venura Sapumal.";
+            } else if (query.includes('team') || query.includes('crew') || query.includes('members')) {
+                reply = "Our core creative team consists of Methun Sathsara (CEO), Venura Sapumal (Lead Videographer), Sanuja Savithma (Lighting/Photo), Lovindu Erandith (Photo/Video), and Kavindu Geethanjana (Graphics).";
+            } else if (query.includes('service') || query.includes('package') || query.includes('work') || query.includes('video') || query.includes('wedding') || query.includes('shoot')) {
+                reply = "Next Frame Digital specializes in Cinematic Films, Commercial Ads, and Premium Event Coverages. We utilize advanced tools like DaVinci Resolve workflows and DJI RS 3/4 Pro gimbals to deliver top-tier results!";
+            } else if (query.includes('contact') || query.includes('number') || query.includes('call') || query.includes('phone')) {
+                reply = "You can contact Next Frame Digital directly via hotline at 0705131882 for your media production needs.";
+            } else if (query.includes('hi') || query.includes('hello') || query.includes('hey')) {
+                reply = "Hello there! Welcome to Next Frame Digital. How can our production team assist you today?";
+            }
 
-        } catch (error) {
-            console.error(error);
-            thinkingDiv.innerText = "Error connecting to AI. Please check your network.";
-        }
+            thinkingDiv.innerHTML = reply;
+        }, 1000);
     }
 
     function appendMessage(text, sender) {
@@ -283,8 +254,7 @@
         return div;
     }
 
-    // Enter Key එකෙන් මැසේජ් යවන්න
-    window.handleKeyPress = function(event) {
+    function handleKeyPress(event) {
         if (event.key === 'Enter') {
             sendMessage();
         }

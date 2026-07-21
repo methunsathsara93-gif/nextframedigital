@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Next Frame | Admin Control</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #ff4a11; --bg: #050505; --card: #111; }
+        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; padding: 40px; }
+        .container { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid #333; }
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        h2 { color: var(--primary); text-transform: uppercase; letter-spacing: 2px; }
+        #admin-name-display { background: #222; padding: 10px 20px; border-radius: 20px; color: #ff4a11; font-weight: bold; border: 1px solid #444; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { color: #666; text-align: left; padding: 15px; font-size: 0.8rem; }
+        td { background: #1a1a1a; padding: 15px; }
+        input { background: #000; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 8px; width: 95%; }
+        button { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .logout-btn { background: #333; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-section">
+        <div>
+            <h2>Next Frame | Project Master Control</h2>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+        <div id="admin-name-display"></div>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Client</th><th>Progress</th><th>Total</th><th>Paid</th><th>Notes</th><th>Status</th><th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="admin-tbody"></tbody>
+    </table>
+</div>
+
+<script>
+    // ආරක්ෂාව: Login වෙලා නැත්නම් පිට කිරීම
+    if (localStorage.getItem('isAdmin') !== 'true') { window.location.href = 'login.html'; }
+
+    // Admin නම පෙන්වීම
+    document.getElementById('admin-name-display').innerText = "Admin: " + (localStorage.getItem('adminName') || "User");
+
+    const _URL = "https://xuxdkjeypwrhccgthepn.supabase.co";
+    const _KEY = "sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI";
+    const client = supabase.createClient(_URL, _KEY);
+
+    async function loadData() {
+        const { data } = await client.from('client_galleries').select('*');
+        const tbody = document.getElementById('admin-tbody');
+        tbody.innerHTML = data.map(c => `
+            <tr>
+                <td><input type="text" id="name-${c.id}" value="${c.client_name || ''}"></td>
+                <td><input type="number" id="prog-${c.id}" value="${c.progress || 0}"></td>
+                <td><input type="number" id="total-${c.id}" value="${c.total_amount || 0}"></td>
+                <td><input type="number" id="paid-${c.id}" value="${c.paid_amount || 0}"></td>
+                <td><input type="text" id="notes-${c.id}" value="${c.notes || ''}"></td>
+                <td><input type="text" id="status-${c.id}" value="${c.status || 'Pending'}"></td>
+                <td><button onclick="save(${c.id})">UPDATE</button></td>
+            </tr>
+        `).join('');
+    }
+
+    async function save(id) {
+        const updates = {
+            client_name: document.getElementById(`name-${id}`).value,
+            progress: parseInt(document.getElementById(`prog-${id}`).value),
+            total_amount: parseInt(document.getElementById(`total-${id}`).value),
+            paid_amount: parseInt(document.getElementById(`paid-${id}`).value),
+            notes: document.getElementById(`notes-${id}`).value,
+            status: document.getElementById(`status-${id}`).value
+        };
+        await client.from('client_galleries').update(updates).eq('id', id);
+        alert('Data Updated Successfully!');
+    }
+
+    function logout() { 
+        localStorage.removeItem('isAdmin'); 
+        localStorage.removeItem('adminName'); 
+        window.location.href = 'login.html'; 
+    }
+    
+    loadData();
+</script>
+</body>
+</html>
