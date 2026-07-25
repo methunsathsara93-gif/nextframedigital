@@ -814,53 +814,23 @@
         </div>
     </footer>
 
-    <!-- Become a Seller Modal -->
+    <!-- Become a Seller / Login Redirect Button -->
     <div class="seller-modal" id="sellerModal">
         <div class="modal-header-custom">
             <h3><i class="fa-solid fa-store" style="color:var(--primary-orange);"></i> Join as a Gear Seller / Owner</h3>
             <button class="close-modal-btn" onclick="closeSellerModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="seller-form-body">
-            <div class="form-group">
-                <label>Your Name / Company Name</label>
-                <input type="text" id="sellerName" placeholder="e.g. Kasun Perera">
-            </div>
-            <div class="form-group">
-                <label>WhatsApp Contact Number</label>
-                <input type="text" id="sellerPhone" placeholder="e.g. 0712345678">
-            </div>
-            <div class="form-group">
-                <label>Gear / Item Name to List</label>
-                <input type="text" id="sellerGear" placeholder="e.g. Sony FX3 Camera Body">
-            </div>
-            <div class="form-group">
-                <label>Category</label>
-                <select id="sellerCategory">
-                    <option value="Cameras">Cameras</option>
-                    <option value="Lenses">Lenses & Optics</option>
-                    <option value="Gimbals">Gimbals & Stabilization</option>
-                    <option value="Lighting">Lighting</option>
-                    <option value="Audio">Audio & Mics</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Condition</label>
-                <select id="sellerCondition">
-                    <option value="Like Brand New">Like Brand New</option>
-                    <option value="Mint Condition">Mint Condition</option>
-                    <option value="Good Condition">Good Condition</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Rental Price Per Day (Rs.)</label>
-                <input type="text" id="sellerPrice" placeholder="e.g. 6000">
-            </div>
-            <button class="checkout-whatsapp" onclick="submitSellerForm()">
-                <i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i> Submit Listing via WhatsApp
-            </button>
+        <div class="seller-form-body" style="text-align: center; padding: 30px 20px;">
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px; line-height: 1.6;">
+                රෙන්ට් කිරීමට හෝ ඔබේ කැමරා උපකරණ ලියාපදිංචි කිරීමට අපගේ පාර්ට්නර් පෝර්ටල් (Partner Portal) වෙත පිවිසෙන්න.
+            </p>
+            <a href="sellerlogin.html" style="text-decoration: none; display: block;">
+                <button class="checkout-whatsapp" style="width: 100%; margin-top: 0; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #07090e; font-weight: 700; border: none; padding: 14px; border-radius: 8px; cursor: pointer;">
+                    <i class="fa-solid fa-right-to-bracket" style="font-size: 16px; margin-right: 8px;"></i> Go to Seller Login / Portal
+                </button>
+            </a>
         </div>
     </div>
-
     <!-- Quick View Modal -->
     <div class="quickview-modal" id="quickViewModal">
         <div class="quickview-header">
