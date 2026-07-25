@@ -58,24 +58,32 @@
         
         .header { 
             background: rgba(22, 22, 28, 0.8); 
-            padding: 20px 24px; 
+            padding: 16px 20px; 
             border-bottom: 1px solid var(--glass-border); 
             display: flex;
             align-items: center;
-            gap: 14px;
+            justify-content: space-between;
+            gap: 10px;
         }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .header-avatar {
-            width: 42px; height: 42px;
+            width: 40px; height: 40px;
             background: linear-gradient(135deg, var(--primary-orange), #ff7700);
-            border-radius: 14px;
+            border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 18px;
+            color: #fff; font-size: 16px;
             box-shadow: 0 0 20px rgba(255, 77, 0, 0.3);
         }
-        .header-info { flex: 1; }
+
         .header-info h2 { 
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px; font-weight: 600; letter-spacing: 0.3px; 
+            font-size: 15px; font-weight: 600; letter-spacing: 0.3px; 
         }
         .status-tag {
             font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; margin-top: 2px;
@@ -84,6 +92,38 @@
             width: 6px; height: 6px; background: #00ffaa; border-radius: 50%;
             box-shadow: 0 0 10px #00ffaa;
             animation: pulse 2s infinite;
+        }
+
+        /* Language Switcher UI */
+        .lang-switcher {
+            display: flex;
+            gap: 4px;
+            background: #0d0d11;
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            color: #fff;
+        }
+
+        .lang-btn.active {
+            background: var(--primary-orange);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(255, 77, 0, 0.3);
         }
 
         .messages { 
@@ -151,7 +191,7 @@
             background: #09090c;
         }
         
-        button { 
+        button.send-btn { 
             background: linear-gradient(135deg, var(--primary-orange), #ff6200); 
             border: none; 
             color: #fff; 
@@ -164,11 +204,11 @@
             box-shadow: 0 4px 15px rgba(255, 77, 0, 0.2);
         }
         
-        button:hover { 
+        button.send-btn:hover { 
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(255, 77, 0, 0.3);
         }
-        button:active { transform: translateY(0); }
+        button.send-btn:active { transform: translateY(0); }
 
         .messages::-webkit-scrollbar { width: 5px; }
         .messages::-webkit-scrollbar-track { background: transparent; }
@@ -190,29 +230,64 @@
 
 <div class="chat-box">
     <div class="header">
-        <div class="header-avatar">
-            <i class="fa-solid fa-bolt"></i>
+        <div class="header-left">
+            <div class="header-avatar">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+            <div class="header-info">
+                <h2>Next Frame Executive AI</h2>
+                <div class="status-tag"><span class="status-dot"></span> Active Assistant</div>
+            </div>
         </div>
-        <div class="header-info">
-            <h2>Next Frame Executive AI</h2>
-            <div class="status-tag"><span class="status-dot"></span> Active Assistant</div>
+        <!-- Language Switcher Bar -->
+        <div class="lang-switcher">
+            <button onclick="setLanguage('en')" id="btn-en" class="lang-btn active">ENG</button>
+            <button onclick="setLanguage('si')" id="btn-si" class="lang-btn">සිං</button>
+            <button onclick="setLanguage('ta')" id="btn-ta" class="lang-btn">தமிழ்</button>
         </div>
     </div>
 
     <div class="messages" id="chatWindow">
-        <div class="msg bot">Hello! I am the Next Frame AI assistant. You can ask me anything about Next Frame Digital services, packages, or crew! How can I help you today?</div>
+        <div class="msg bot" id="initial-msg">Hello! I am Nova, the Next Frame Digital AI assistant. How can I help you today?</div>
     </div>
 
     <div class="input-area">
         <div class="input-wrapper">
-            <input type="text" id="userInput" placeholder="Ask any question here..." autocomplete="off" onkeypress="handleKeyPress(event)">
+            <input type="text" id="userInput" placeholder="Ask anything about our services or general..." autocomplete="off" onkeypress="handleKeyPress(event)">
         </div>
-        <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
 </div>
 
 <script>
-    async function sendMessage() {
+    let currentLang = 'en';
+
+    const translations = {
+        en: {
+            placeholder: "Ask anything about our services or general...",
+            welcome: "Hello! I am Nova, the Next Frame Digital AI assistant. How can I help you today?",
+            processing: "Thinking..."
+        },
+        si: {
+            placeholder: "අපගේ සේවාවන් හෝ වෙනත් ඕනෑම දෙයක් අසන්න...",
+            welcome: "ආයුබෝවන්! මම Next Frame Digital හි සහකාරකයා වෙමි. මම ඔබට උදව් කරන්නේ කෙසේද?",
+            processing: "සිතමින් පවතී..."
+        },
+        ta: {
+            placeholder: "எங்கள் சேவைகள் பற்றி கேட்கவும்...",
+            welcome: "வணக்கம்! நான் Next Frame Digital உதவியாளர். உங்களுக்கு எப்படி உதவ முடியும்?",
+            processing: "யோசிக்கிறது..."
+        }
+    };
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`btn-${lang}`).classList.add('active');
+        document.getElementById('userInput').placeholder = translations[lang].placeholder;
+    }
+
+    function sendMessage() {
         const userInput = document.getElementById('userInput');
         const text = userInput.value.trim();
         
@@ -221,27 +296,68 @@
         appendMessage(text, 'user');
         userInput.value = '';
 
-        const thinkingDiv = appendMessage('<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...', 'bot');
+        const thinkingDiv = appendMessage(`<i class="fa-solid fa-circle-notch fa-spin"></i> ${translations[currentLang].processing}`, 'bot');
 
-        // Simulate intelligent response for Next Frame Digital context
         setTimeout(() => {
-            const query = text.toLowerCase();
-            let reply = "I'm here to assist you with Next Frame Digital productions! For direct bookings or urgent inquiries, you can reach us at 0705131882.";
-
-            if (query.includes('ceo') || query.includes('founder') || query.includes('methun')) {
-                reply = "The CEO & Creative Director of Next Frame Digital is Methun Sathsara, and our Co-CEO & Lead Videographer is Venura Sapumal.";
-            } else if (query.includes('team') || query.includes('crew') || query.includes('members')) {
-                reply = "Our core creative team consists of Methun Sathsara (CEO), Venura Sapumal (Lead Videographer), Sanuja Savithma (Lighting/Photo), Lovindu Erandith (Photo/Video), and Kavindu Geethanjana (Graphics).";
-            } else if (query.includes('service') || query.includes('package') || query.includes('work') || query.includes('video') || query.includes('wedding') || query.includes('shoot')) {
-                reply = "Next Frame Digital specializes in Cinematic Films, Commercial Ads, and Premium Event Coverages. We utilize advanced tools like DaVinci Resolve workflows and DJI RS 3/4 Pro gimbals to deliver top-tier results!";
-            } else if (query.includes('contact') || query.includes('number') || query.includes('call') || query.includes('phone')) {
-                reply = "You can contact Next Frame Digital directly via hotline at 0705131882 for your media production needs.";
-            } else if (query.includes('hi') || query.includes('hello') || query.includes('hey')) {
-                reply = "Hello there! Welcome to Next Frame Digital. How can our production team assist you today?";
-            }
-
+            const reply = generateSmartResponse(text);
             thinkingDiv.innerHTML = reply;
-        }, 1000);
+        }, 500);
+    }
+
+    function generateSmartResponse(input) {
+        const q = input.toLowerCase();
+
+        // 1. Next Frame Digital Company Details
+        if (q.includes('ceo') || q.includes('director') || q.includes('methun')) {
+            return "Next Frame Digital හි CEO සහ Creative Director ලෙස කටයුතු කරන්නේ **Methun Sathsara** වේ.";
+        } 
+        else if (q.includes('team') || q.includes('crew') || q.includes('kauda') || q.includes('kauwda')) {
+            return "Next Frame Digital ප්‍රධාන කණ්ඩායම:<br>- CEO & Creative Director: Methun Sathsara<br>- Co-CEO & Lead Videographer: Venura Sapumal<br>- Crew: Sanuja Savithma, Lovindu Erandith, Kavindu Geethanjana";
+        } 
+        else if (q.includes('service') || q.includes('services') || q.includes('wedak') || q.includes('karanne')) {
+            return "අපි ලබා දෙන ප්‍රධාන සේවාවන්:<br>- Cinematic Films & Commercial Ads<br>- Premium Event Coverage<br>- Advanced DaVinci Resolve Post-Production<br>- Professional DJI RS 3/4 Pro Gimbal Workflows";
+        } 
+        else if (q.includes('contact') || q.includes('number') || q.includes('call') || q.includes('katha') || q.includes('anaya')) {
+            return "ඔබට අපව සම්බන්ධ කරගත හැකි දුරකථන අංකය: **0705131882**";
+        }
+
+        // 2. Greetings
+        else if (q.includes('hello') || q.includes('hi') || q.includes('ayubowan') || q.includes('ආයුබෝවන්') || q.includes('kohomada')) {
+            return "ආයුබෝවන්! Next Frame Digital වෙත සාදරයෙන් පිළිගනිමු. මම ඔබේ සහකාරකයා වෙමි. ඔබට අවශ්‍ය කුමන ආකාරයේ උදව්වක්ද?";
+        }
+
+        // 3. Technical & Software (DaVinci, Editing, Gimbals)
+        else if (q.includes('davinci') || q.includes('resolve') || q.includes('color grading')) {
+            return "DaVinci Resolve යනු වර්ණ සංශෝධනය (Color Grading) සහ සිනමාත්මක පෝස්ට්-ප්‍රඩක්ෂන් සඳහා ලෝකයේ ඇති ප්‍රබලම මෘදුකාංගයකි. Next Frame Digital හි අපගේ ප්‍රධාන සංස්කරණ කටයුතු සිදුකෙරෙන්නේ මෙහිදීය.";
+        }
+        else if (q.includes('gimbal') || q.includes('dji') || q.includes('rs3') || q.includes('rs4')) {
+            return "සිනමාත්මක කැමරා චලන සහ ස්ථාවරත්වය සඳහා DJI RS 3 Pro සහ RS 4 Pro ගිම්බල් පද්ධති අපගේ දෛනික නිෂ්පාදන සඳහා යොදාගනී.";
+        }
+        else if (q.includes('capcut') || q.includes('editing software')) {
+            return "CapCut PC යනු වේගවත් සමාජ මාධ්‍ය වීඩියෝ සංස්කරණය සඳහා ඉතා පහසු සහ ප්‍රයෝජනවත් මෘදුකාංගයකි.";
+        }
+
+        // 4. General Knowledge & Tech Questions
+        else if (q.includes('javascript') || q.includes('code') || q.includes('programming') || q.includes('web')) {
+            return "වෙබ් සංවර්ධනය (Web Development) සහ කෝඩිං යනු ඩිජිටල් අවකාශයේ ඉතා වැදගත් අංශයකි. HTML, CSS සහ JavaScript හරහා ඕනෑම නවීන වෙබ් අඩවියක් නිර්මාණය කළ හැක.";
+        }
+        else if (q.includes('sri lanka') || q.includes('ශ්‍රී ලංකා')) {
+            return "ශ්‍රී ලංකාව යනු දකුණු ආසියාවේ පිහිටි සුන්දර දූපත් රටකි. චිත්‍රපට නිෂ්පාදන, සංචාරක කර්මාන්තය සහ ඩිජිටල් මාධ්‍ය ක්ෂේත්‍රය මෙහි වේගයෙන් වර්ධනය වෙමින් පවතී.";
+        }
+        else if (q.includes('ai') || q.includes('artificial intelligence') || q.includes('bot')) {
+            return "කෘත්‍රිම බුද්ධිය (AI) මඟින් වර්තමානයේ වීඩියෝ නිෂ්පාදනය, ස්වයංක්‍රීයකරණය සහ නිර්මාණශීලී කටයුතු ඉතා පහසු කර ඇත.";
+        }
+
+        // 5. Default intelligent fallback
+        else {
+            if (currentLang === 'si') {
+                return `ඔබගේ ප්‍රශ්නය ("${input}") පිළිබඳව ස්තූතියි! Next Frame Digital හරහා ඕනෑම සේවාවක් හෝ විස්තරයක් සඳහා 0705131882 අංකයට අමතන්න.`;
+            } else if (currentLang === 'ta') {
+                return `உங்கள் கேள்விக்கு நன்றி ("${input}"). மேலும் விவரங்களுக்கு 0705131882 என்ற எண்ணைத் தொடர்பு கொள்ளவும்.`;
+            } else {
+                return `Thank you for your question ("${input}"). For more details about Next Frame Digital services, please call 0705131882.`;
+            }
+        }
     }
 
     function appendMessage(text, sender) {

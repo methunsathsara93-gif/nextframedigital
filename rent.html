@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Frame Gear Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #070708;
+            --panel-dark: #111115;
+            --primary-orange: #ff4d00;
+            --text-main: #f3f4f6;
+            --text-muted: #858699;
+            --glass-border: rgba(255, 77, 0, 0.15);
+            --card-bg: #111115;
+            --input-bg: #0d0d11;
+        }
+
+        [data-theme="light"] {
+            --bg-dark: #f4f5f7;
+            --panel-dark: #ffffff;
+            --primary-orange: #ff4d00;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --glass-border: rgba(255, 77, 0, 0.2);
+            --card-bg: #ffffff;
+            --input-bg: #f0f2f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.3s, color 0.3s; }
+        body { background: var(--bg-dark); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Top Header Hub */
+        .hub-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            background: var(--panel-dark);
+            padding: 20px 25px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .hub-title h1 { font-family: 'Space Grotesk', sans-serif; font-size: 26px; color: var(--text-main); margin-bottom: 4px; }
+        .hub-title h1 span { color: var(--primary-orange); }
+        .hub-title p { color: var(--text-muted); font-size: 13px; }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .theme-toggle, .cart-counter-btn, .become-seller-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            text-decoration: none;
+        }
+        .become-seller-btn {
+            background: linear-gradient(135deg, var(--primary-orange), #ff6200);
+            color: #fff;
+            border: none;
+        }
+        .theme-toggle:hover, .cart-counter-btn:hover { border-color: var(--primary-orange); }
+        .become-seller-btn:hover { opacity: 0.9; }
+        .cart-badge {
+            background: var(--primary-orange);
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        /* Quick Filter Category Pills */
+        .quick-pills {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        .pill-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .pill-btn.active, .pill-btn:hover {
+            background: var(--primary-orange);
+            color: #fff;
+            border-color: var(--primary-orange);
+        }
+
+        /* Layout with Sidebar & Grid */
+        .layout-wrapper {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 30px;
+        }
+        @media(max-width: 850px) {
+            .layout-wrapper { grid-template-columns: 1fr; }
+        }
+
+        /* Sidebar Filters */
+        .sidebar {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            height: fit-content;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px;
+        }
+        .sidebar-header h3 { font-size: 14px; font-weight: 700; letter-spacing: 1px; color: var(--primary-orange); }
+        .clear-btn { font-size: 12px; color: var(--text-muted); background: none; border: none; cursor: pointer; font-weight: 600; }
+        .clear-btn:hover { color: var(--text-main); text-decoration: underline; }
+
+        .filter-section { margin-bottom: 20px; }
+        .filter-section label { font-size: 11px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 8px; text-transform: uppercase; }
+        
+        .filter-section select, .filter-section input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 8px;
+            outline: none;
+            font-size: 13px;
+        }
+        .filter-section select:focus, .filter-section input:focus { border-color: var(--primary-orange); }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .checkbox-label input { width: auto; cursor: pointer; accent-color: var(--primary-orange); }
+        .checkbox-label:hover { color: var(--text-main); }
+
+        /* Gear Content Grid */
+        .content-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .result-count { font-size: 13px; color: var(--text-muted); }
+        .sort-select {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .gear-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+        }
+
+        .gear-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .gear-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(255, 77, 0, 0.15);
+        }
+
+        .gear-img {
+            width: 100%;
+            height: 160px;
+            background: var(--input-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 35px;
+            position: relative;
+            cursor: pointer;
+        }
+        .location-tag {
+            position: absolute;
+            top: 10px; left: 10px;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #00ffaa;
+            border: 1px solid rgba(0, 255, 170, 0.2);
+        }
+
+        .gear-info { padding: 15px; }
+        .gear-info h3 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; margin-bottom: 4px; color: var(--text-main); cursor: pointer; }
+        .gear-info h3:hover { color: var(--primary-orange); }
+        .owner-info { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+        .owner-info span { color: var(--text-main); font-weight: 500; }
+        .condition-tag { font-size: 10px; color: #ffb703; margin-bottom: 10px; font-weight: 600; }
+
+        .days-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--input-bg);
+            padding: 6px 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid var(--glass-border);
+        }
+        .days-box label { font-size: 11px; color: var(--text-muted); }
+        .days-box input {
+            width: 45px;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            text-align: center;
+            padding: 3px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .price { font-size: 14px; font-weight: 700; color: var(--text-main); }
+
+        .action-buttons { display: flex; gap: 6px; margin-bottom: 6px; }
+        .rent-btn {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary-orange), #ff6200);
+            border: none; color: #fff;
+            padding: 8px; border-radius: 8px;
+            font-size: 11px; font-weight: 700; cursor: pointer;
+            text-align: center; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+            transition: opacity 0.2s;
+        }
+        .call-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 8px 10px; border-radius: 8px;
+            font-size: 11px; font-weight: 700; cursor: pointer;
+            text-decoration: none;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .rent-btn:hover { opacity: 0.9; }
+        .call-btn:hover { border-color: var(--primary-orange); }
+
+        .wa-direct-btn {
+            width: 100%;
+            background: rgba(37, 211, 102, 0.1);
+            border: 1px solid rgba(37, 211, 102, 0.3);
+            color: #25d366;
+            padding: 6px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            text-decoration: none;
+        }
+        .wa-direct-btn:hover { background: #25d366; color: #fff; }
+
+        /* Site Footer Info */
+        .site-footer {
+            margin-top: 50px;
+            background: var(--panel-dark);
+            border-top: 1px solid var(--glass-border);
+            padding: 40px 20px 20px 20px;
+        }
+        .footer-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .footer-col h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 6px;
+        }
+        .footer-col h4::after {
+            content: '';
+            position: absolute;
+            left: 0; bottom: 0;
+            width: 30px; height: 2px;
+            background: var(--primary-orange);
+        }
+        .footer-col p, .footer-col a {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+            line-height: 1.5;
+            cursor: pointer;
+        }
+        .footer-col a:hover { color: var(--primary-orange); }
+        .footer-socials {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .footer-socials a {
+            width: 34px; height: 34px;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+        .footer-socials a:hover {
+            background: var(--primary-orange);
+            border-color: var(--primary-orange);
+            color: #fff;
+        }
+        .footer-bottom-bar {
+            max-width: 1100px;
+            margin: 0 auto;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .footer-bottom-bar span span { color: var(--primary-orange); font-weight: 700; }
+
+        /* Modals & Overlays */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+            display: none;
+        }
+        .overlay.active { display: block; }
+
+        /* Cart Modal Drawer */
+        .cart-modal {
+            position: fixed;
+            top: 0; right: -400px;
+            width: 380px; height: 100%;
+            background: var(--card-bg);
+            border-left: 1px solid var(--glass-border);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s ease;
+        }
+        .cart-modal.open { right: 0; }
+        .cart-header, .modal-header-custom {
+            padding: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-header h3, .modal-header-custom h3 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; color: var(--text-main); }
+        .close-cart, .close-modal-btn { background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; }
+        .close-cart:hover, .close-modal-btn:hover { color: var(--text-main); }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .cart-item-card {
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-item-info h4 { font-size: 13px; color: var(--text-main); margin-bottom: 3px; }
+        .cart-item-info p { font-size: 11px; color: var(--text-muted); }
+        .remove-item { background: none; border: none; color: #ff4d00; cursor: pointer; font-size: 14px; }
+
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid var(--glass-border);
+            background: var(--panel-dark);
+        }
+        .cart-total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .checkout-whatsapp {
+            width: 100%;
+            background: #25d366;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .checkout-whatsapp:hover { opacity: 0.9; }
+
+        /* Become a Seller Modal Style */
+        .seller-modal {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%; max-width: 480px;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            z-index: 1001;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .seller-modal.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .seller-form-body {
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 8px;
+            outline: none;
+            font-size: 13px;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--primary-orange); }
+
+        /* Quick View Modal */
+        .quickview-modal {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%; max-width: 450px;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 25px;
+            z-index: 1001;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .quickview-modal.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .quickview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .quickview-header h3 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; color: var(--text-main); }
+        .close-qv { background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; }
+
+        .copy-details-btn {
+            margin-top: 15px;
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .copy-details-btn:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- Top Header Hub -->
+        <div class="hub-header">
+            <div class="hub-title">
+                <h1>Next Frame <span>Gear Hub</span></h1>
+                <p>Professional Cinema & Photography Equipment Rental Platform</p>
+            </div>
+            <div class="header-actions">
+                <button class="become-seller-btn" onclick="openSellerModal()"><i class="fa-solid fa-store"></i> Become a Seller</button>
+                <button class="cart-counter-btn" onclick="toggleCart()">
+                    <i class="fa-solid fa-cart-shopping"></i> Cart 
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="themeIcon"></i></button>
+            </div>
+        </div>
+
+        <!-- Quick Filter Pills -->
+        <div class="quick-pills">
+            <button class="pill-btn active" onclick="filterByPill('all', this)">All Gear</button>
+            <button class="pill-btn" onclick="filterByPill('camera', this)">Cameras</button>
+            <button class="pill-btn" onclick="filterByPill('lens', this)">Lenses</button>
+            <button class="pill-btn" onclick="filterByPill('lighting', this)">Lighting</button>
+            <button class="pill-btn" onclick="filterByPill('gimbal', this)">Gimbals</button>
+            <button class="pill-btn" onclick="filterByPill('audio', this)">Audio</button>
+        </div>
+
+        <div class="layout-wrapper">
+            <!-- Sidebar Filters -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h3>FILTERS</h3>
+                    <button class="clear-btn" onclick="clearAllFilters()">CLEAR ALL</button>
+                </div>
+
+                <!-- Search Filter -->
+                <div class="filter-section">
+                    <label>Search Gear</label>
+                    <input type="text" id="searchInput" placeholder="Search items..." onkeyup="filterGear()">
+                </div>
+
+                <!-- Category Checkboxes -->
+                <div class="filter-section">
+                    <label>Category</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label"><input type="checkbox" name="cat" value="camera" onchange="filterGear()"> Photography (Cameras)</label>
+                        <label class="checkbox-label"><input type="checkbox" name="cat" value="lens" onchange="filterGear()"> Lenses & Optics</label>
+                        <label class="checkbox-label"><input type="checkbox" name="cat" value="gimbal" onchange="filterGear()"> Gimbals & Stabilization</label>
+                        <label class="checkbox-label"><input type="checkbox" name="cat" value="lighting" onchange="filterGear()"> Lighting</label>
+                        <label class="checkbox-label"><input type="checkbox" name="cat" value="audio" onchange="filterGear()"> Audio & Mics</label>
+                    </div>
+                </div>
+
+                <!-- Condition Filter -->
+                <div class="filter-section">
+                    <label>Condition</label>
+                    <select id="conditionFilter" onchange="filterGear()">
+                        <option value="all">All Conditions</option>
+                        <option value="brand-new">Like Brand New</option>
+                        <option value="mint">Mint Condition</option>
+                        <option value="good">Good Condition</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Gear Content Area -->
+            <div class="content-area">
+                <div class="content-top-bar">
+                    <div class="result-count" id="resultCount">Showing available professional gear</div>
+                    <select class="sort-select" id="sortPrice" onchange="sortGearItems()">
+                        <option value="default">Sort By: Featured</option>
+                        <option value="low-high">Price: Low to High</option>
+                        <option value="high-low">Price: High to Low</option>
+                    </select>
+                </div>
+
+                <div class="gear-grid" id="gearContainer">
+                    
+                    <!-- Item 1: Nikon D850 -->
+                    <div class="gear-card" data-category="camera" data-condition="brand-new" data-name="nikon d850 dslr camera body only" data-price="5500">
+                        <div class="gear-img" onclick="openQuickView('Nikon D850 DSLR', 'Kasun Perera', 'Like Brand New', 'Rs. 5,500', 'Full-frame 45.7MP sensor, 4K UHD video capability, extreme durability for professional cinema & commercial photography.')">
+                            <span class="location-tag"><i class="fa-solid fa-check-circle"></i> Available</span>
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <div class="gear-info">
+                            <h3 onclick="openQuickView('Nikon D850 DSLR', 'Kasun Perera', 'Like Brand New', 'Rs. 5,500', 'Full-frame 45.7MP sensor, 4K UHD video capability, extreme durability for professional cinema & commercial photography.')">Nikon D850 DSLR</h3>
+                            <div class="owner-info">Owner: <span>Kasun Perera</span></div>
+                            <div class="condition-tag"><i class="fa-solid fa-circle-check"></i> Like Brand New</div>
+                            
+                            <div class="days-box">
+                                <label>Days:</label>
+                                <input type="number" id="days-1" value="1" min="1" max="30" onchange="updateTotal(1, 5500)">
+                            </div>
+
+                            <div class="price-row">
+                                <span>Per Night</span>
+                                <div class="price" id="price-1">Rs. 5,500</div>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="rent-btn" onclick="addToCart('Nikon D850 DSLR', 'Kasun Perera', 5500, 1)"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+                                <a href="tel:0705131882" class="call-btn"><i class="fa-solid fa-phone"></i></a>
+                            </div>
+                            <button class="wa-direct-btn" onclick="bookDirectWhatsApp('Nikon D850 DSLR', 'Kasun Perera', 5500, 1)"><i class="fa-brands fa-whatsapp"></i> Rent via WhatsApp</button>
+                        </div>
+                    </div>
+
+                    <!-- Item 2: Nikon D5600 -->
+                    <div class="gear-card" data-category="camera" data-condition="mint" data-name="nikon d5600 dslr camera body only" data-price="3500">
+                        <div class="gear-img" onclick="openQuickView('Nikon D5600 DSLR', 'Nuwan Silva', 'Mint Condition', 'Rs. 3,500', 'Lightweight DX-format camera with touchscreen vari-angle display, perfect for events and student projects.')">
+                            <span class="location-tag"><i class="fa-solid fa-check-circle"></i> Available</span>
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <div class="gear-info">
+                            <h3 onclick="openQuickView('Nikon D5600 DSLR', 'Nuwan Silva', 'Mint Condition', 'Rs. 3,500', 'Lightweight DX-format camera with touchscreen vari-angle display, perfect for events and student projects.')">Nikon D5600 DSLR</h3>
+                            <div class="owner-info">Owner: <span>Nuwan Silva</span></div>
+                            <div class="condition-tag"><i class="fa-solid fa-circle-check"></i> Mint Condition</div>
+                            
+                            <div class="days-box">
+                                <label>Days:</label>
+                                <input type="number" id="days-2" value="1" min="1" max="30" onchange="updateTotal(2, 3500)">
+                            </div>
+
+                            <div class="price-row">
+                                <span>Per Night</span>
+                                <div class="price" id="price-2">Rs. 3,500</div>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="rent-btn" onclick="addToCart('Nikon D5600 DSLR', 'Nuwan Silva', 3500, 2)"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+                                <a href="tel:0705131882" class="call-btn"><i class="fa-solid fa-phone"></i></a>
+                            </div>
+                            <button class="wa-direct-btn" onclick="bookDirectWhatsApp('Nikon D5600 DSLR', 'Nuwan Silva', 3500, 2)"><i class="fa-brands fa-whatsapp"></i> Rent via WhatsApp</button>
+                        </div>
+                    </div>
+
+                    <!-- Item 3: Sony 24-70mm Lens -->
+                    <div class="gear-card" data-category="lens" data-condition="brand-new" data-name="sony 24-70mm gm ii lens" data-price="5000">
+                        <div class="gear-img" onclick="openQuickView('Sony 24-70mm GM II', 'Charith Mendis', 'Like Brand New', 'Rs. 5,000', 'Flagship E-mount standard zoom lens offering astonishing resolution and beautiful bokeh for commercial shoots.')">
+                            <span class="location-tag"><i class="fa-solid fa-check-circle"></i> Available</span>
+                            <i class="fa-solid fa-camera-retro"></i>
+                        </div>
+                        <div class="gear-info">
+                            <h3 onclick="openQuickView('Sony 24-70mm GM II', 'Charith Mendis', 'Like Brand New', 'Rs. 5,000', 'Flagship E-mount standard zoom lens offering astonishing resolution and beautiful bokeh for commercial shoots.')">Sony 24-70mm GM II</h3>
+                            <div class="owner-info">Owner: <span>Charith Mendis</span></div>
+                            <div class="condition-tag"><i class="fa-solid fa-circle-check"></i> Like Brand New</div>
+                            
+                            <div class="days-box">
+                                <label>Days:</label>
+                                <input type="number" id="days-3" value="1" min="1" max="30" onchange="updateTotal(3, 5000)">
+                            </div>
+
+                            <div class="price-row">
+                                <span>Per Night</span>
+                                <div class="price" id="price-3">Rs. 5,000</div>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="rent-btn" onclick="addToCart('Sony 24-70mm GM II', 'Charith Mendis', 5000, 3)"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+                                <a href="tel:0705131882" class="call-btn"><i class="fa-solid fa-phone"></i></a>
+                            </div>
+                            <button class="wa-direct-btn" onclick="bookDirectWhatsApp('Sony 24-70mm GM II', 'Charith Mendis', 5000, 3)"><i class="fa-brands fa-whatsapp"></i> Rent via WhatsApp</button>
+                        </div>
+                    </div>
+
+                    <!-- Item 4: Aputure Light -->
+                    <div class="gear-card" data-category="lighting" data-condition="good" data-name="aputure 300d mark ii light" data-price="3500">
+                        <div class="gear-img" onclick="openQuickView('Aputure 300d Mark II', 'Thilina Jayalath', 'Good Condition', 'Rs. 3,500', 'High-output LED light fixture with DMX support, wireless control, and incredible daylight-balanced brightness.')">
+                            <span class="location-tag"><i class="fa-solid fa-check-circle"></i> Available</span>
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </div>
+                        <div class="gear-info">
+                            <h3 onclick="openQuickView('Aputure 300d Mark II', 'Thilina Jayalath', 'Good Condition', 'Rs. 3,500', 'High-output LED light fixture with DMX support, wireless control, and incredible daylight-balanced brightness.')">Aputure 300d Mark II</h3>
+                            <div class="owner-info">Owner: <span>Thilina Jayalath</span></div>
+                            <div class="condition-tag"><i class="fa-solid fa-circle-check"></i> Good Condition</div>
+                            
+                            <div class="days-box">
+                                <label>Days:</label>
+                                <input type="number" id="days-4" value="1" min="1" max="30" onchange="updateTotal(4, 3500)">
+                            </div>
+
+                            <div class="price-row">
+                                <span>Per Night</span>
+                                <div class="price" id="price-4">Rs. 3,500</div>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="rent-btn" onclick="addToCart('Aputure 300d Mark II', 'Thilina Jayalath', 3500, 4)"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+                                <a href="tel:0705131882" class="call-btn"><i class="fa-solid fa-phone"></i></a>
+                            </div>
+                            <button class="wa-direct-btn" onclick="bookDirectWhatsApp('Aputure 300d Mark II', 'Thilina Jayalath', 3500, 4)"><i class="fa-brands fa-whatsapp"></i> Rent via WhatsApp</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Website Footer Details -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>Next Frame Digital</h4>
+                <p>Professional cinema equipment sharing and rental hub connecting creators and filmmakers across Sri Lanka.</p>
+                <div class="footer-socials">
+                    <a href="https://nextframedigital.lk" target="_blank" title="Website"><i class="fa-solid fa-globe"></i></a>
+                    <a href="https://wa.me/94705131882" target="_blank" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="tel:0705131882" title="Call Us"><i class="fa-solid fa-phone"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="https://nextframedigital.lk" target="_blank">Official Website</a>
+                <a onclick="openSellerModal()" style="color: var(--primary-orange); font-weight: 600;"><i class="fa-solid fa-store"></i> Become a Seller</a>
+                <a href="tel:0705131882">Hotline: 070 513 1882</a>
+                <a href="#searchInput">Search Available Gear</a>
+            </div>
+            <div class="footer-col">
+                <h4>Support & Contact</h4>
+                <p><i class="fa-solid fa-phone" style="color:var(--primary-orange);"></i> Hotline: 070 513 1882</p>
+                <p><i class="fa-solid fa-envelope" style="color:var(--primary-orange);"></i> info@nextframedigital.lk</p>
+                <p><i class="fa-solid fa-location-dot" style="color:var(--primary-orange);"></i> Sri Lanka</p>
+            </div>
+        </div>
+        <div class="footer-bottom-bar">
+            <span>&copy; 2026 <span>Next Frame Digital</span> (nextframedigital.lk). All Rights Reserved.</span>
+            <span>Professional Cinema & Digital Production Hub</span>
+        </div>
+    </footer>
+
+    <!-- Become a Seller Modal -->
+    <div class="seller-modal" id="sellerModal">
+        <div class="modal-header-custom">
+            <h3><i class="fa-solid fa-store" style="color:var(--primary-orange);"></i> Join as a Gear Seller / Owner</h3>
+            <button class="close-modal-btn" onclick="closeSellerModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="seller-form-body">
+            <div class="form-group">
+                <label>Your Name / Company Name</label>
+                <input type="text" id="sellerName" placeholder="e.g. Kasun Perera">
+            </div>
+            <div class="form-group">
+                <label>WhatsApp Contact Number</label>
+                <input type="text" id="sellerPhone" placeholder="e.g. 0712345678">
+            </div>
+            <div class="form-group">
+                <label>Gear / Item Name to List</label>
+                <input type="text" id="sellerGear" placeholder="e.g. Sony FX3 Camera Body">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="sellerCategory">
+                    <option value="Cameras">Cameras</option>
+                    <option value="Lenses">Lenses & Optics</option>
+                    <option value="Gimbals">Gimbals & Stabilization</option>
+                    <option value="Lighting">Lighting</option>
+                    <option value="Audio">Audio & Mics</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Condition</label>
+                <select id="sellerCondition">
+                    <option value="Like Brand New">Like Brand New</option>
+                    <option value="Mint Condition">Mint Condition</option>
+                    <option value="Good Condition">Good Condition</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Rental Price Per Day (Rs.)</label>
+                <input type="text" id="sellerPrice" placeholder="e.g. 6000">
+            </div>
+            <button class="checkout-whatsapp" onclick="submitSellerForm()">
+                <i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i> Submit Listing via WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div class="quickview-modal" id="quickViewModal">
+        <div class="quickview-header">
+            <h3 id="qvTitle">Gear Details</h3>
+            <button class="close-qv" onclick="closeQuickView()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="qvContent" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; display: flex; flex-direction: column; gap: 8px;">
+            <!-- Content injected dynamically -->
+        </div>
+        <button class="copy-details-btn" onclick="copyCurrentGearDetails()"><i class="fa-solid fa-copy"></i> Copy Details</button>
+    </div>
+
+    <!-- Cart Drawer Modal -->
+    <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-header">
+            <h3>Your Rental Cart</h3>
+            <button class="close-cart" onclick="toggleCart()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items" id="cartItemsContainer">
+            <p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 20px;">Your cart is empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total-row">
+                <span>Total Estimate:</span>
+                <span id="cartTotalPrice" style="color: var(--primary-orange);">Rs. 0</span>
+            </div>
+            <button class="checkout-whatsapp" onclick="checkoutWhatsApp()">
+                <i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i> Send Order via WhatsApp
+            </button>
+        </div>
+    </div>
+
+<script>
+    let cart = [];
+    let lastCopiedText = "";
+
+    // Theme Switcher Logic
+    function toggleTheme() {
+        const html = document.documentElement;
+        const themeIcon = document.getElementById('themeIcon');
+        if (html.getAttribute('data-theme') === 'dark') {
+            html.setAttribute('data-theme', 'light');
+            themeIcon.className = 'fa-solid fa-sun';
+        } else {
+            html.setAttribute('data-theme', 'dark');
+            themeIcon.className = 'fa-solid fa-moon';
+        }
+    }
+
+    function updateTotal(id, dailyRate) {
+        const daysInput = document.getElementById(`days-${id}`).value;
+        const total = daysInput * dailyRate;
+        document.getElementById(`price-${id}`).innerText = `Rs. ${total.toLocaleString()}`;
+    }
+
+    function toggleCart() {
+        document.getElementById('cartModal').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+
+    function openSellerModal() {
+        document.getElementById('sellerModal').classList.add('open');
+        document.getElementById('overlay').classList.add('active');
+    }
+
+    function closeSellerModal() {
+        document.getElementById('sellerModal').classList.remove('open');
+        document.getElementById('overlay').classList.remove('active');
+    }
+
+    function closeAllModals() {
+        document.getElementById('cartModal').classList.remove('open');
+        document.getElementById('sellerModal').classList.remove('open');
+        document.getElementById('quickViewModal').classList.remove('open');
+        document.getElementById('overlay').classList.remove('active');
+    }
+
+    function submitSellerForm() {
+        const name = document.getElementById('sellerName').value.trim();
+        const phone = document.getElementById('sellerPhone').value.trim();
+        const gear = document.getElementById('sellerGear').value.trim();
+        const category = document.getElementById('sellerCategory').value;
+        const condition = document.getElementById('sellerCondition').value;
+        const price = document.getElementById('sellerPrice').value.trim();
+
+        if (!name || !phone || !gear || !price) {
+            alert('කරුණාකර හිස් තැන් සියල්ල පුරවන්න!');
+            return;
+        }
+
+        const message = `Hello Next Frame Digital (nextframedigital.lk), I want to register as a Seller and list my gear:%0A%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Gear:* ${gear}%0A*Category:* ${category}%0A*Condition:* ${condition}%0A*Price per day:* Rs. ${price}%0A%0APlease approve my listing.`;
+        
+        window.open(`https://wa.me/94705131882?text=${message}`, '_blank');
+        closeSellerModal();
+    }
+
+    function openQuickView(name, owner, condition, price, desc) {
+        document.getElementById('qvTitle').innerText = name;
+        document.getElementById('qvContent').innerHTML = `
+            <p><strong style="color:var(--text-main);">Owner:</strong> ${owner}</p>
+            <p><strong style="color:var(--text-main);">Condition:</strong> ${condition}</p>
+            <p><strong style="color:var(--text-main);">Rate:</strong> <span style="color:var(--primary-orange); font-weight:700;">${price} per night</span></p>
+            <hr style="border:0; border-top:1px solid var(--glass-border); margin: 5px 0;">
+            <p><strong style="color:var(--text-main);">Description:</strong> ${desc}</p>
+        `;
+        lastCopiedText = `Gear: ${name}\nOwner: ${owner}\nCondition: ${condition}\nRate: ${price} per night\nDescription: ${desc}\n\n---\nNext Frame Digital (nextframedigital.lk)`;
+        
+        document.getElementById('quickViewModal').classList.add('open');
+        document.getElementById('overlay').classList.add('active');
+    }
+
+    function closeQuickView() {
+        document.getElementById('quickViewModal').classList.remove('open');
+        document.getElementById('overlay').classList.remove('active');
+    }
+
+    function copyCurrentGearDetails() {
+        navigator.clipboard.writeText(lastCopiedText).then(() => {
+            alert('Gear details copied to clipboard!');
+        });
+    }
+
+    function filterByPill(category, btn) {
+        document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if(category === 'all') {
+            document.querySelectorAll('input[name="cat"]').forEach(cb => cb.checked = false);
+        } else {
+            document.querySelectorAll('input[name="cat"]').forEach(cb => {
+                cb.checked = (cb.value === category);
+            });
+        }
+        filterGear();
+    }
+
+    function addToCart(gearName, ownerName, dailyRate, id) {
+        const days = parseInt(document.getElementById(`days-${id}`).value);
+        const totalPrice = days * dailyRate;
+
+        const existingIndex = cart.findIndex(item => item.name === gearName);
+        if (existingIndex > -1) {
+            cart[existingIndex].days = days;
+            cart[existingIndex].totalPrice = totalPrice;
+        } else {
+            cart.push({ name: gearName, owner: ownerName, days: days, totalPrice: totalPrice });
+        }
+
+        updateCartUI();
+        toggleCart();
+    }
+
+    function bookDirectWhatsApp(gearName, ownerName, dailyRate, id) {
+        const days = parseInt(document.getElementById(`days-${id}`).value);
+        const totalPrice = days * dailyRate;
+        const message = `Hello Next Frame Digital (nextframedigital.lk), I want to rent this item:%0A%0A*${gearName}* (Owner: ${ownerName}) - ${days} day(s) - *Rs. ${totalPrice.toLocaleString()}*%0APlease check availability.`;
+        window.open(`https://wa.me/94705131882?text=${message}`, '_blank');
+    }
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        const container = document.getElementById('cartItemsContainer');
+        const badge = document.getElementById('cartBadge');
+        const totalContainer = document.getElementById('cartTotalPrice');
+
+        badge.innerText = cart.length;
+
+        if (cart.length === 0) {
+            container.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 20px;">Your cart is empty.</p>`;
+            totalContainer.innerText = `Rs. 0`;
+            return;
+        }
+
+        let html = '';
+        let grandTotal = 0;
+
+        cart.forEach((item, index) => {
+            grandTotal += item.totalPrice;
+            html += `
+                <div class="cart-item-card">
+                    <div class="cart-item-info">
+                        <h4>${item.name}</h4>
+                        <p>Owner: ${item.owner} | <strong>${item.days} day(s)</strong></p>
+                        <p style="color: var(--primary-orange); margin-top: 3px; font-weight: 700;">Rs. ${item.totalPrice.toLocaleString()}</p>
+                    </div>
+                    <button class="remove-item" onclick="removeFromCart(${index})"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+        totalContainer.innerText = `Rs. ${grandTotal.toLocaleString()}`;
+    }
+
+    function checkoutWhatsApp() {
+        if (cart.length === 0) {
+            alert('Your cart is empty!');
+            return;
+        }
+
+        let message = `Hello Next Frame Digital (nextframedigital.lk), I want to rent the following gear items:%0A`;
+        let grandTotal = 0;
+
+        cart.forEach((item, index) => {
+            message += `%0A${index + 1}. *${item.name}* (Owner: ${item.owner}) - ${item.days} day(s) - Rs. ${item.totalPrice.toLocaleString()}`;
+            grandTotal += item.totalPrice;
+        });
+
+        message += `%0A%0A*Grand Total: Rs. ${grandTotal.toLocaleString()}*%0APlease confirm availability.`;
+
+        const whatsappUrl = `https://wa.me/94705131882?text=${message}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    function clearAllFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('conditionFilter').value = 'all';
+        document.querySelectorAll('input[name="cat"]').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.pill-btn').forEach((b, i) => {
+            if(i === 0) b.classList.add('active');
+            else b.classList.remove('active');
+        });
+        filterGear();
+    }
+
+    function sortGearItems() {
+        const grid = document.getElementById('gearContainer');
+        const cards = Array.from(grid.getElementsByClassName('gear-card'));
+        const sortVal = document.getElementById('sortPrice').value;
+
+        cards.sort((a, b) => {
+            const priceA = parseInt(a.getAttribute('data-price'));
+            const priceB = parseInt(b.getAttribute('data-price'));
+
+            if (sortVal === 'low-high') return priceA - priceB;
+            if (sortVal === 'high-low') return priceB - priceA;
+            return 0; // default
+        });
+
+        cards.forEach(card => grid.appendChild(card));
+    }
+
+    function filterGear() {
+        const searchVal = document.getElementById('searchInput').value.toLowerCase();
+        const conditionVal = document.getElementById('conditionFilter').value;
+        
+        const checkedCategories = Array.from(document.querySelectorAll('input[name="cat"]:checked')).map(cb => cb.value);
+        const cards = document.querySelectorAll('.gear-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const name = card.getAttribute('data-name');
+            const cat = card.getAttribute('data-category');
+            const cond = card.getAttribute('data-condition');
+            
+            const matchesSearch = name.includes(searchVal);
+            const matchesCond = (conditionVal === 'all' || cond === conditionVal);
+            const matchesSidebarCat = (checkedCategories.length === 0 || checkedCategories.includes(cat));
+
+            if (matchesSearch && matchesCond && matchesSidebarCat) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        document.getElementById('resultCount').innerText = `Showing ${visibleCount} professional gear item(s)`;
+    }
+</script>
+
+</body>
+</html>
