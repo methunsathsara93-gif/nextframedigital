@@ -477,8 +477,13 @@
             }
 
             succBox.classList.remove('hidden');
-            succBox.innerText = 'Application & Agreement submitted successfully! Redirecting to login...';
-            setTimeout(() => { switchView('login'); }, 2000);
+            succBox.innerText = 'Application & Agreement submitted successfully! Logging you in automatically...';
+            
+            // Auto login after successful signup and save session
+            setTimeout(async () => {
+                localStorage.setItem('nfd_session', JSON.stringify({ role: 'seller', email: email }));
+                loadSellerDashboard(email);
+            }, 1500);
         }
 
         async function handleLogin(e) {
@@ -726,16 +731,20 @@
             doc.setFillColor(17, 24, 39);
             doc.rect(0, 0, 210, 42, 'F');
 
+            // NEXT FRAME DIGITAL Header with Orange Underline
             doc.setTextColor(245, 158, 11);
             doc.setFontSize(20);
             doc.setFont("helvetica", "bold");
             doc.text("NEXT FRAME DIGITAL", 14, 20);
+            doc.setDrawColor(245, 158, 11);
+            doc.setLineWidth(0.8);
+            doc.line(14, 22.5, 95, 22.5);
 
             doc.setTextColor(156, 163, 175);
             doc.setFontSize(9);
             doc.setFont("helvetica", "normal");
-            doc.text("Official Gear Partner & Platform Disclaimer Agreement", 14, 27);
-            doc.text("www.nextframe.lk | contactnextframedigital@gmail.com", 14, 33);
+            doc.text("Official Gear Partner & Platform Disclaimer Agreement", 14, 28);
+            doc.text("www.nextframe.lk | contactnextframedigital@gmail.com", 14, 34);
 
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(10);
@@ -798,7 +807,7 @@
             doc.save(`NFD_Partner_Agreement_${name.replace(/\s+/g, '_')}.pdf`);
         }
 
-        // Professional PDF Statement Generator with Auto Values
+        // Professional PDF Statement Generator with Auto Values and Orange Underline
         function downloadPartnerStatementPDF(name, email, phone, gear, serials, notes, customerPayment, nfdFee, netIncome, startDate, dueDate, commissionPct) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -806,16 +815,20 @@
             doc.setFillColor(17, 24, 39);
             doc.rect(0, 0, 210, 48, 'F');
 
+            // NEXT FRAME DIGITAL Header with Orange Underline
             doc.setTextColor(245, 158, 11);
             doc.setFontSize(22);
             doc.setFont("helvetica", "bold");
             doc.text("NEXT FRAME DIGITAL", 14, 22);
+            doc.setDrawColor(245, 158, 11);
+            doc.setLineWidth(0.9);
+            doc.line(14, 24.5, 104, 24.5);
 
             doc.setTextColor(156, 163, 175);
             doc.setFontSize(10);
             doc.setFont("helvetica", "normal");
-            doc.text("Partner Commission Statement & Payout Hub", 14, 30);
-            doc.text("Web: www.nextframe.lk | Email: contactnextframedigital@gmail.com", 14, 37);
+            doc.text("Partner Commission Statement & Payout Hub", 14, 31);
+            doc.text("Web: www.nextframe.lk | Email: contactnextframedigital@gmail.com", 14, 38);
 
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(11);

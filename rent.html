@@ -6,6 +6,8 @@
     <title>Next Frame Gear Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Supabase JS Client SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-dark: #070708;
@@ -251,8 +253,25 @@
         .gear-info { padding: 15px; }
         .gear-info h3 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; margin-bottom: 4px; color: var(--text-main); cursor: pointer; }
         .gear-info h3:hover { color: var(--primary-orange); }
-        .owner-info { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+        .owner-info { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
         .owner-info span { color: var(--text-main); font-weight: 500; }
+        
+        /* Direct Star Display on Card */
+        .card-star-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #ffb703;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            background: rgba(255, 183, 3, 0.1);
+            padding: 2px 6px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 183, 3, 0.25);
+        }
+        .card-star-badge:hover { color: var(--primary-orange); border-color: var(--primary-orange); }
+
         .condition-tag { font-size: 10px; color: #ffb703; margin-bottom: 10px; font-weight: 600; }
 
         .days-box {
@@ -493,7 +512,7 @@
         .checkout-whatsapp:hover { opacity: 0.9; }
 
         /* Become a Seller Modal Style */
-        .seller-modal {
+        .seller-modal, .review-modal {
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%) scale(0.9);
@@ -510,7 +529,7 @@
             display: flex;
             flex-direction: column;
         }
-        .seller-modal.open {
+        .seller-modal.open, .review-modal.open {
             opacity: 1;
             pointer-events: auto;
             transform: translate(-50%, -50%) scale(1);
@@ -583,6 +602,41 @@
             gap: 6px;
         }
         .copy-details-btn:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+
+        /* Review System Custom Styles */
+        .star-rating { display: flex; gap: 8px; font-size: 20px; color: #555; cursor: pointer; margin-top: 5px; }
+        .star-rating i.active { color: #ffb703; }
+        .reviews-list-box {
+            max-height: 180px;
+            overflow-y: auto;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 10px;
+            background: var(--input-bg);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .review-card-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 8px;
+        }
+        .review-card-item:last-child { border-bottom: none; }
+        .review-card-header { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; }
+        .review-card-stars { color: #ffb703; font-size: 11px; }
+        .review-card-comment { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        .submit-review-btn {
+            background: var(--primary-orange);
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .submit-review-btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -666,14 +720,20 @@
                 <div class="gear-grid" id="gearContainer">
                     
                     <!-- Item 1: Nikon D850 -->
-                    <div class="gear-card" data-category="camera" data-condition="brand-new" data-name="nikon d850 dslr camera body only" data-price="5500">
+                    <div class="gear-card" data-category="camera" data-condition="brand-new" data-name="nikon d850 dslr camera body only" data-price="5500" data-seller="Kasun Perera">
                         <div class="gear-img" onclick="openQuickView('Nikon D850 DSLR', 'Kasun Perera', 'Like Brand New', 'Rs. 5,500', 'Full-frame 45.7MP sensor, 4K UHD video capability, extreme durability for professional cinema & commercial photography.')">
                             <span class="location-tag"><i class="fa-solid fa-check-circle"></i> Available</span>
                             <i class="fa-solid fa-camera"></i>
                         </div>
                         <div class="gear-info">
                             <h3 onclick="openQuickView('Nikon D850 DSLR', 'Kasun Perera', 'Like Brand New', 'Rs. 5,500', 'Full-frame 45.7MP sensor, 4K UHD video capability, extreme durability for professional cinema & commercial photography.')">Nikon D850 DSLR</h3>
-                            <div class="owner-info">Owner: <span>Kasun Perera</span></div>
+                            <div class="owner-info">
+                                <span>Owner: <span>Kasun Perera</span></span>
+                                <!-- Outside Visible Star Badge -->
+                                <span class="card-star-badge" onclick="openReviewsModal('Kasun Perera')" id="star-badge-Kasun Perera">
+                                    <i class="fa-solid fa-star"></i> <span class="rating-val">5.0</span> <span class="rating-count">(0)</span>
+                                </span>
+                            </div>
                             <div class="condition-tag"><i class="fa-solid fa-circle-check"></i> Like Brand New</div>
                             
                             <div class="days-box">
@@ -694,14 +754,20 @@
                     </div>
 
                     <!-- Item 2: Nikon D5600 -->
-                    <div class="gear-card" data-category="camera" data-condition="mint" data-name="nikon d5600 dslr camera body only" data-price="3500">
+                    <div class="gear-card" data-category="camera" data-condition="mint" data-name="nikon d5600 dslr camera body only" data-price="3500" data-seller="Nuwan Silva">
                         <div class="gear-img" onclick="openQuickView('Nikon D5600 DSLR', 'Nuwan Silva', 'Mint Condition', 'Rs. 3,500', 'Lightweight DX-format camera with touchscreen vari-angle display, perfect for events and student projects.')">
                             <span class="location-tag"><i class="fa-solid fa-check-circle"></i> Available</span>
                             <i class="fa-solid fa-camera"></i>
                         </div>
                         <div class="gear-info">
                             <h3 onclick="openQuickView('Nikon D5600 DSLR', 'Nuwan Silva', 'Mint Condition', 'Rs. 3,500', 'Lightweight DX-format camera with touchscreen vari-angle display, perfect for events and student projects.')">Nikon D5600 DSLR</h3>
-                            <div class="owner-info">Owner: <span>Nuwan Silva</span></div>
+                            <div class="owner-info">
+                                <span>Owner: <span>Nuwan Silva</span></span>
+                                <!-- Outside Visible Star Badge -->
+                                <span class="card-star-badge" onclick="openReviewsModal('Nuwan Silva')" id="star-badge-Nuwan Silva">
+                                    <i class="fa-solid fa-star"></i> <span class="rating-val">5.0</span> <span class="rating-count">(0)</span>
+                                </span>
+                            </div>
                             <div class="condition-tag"><i class="fa-solid fa-circle-check"></i> Mint Condition</div>
                             
                             <div class="days-box">
@@ -722,14 +788,20 @@
                     </div>
 
                     <!-- Item 3: Sony 24-70mm Lens -->
-                    <div class="gear-card" data-category="lens" data-condition="brand-new" data-name="sony 24-70mm gm ii lens" data-price="5000">
+                    <div class="gear-card" data-category="lens" data-condition="brand-new" data-name="sony 24-70mm gm ii lens" data-price="5000" data-seller="Charith Mendis">
                         <div class="gear-img" onclick="openQuickView('Sony 24-70mm GM II', 'Charith Mendis', 'Like Brand New', 'Rs. 5,000', 'Flagship E-mount standard zoom lens offering astonishing resolution and beautiful bokeh for commercial shoots.')">
                             <span class="location-tag"><i class="fa-solid fa-check-circle"></i> Available</span>
                             <i class="fa-solid fa-camera-retro"></i>
                         </div>
                         <div class="gear-info">
                             <h3 onclick="openQuickView('Sony 24-70mm GM II', 'Charith Mendis', 'Like Brand New', 'Rs. 5,000', 'Flagship E-mount standard zoom lens offering astonishing resolution and beautiful bokeh for commercial shoots.')">Sony 24-70mm GM II</h3>
-                            <div class="owner-info">Owner: <span>Charith Mendis</span></div>
+                            <div class="owner-info">
+                                <span>Owner: <span>Charith Mendis</span></span>
+                                <!-- Outside Visible Star Badge -->
+                                <span class="card-star-badge" onclick="openReviewsModal('Charith Mendis')" id="star-badge-Charith Mendis">
+                                    <i class="fa-solid fa-star"></i> <span class="rating-val">5.0</span> <span class="rating-count">(0)</span>
+                                </span>
+                            </div>
                             <div class="condition-tag"><i class="fa-solid fa-circle-check"></i> Like Brand New</div>
                             
                             <div class="days-box">
@@ -750,14 +822,20 @@
                     </div>
 
                     <!-- Item 4: Aputure Light -->
-                    <div class="gear-card" data-category="lighting" data-condition="good" data-name="aputure 300d mark ii light" data-price="3500">
+                    <div class="gear-card" data-category="lighting" data-condition="good" data-name="aputure 300d mark ii light" data-price="3500" data-seller="Thilina Jayalath">
                         <div class="gear-img" onclick="openQuickView('Aputure 300d Mark II', 'Thilina Jayalath', 'Good Condition', 'Rs. 3,500', 'High-output LED light fixture with DMX support, wireless control, and incredible daylight-balanced brightness.')">
                             <span class="location-tag"><i class="fa-solid fa-check-circle"></i> Available</span>
                             <i class="fa-solid fa-lightbulb"></i>
                         </div>
                         <div class="gear-info">
                             <h3 onclick="openQuickView('Aputure 300d Mark II', 'Thilina Jayalath', 'Good Condition', 'Rs. 3,500', 'High-output LED light fixture with DMX support, wireless control, and incredible daylight-balanced brightness.')">Aputure 300d Mark II</h3>
-                            <div class="owner-info">Owner: <span>Thilina Jayalath</span></div>
+                            <div class="owner-info">
+                                <span>Owner: <span>Thilina Jayalath</span></span>
+                                <!-- Outside Visible Star Badge -->
+                                <span class="card-star-badge" onclick="openReviewsModal('Thilina Jayalath')" id="star-badge-Thilina Jayalath">
+                                    <i class="fa-solid fa-star"></i> <span class="rating-val">5.0</span> <span class="rating-count">(0)</span>
+                                </span>
+                            </div>
                             <div class="condition-tag"><i class="fa-solid fa-circle-check"></i> Good Condition</div>
                             
                             <div class="days-box">
@@ -831,6 +909,7 @@
             </a>
         </div>
     </div>
+
     <!-- Quick View Modal -->
     <div class="quickview-modal" id="quickViewModal">
         <div class="quickview-header">
@@ -841,6 +920,40 @@
             <!-- Content injected dynamically -->
         </div>
         <button class="copy-details-btn" onclick="copyCurrentGearDetails()"><i class="fa-solid fa-copy"></i> Copy Details</button>
+    </div>
+
+    <!-- Seller Review Modal -->
+    <div class="review-modal" id="reviewModal">
+        <div class="modal-header-custom">
+            <h3 id="reviewModalTitle"><i class="fa-solid fa-star" style="color:#ffb703;"></i> Seller Reviews</h3>
+            <button class="close-modal-btn" onclick="closeReviewModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="seller-form-body">
+            <div class="reviews-list-box" id="reviewsListBox">
+                <p style="text-align:center; color: var(--text-muted); font-size: 12px;">Loading reviews...</p>
+            </div>
+            <hr style="border:0; border-top:1px solid var(--glass-border); margin: 5px 0;">
+            <h4 style="font-size: 13px; color: var(--text-main);">Leave a Review</h4>
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" id="reviewerNameInput" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label>Rating</label>
+                <div class="star-rating" id="starRatingSelect">
+                    <i class="fa-solid fa-star active" data-rating="1" onclick="setRating(1)"></i>
+                    <i class="fa-solid fa-star active" data-rating="2" onclick="setRating(2)"></i>
+                    <i class="fa-solid fa-star active" data-rating="3" onclick="setRating(3)"></i>
+                    <i class="fa-solid fa-star active" data-rating="4" onclick="setRating(4)"></i>
+                    <i class="fa-solid fa-star active" data-rating="5" onclick="setRating(5)"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Comment</label>
+                <textarea id="reviewerCommentInput" rows="3" placeholder="Write your experience with this seller..."></textarea>
+            </div>
+            <button class="submit-review-btn" onclick="submitReview()"><i class="fa-solid fa-paper-plane"></i> Submit Review</button>
+        </div>
     </div>
 
     <!-- Cart Drawer Modal -->
@@ -865,8 +978,50 @@
     </div>
 
 <script>
+    // Supabase Configuration
+    const SUPABASE_URL = 'https://xuxdkjeypwrhccgthepn.supabase.co'; // Replace with your Supabase Project URL
+    const SUPABASE_ANON_KEY = 'sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI'; // Replace with your Supabase Anon Key
+    
+    let supabaseClient = null;
+    if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && typeof supabase !== 'undefined') {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+
     let cart = [];
     let lastCopiedText = "";
+    let currentSelectedSeller = "";
+    let selectedRating = 5;
+
+    // Load initial seller ratings directly onto the cards
+    window.addEventListener('DOMContentLoaded', () => {
+        loadAllCardRatings();
+    });
+
+    async function loadAllCardRatings() {
+        if (!supabaseClient) return;
+
+        const cards = document.querySelectorAll('.gear-card');
+        for (let card of cards) {
+            const seller = card.getAttribute('data-seller');
+            if (seller) {
+                const { data, error } = await supabaseClient
+                    .from('seller_reviews')
+                    .select('rating')
+                    .eq('seller_name', seller);
+
+                if (!error && data && data.length > 0) {
+                    const totalReviews = data.length;
+                    const avgRating = (data.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1);
+                    
+                    const badgeEl = document.getElementById(`star-badge-${seller}`);
+                    if (badgeEl) {
+                        badgeEl.querySelector('.rating-val').innerText = avgRating;
+                        badgeEl.querySelector('.rating-count').innerText = `(${totalReviews})`;
+                    }
+                }
+            }
+        }
+    }
 
     // Theme Switcher Logic
     function toggleTheme() {
@@ -906,6 +1061,7 @@
         document.getElementById('cartModal').classList.remove('open');
         document.getElementById('sellerModal').classList.remove('open');
         document.getElementById('quickViewModal').classList.remove('open');
+        document.getElementById('reviewModal').classList.remove('open');
         document.getElementById('overlay').classList.remove('active');
     }
 
@@ -952,6 +1108,114 @@
         navigator.clipboard.writeText(lastCopiedText).then(() => {
             alert('Gear details copied to clipboard!');
         });
+    }
+
+    /* Review System Functions */
+    function setRating(rating) {
+        selectedRating = rating;
+        const stars = document.querySelectorAll('#starRatingSelect i');
+        stars.forEach((star, idx) => {
+            if (idx < rating) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        });
+    }
+
+    function openReviewsModal(sellerName) {
+        currentSelectedSeller = sellerName;
+        document.getElementById('reviewModalTitle').innerText = `Reviews for ${sellerName}`;
+        document.getElementById('reviewModal').classList.add('open');
+        document.getElementById('overlay').classList.add('active');
+        fetchReviews(sellerName);
+    }
+
+    function closeReviewModal() {
+        document.getElementById('reviewModal').classList.remove('open');
+        document.getElementById('overlay').classList.remove('active');
+    }
+
+    async function fetchReviews(sellerName) {
+        const listBox = document.getElementById('reviewsListBox');
+        listBox.innerHTML = `<p style="text-align:center; color: var(--text-muted); font-size: 12px;">Loading reviews...</p>`;
+
+        if (!supabaseClient) {
+            listBox.innerHTML = `<p style="text-align:center; color: var(--text-muted); font-size: 12px;">Supabase is not configured yet. Please add API credentials.</p>`;
+            return;
+        }
+
+        const { data, error } = await supabaseClient
+            .from('seller_reviews')
+            .select('*')
+            .eq('seller_name', sellerName)
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            listBox.innerHTML = `<p style="text-align:center; color: #ff4d00; font-size: 12px;">Failed to load reviews.</p>`;
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            listBox.innerHTML = `<p style="text-align:center; color: var(--text-muted); font-size: 12px;">No reviews yet. Be the first to leave a review!</p>`;
+            return;
+        }
+
+        let html = '';
+        data.forEach(rev => {
+            let starHtml = '';
+            for (let i = 0; i < 5; i++) {
+                starHtml += i < rev.rating ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+            }
+
+            html += `
+                <div class="review-card-item">
+                    <div class="review-card-header">
+                        <span>${rev.reviewer_name}</span>
+                        <div class="review-card-stars">${starHtml}</div>
+                    </div>
+                    <div class="review-card-comment">${rev.comment || 'No written comment.'}</div>
+                </div>
+            `;
+        });
+        listBox.innerHTML = html;
+    }
+
+    async function submitReview() {
+        const name = document.getElementById('reviewerNameInput').value.trim();
+        const comment = document.getElementById('reviewerCommentInput').value.trim();
+
+        if (!name) {
+            alert('කරුණාකර ඔබේ නම ඇතුළත් කරන්න!');
+            return;
+        }
+
+        if (!supabaseClient) {
+            alert('Supabase client is not connected.');
+            return;
+        }
+
+        const { error } = await supabaseClient
+            .from('seller_reviews')
+            .insert([
+                {
+                    seller_name: currentSelectedSeller,
+                    reviewer_name: name,
+                    rating: selectedRating,
+                    comment: comment
+                }
+            ]);
+
+        if (error) {
+            alert('Error submitting review: ' + error.message);
+        } else {
+            alert('Review submitted successfully!');
+            document.getElementById('reviewerNameInput').value = '';
+            document.getElementById('reviewerCommentInput').value = '';
+            setRating(5);
+            fetchReviews(currentSelectedSeller);
+            loadAllCardRatings(); // Update card UI immediately
+        }
     }
 
     function filterByPill(category, btn) {

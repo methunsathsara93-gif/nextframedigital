@@ -4,80 +4,137 @@
 <meta charset="UTF-8">
 <title>Frame Masters Community - Next Frame Digital</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Open Graph Meta Tags for Rich Social Sharing (WhatsApp, Facebook, Social Previews) -->
+<meta property="og:title" content="Frame Masters Community - Next Frame Digital">
+<meta property="og:description" content="Explore cinematic articles, professional production workflows, drone shoots, color grading insights, and digital media updates from Next Frame Digital. Learn, Share & Grow with creators!">
+<meta property="og:type" content="website">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;}
+:root {
+    --bg-base: #050505;
+    --bg-card: rgba(18, 18, 20, 0.75);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-glow: rgba(255, 77, 0, 0.4);
+    --accent: #ff4d00;
+    --accent-gradient: linear-gradient(135deg, #ff4d00 0%, #ff8800 100%);
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+}
 
-/* 🌟 NAVIGATION BAR */
-nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); border-bottom: 1px solid #111;}
-nav h1{font-size: 20px; font-weight: 700; letter-spacing: 1px; color:#ff4d00;}
-nav h1 span{color: #fff; font-weight: 300;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
+body{background:var(--bg-base);color:var(--text-main);scroll-behavior:smooth;overflow-x:hidden;}
 
-.container{max-width:950px;margin:auto;padding:30px 20px;}
+body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255,77,0,0.12) 0%, rgba(0,0,0,0) 70%);
+    z-index: -1;
+    pointer-events: none;
+}
 
-/* 🔐 PREMIUM AUTH & SETUP CONTAINER */
+nav{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:18px 50px;background:rgba(5,5,5,0.85);
+    position: sticky; top: 0; z-index: 1000;
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-color);
+}
+nav h1{font-size: 20px; font-weight: 700; letter-spacing: 0.5px; color:#fff;}
+nav h1 span{background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+.nav-tagline { font-size: 12px; color: var(--text-muted); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+
+.container{max-width:950px;margin:40px auto;padding:0 20px;}
+
 .auth-box, .post-box, .post-card{
-    background:#111;
-    padding:25px;
-    border-radius:14px;
-    margin-bottom:25px;
-    border: 1px solid #1a1a1a;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    background: var(--bg-card);
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    backdrop-filter: blur(16px);
+    position: relative;
+    overflow: hidden;
+}
+.auth-box::before, .post-box::before, .post-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+    background: var(--accent-gradient);
+    opacity: 0.6;
 }
 .auth-box h3, .post-box h3 {
     font-size: 18px;
-    margin-bottom: 15px;
+    margin-bottom: 18px;
     letter-spacing: 0.5px;
-    border-left: 3px solid #ff4d00;
-    padding-left: 10px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.auth-box h3::before, .post-box h3::before {
+    content: '';
+    width: 4px; height: 18px;
+    background: var(--accent);
+    border-radius: 4px;
 }
 
 input, textarea, select{
     width:100%;
-    padding:12px 15px;
+    padding:14px 18px;
     margin:8px 0;
-    border:1px solid #222;
-    border-radius:8px;
-    background:#000;
+    border:1px solid var(--border-color);
+    border-radius:12px;
+    background:rgba(0,0,0,0.4);
     color:white;
     outline: none;
     font-size: 14px;
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
 input:focus, textarea:focus, select:focus {
-    border-color: #ff4d00;
+    border-color: var(--accent);
+    background: rgba(0,0,0,0.7);
+    box-shadow: 0 0 0 4px rgba(255, 77, 0, 0.1);
 }
 textarea { height: 120px; resize: none; }
+select option { background: #111; color: #fff; }
 
 button{
-    background:#ff4d00;
+    background: var(--accent-gradient);
     border:none;
-    padding:12px 24px;
+    padding:14px 24px;
     color:white;
-    border-radius:8px;
+    border-radius:12px;
     cursor:pointer;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 14px;
-    transition:all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition:all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(255, 77, 0, 0.3);
 }
 button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 77, 0, 0.3);
+    box-shadow: 0 15px 30px rgba(255, 77, 0, 0.5);
+    filter: brightness(1.1);
 }
 
-.auth-msg { color: #888; text-align: center; padding: 20px; font-size: 14px; }
+.auth-msg { color: var(--text-muted); text-align: center; padding: 20px; font-size: 14px; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color); }
 .hidden { display: none !important; }
+.search-hide { display: none !important; }
 
-.user-info { background: #000; padding: 20px; border-radius: 10px; border: 1px solid #1a1a1a; }
+.user-info { background: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); }
 .user-header-row { display: flex; justify-content: space-between; align-items: center; }
-.name-setup-box { background: #080808; padding: 15px; border-radius: 8px; border: 1px solid #222; margin-top: 15px; }
+.name-setup-box { background: rgba(0, 0, 0, 0.6); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 15px; }
 
-/* 🎯 DYNAMIC CATEGORY PILLS FILTER */
 .feed-filter-bar {
     display: flex;
     gap: 10px;
@@ -86,81 +143,244 @@ button:hover {
     padding-bottom: 5px;
 }
 .filter-pill {
-    background: #111;
-    border: 1px solid #222;
-    color: #aaa;
-    padding: 8px 18px;
-    border-radius: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 10px 20px;
+    border-radius: 50px;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
     transition: 0.3s;
+    backdrop-filter: blur(10px);
 }
 .filter-pill:hover, .filter-pill.active {
-    background: #ff4d00;
+    background: var(--accent);
     color: #fff;
-    border-color: #ff4d00;
-    box-shadow: 0 4px 12px rgba(255, 77, 0, 0.2);
+    border-color: var(--accent);
+    box-shadow: 0 6px 20px rgba(255, 77, 0, 0.3);
 }
 
-/* 📰 DYNAMIC POSTS INTERFACE */
-.post-card {
-    transition: all 0.4s ease;
+.post-card { transition: all 0.4s ease; }
+.post-card.filter-hide { display: none !important; }
+.post-card.pinned-post { border: 1px solid var(--accent); background: linear-gradient(135deg, rgba(255,77,0,0.06) 0%, rgba(18,18,20,0.8) 100%); }
+.post-card h2 { font-size: 22px; color: #fff; margin-bottom: 10px; font-weight: 700; }
+.meta-row { display: flex; gap: 15px; font-size: 13px; color: var(--text-muted); margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+.meta-row strong { color: #fff; }
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0, 218, 255, 0.1);
+    border: 1px solid rgba(0, 218, 255, 0.3);
+    color: #00daff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
 }
-.post-card.filter-hide {
-    display: none !important;
+
+.badge-team {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 77, 0, 0.15);
+    border: 1px solid rgba(255, 77, 0, 0.4);
+    color: #ff8800;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    box-shadow: 0 0 12px rgba(255, 77, 0, 0.2);
+    animation: badge-glow 2s infinite alternate;
 }
-.post-card h2 { font-size: 22px; color: #fff; margin-bottom: 8px; }
-.meta-row { display: flex; gap: 15px; font-size: 12px; color: #888; margin-bottom: 15px; flex-wrap: wrap; }
-.meta-row strong { color: #ff4d00; }
-.badge { background: rgba(0, 255, 136, 0.1); color: #00ff88; padding: 2px 8px; border-radius: 4px; font-size: 11px; border: 1px solid rgba(0,255,136,0.2); }
-.post-body { color: #ccc; font-size: 14px; line-height: 1.6; margin-bottom: 20px; white-space: pre-wrap; }
 
-/* ❤️ LIKE & ACTION INTERACTIVES */
-.actions-footer { display: flex; gap: 20px; align-items: center; border-top: 1px solid #1a1a1a; padding-top: 15px; }
-.like-trigger { color: #aaa; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 14px; transition: 0.2s; }
-.like-trigger:hover { color: #ff4d00; transform: scale(1.05); }
+/* Gamified Contribution Badges */
+.badge-contributor {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0, 255, 136, 0.15);
+    border: 1px solid rgba(0, 255, 136, 0.4);
+    color: #00ff88;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
 
-/* Creator Panel Buttons */
-.creator-control { display: flex; gap: 10px; margin-left: auto; }
-.btn-control { background: #1a1a1a; border: 1px solid #333; color: #ccc; padding: 4px 12px; font-size: 12px; border-radius: 5px; font-weight: 500; }
-.btn-control-edit:hover { background: #ff4d00; border-color: #ff4d00; color: #fff; }
-.btn-control-delete:hover { background: #dc3545; border-color: #dc3545; color: #fff; }
+.badge-pinned {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 136, 0, 0.2);
+    border: 1px solid rgba(255, 136, 0, 0.5);
+    color: #ffaa00;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
 
-/* 💬 COMMENTS ARCHITECTURE */
-.comments-segment { margin-top: 22px; background: #080808; padding: 18px; border-radius: 12px; border: 1px solid #1a1a1a; }
-.comment-node { 
-    font-size: 14px; 
-    padding: 12px 16px; 
-    margin-bottom: 10px; 
-    background: #111; 
+@keyframes badge-glow {
+    0% { box-shadow: 0 0 6px rgba(255, 77, 0, 0.2); }
+    100% { box-shadow: 0 0 16px rgba(255, 77, 0, 0.6); }
+}
+
+.post-body { color: #cbd5e1; font-size: 15px; line-height: 1.7; margin-bottom: 22px; white-space: pre-wrap; }
+
+/* Fully optimized photo container showing full image without cropping */
+.media-container {
+    position: relative;
+    width: 100%;
+    background: #000;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.media-container img {
+    width: 100%;
+    max-height: 550px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Carousel Gallery Styling */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    background: #000;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+.carousel-track-wrapper {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.carousel-track-wrapper::-webkit-scrollbar { display: none; }
+.carousel-slide {
+    min-width: 100%;
+    scroll-snap-align: start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 550px;
+    background: #000;
+}
+.carousel-slide img {
+    width: 100%;
+    max-height: 550px;
+    object-fit: contain;
+    display: block;
+}
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: 0.2s;
+}
+.carousel-btn:hover { background: var(--accent); border-color: var(--accent); }
+.carousel-prev { left: 10px; }
+.carousel-next { right: 10px; }
+.carousel-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+}
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: 0.2s;
+}
+.carousel-dot.active { background: var(--accent); width: 20px; border-radius: 4px; }
+
+/* Watermark embedded over photo */
+.photo-watermark {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
     border-radius: 8px;
-    border: 1px solid #1c1c1c;
-    color: #ddd; 
-    line-height: 1.6; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    backdrop-filter: blur(6px);
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    pointer-events: none;
+}
+.photo-watermark span {
+    color: var(--accent);
+}
+
+.actions-footer { display: flex; gap: 20px; align-items: center; border-top: 1px solid var(--border-color); padding-top: 18px; flex-wrap: wrap; }
+.like-trigger { color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; transition: 0.2s; }
+.like-trigger:hover { color: var(--accent); transform: scale(1.05); }
+.like-trigger i { color: var(--accent); }
+
+.creator-control { display: flex; gap: 10px; margin-left: auto; flex-wrap: wrap; }
+.btn-control { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 14px; font-size: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.btn-control-edit:hover { background: rgba(255,77,0,0.15); border-color: var(--accent); color: var(--accent); }
+.btn-control-delete:hover { background: rgba(220,53,69,0.15); border-color: #dc3545; color: #ff6b6b; }
+.btn-control-pin:hover { background: rgba(255,136,0,0.15); border-color: #ff8800; color: #ffaa00; }
+
+.comments-segment { margin-top: 25px; background: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); }
+.comment-node { 
+    font-size: 14px; padding: 14px 18px; margin-bottom: 12px; background: var(--bg-card); 
+    border-radius: 12px; border: 1px solid var(--border-color); color: #e2e8f0; 
+    line-height: 1.6; display: flex; justify-content: space-between; align-items: center; 
 }
 .comment-node:last-child { margin-bottom: 0; }
-.comment-node b { color: #ff4d00; font-weight: 600; font-size: 14px; }
+.comment-node b { color: #fff; font-weight: 700; font-size: 13px; margin-right: 6px; }
 .comment-content-left { flex: 1; padding-right: 15px; white-space: pre-wrap; }
-.comment-controls { display: flex; gap: 10px; }
-.btn-comment-control { background: transparent; border: none; color: #777; cursor: pointer; font-size: 13px; transition: 0.2s; padding: 5px; }
-.btn-comment-control:hover { color: #ff4d00; }
-.btn-comment-delete:hover { color: #dc3545; }
+.comment-controls { display: flex; gap: 8px; }
+.btn-comment-control { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 13px; padding: 6px; }
+.btn-comment-control:hover { color: var(--accent); }
+.btn-comment-delete:hover { color: #ff6b6b; }
 
-.comment-form-block { display: flex; gap: 10px; margin-top: 15px; }
-.comment-form-block input { margin: 0; padding: 12px 15px; font-size: 14px; }
-.comment-form-block button { padding: 0 20px; font-size: 14px; }
+.comment-form-block { display: flex; gap: 12px; margin-top: 18px; }
+.comment-form-block input { margin: 0; padding: 14px 18px; font-size: 14px; }
+.comment-form-block button { padding: 0 24px; font-size: 14px; }
 
-/* 🎞️ CINEMATIC MARQUEE */
-.cinematic-marquee { width: 100%; background: #111; border-top: 1px solid #222; border-bottom: 1px solid #222; overflow: hidden; padding: 14px 0; margin-top: 50px; display: flex; }
+.cinematic-marquee { width: 100%; background: #030303; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); overflow: hidden; padding: 18px 0; margin-top: 60px; display: flex; }
 .marquee-content { display: flex; white-space: nowrap; gap: 50px; animation: scroll-left 25s linear infinite; }
-.marquee-item { font-size: 14px; font-weight: 700; letter-spacing: 2px; color: #555; text-transform: uppercase; }
-.marquee-item span { color: #ff4d00; }
+.marquee-item { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
+.marquee-item span { color: var(--accent); }
 @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 </style>
 </head>
@@ -169,11 +389,13 @@ button:hover {
 
 <nav>
     <h1>Frame Masters <span>Community</span></h1>
-    <span style="font-size:12px; color:#666; font-weight:500;">Learn • Share • Grow</span>
+    <span class="nav-tagline">Learn • Share • Grow</span>
 </nav>
 
 <div class="container">
-
+<button onclick="window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255, 255, 255, 0.08); color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;">
+    <i class="fa-solid fa-arrow-left"></i> Back to Home
+</button>
     <div id="auth-section" class="auth-box">
         <div id="auth-logged-out">
             <h3 id="auth-title">Community Portal</h3>
@@ -182,44 +404,44 @@ button:hover {
                 <input id="auth-password" type="password" placeholder="Password">
             </div>
             
-            <div id="verification-otp-box" class="hidden" style="margin: 10px 0; padding: 15px; background: #000; border-radius: 8px; border: 1px solid #ff4d00;">
-                <p id="otp-message-text" style="margin:0 0 8px 0; color: #00ff88; font-size:13px; font-weight: bold;">📬 Enter the 6-Digit Code sent to your email:</p>
+            <div id="verification-otp-box" class="hidden" style="margin: 12px 0; padding: 18px; background: rgba(0,0,0,0.6); border-radius: 12px; border: 1px solid var(--accent);">
+                <p id="otp-message-text" style="margin:0 0 10px 0; color: #00daff; font-size:13px; font-weight: 600;">📬 Enter the 6-Digit Code sent to your email:</p>
                 <input id="verification-token" placeholder="X X X X X X" style="text-align: center; font-size: 18px; letter-spacing: 5px;">
-                <button id="btn-verify-signup" onclick="handleVerifyOTP()" class="hidden" style="background:#00ff88; color:#000; width: 100%; margin-top:10px;">Verify & Complete Sign Up</button>
-                <button id="btn-verify-reset" onclick="handleVerifyResetOTP()" class="hidden" style="background:#ff4d00; color:#fff; width: 100%; margin-top:10px;">Verify Recovery Code</button>
+                <button id="btn-verify-signup" onclick="handleVerifyOTP()" class="hidden" style="background:#00ff88; color:#000; width: 100%; margin-top:12px;">Verify & Complete Sign Up</button>
+                <button id="btn-verify-reset" onclick="handleVerifyResetOTP()" class="hidden" style="width: 100%; margin-top:12px;">Verify Recovery Code</button>
             </div>
 
             <div id="reset-password-actions" class="hidden">
-                <p style="color: #ff4d00; margin: 0 0 5px 0; font-size:13px;">Enter your new secure password:</p>
+                <p style="color: var(--accent); margin: 0 0 8px 0; font-size:13px; font-weight: 600;">Enter your new secure password:</p>
                 <input id="new-password-input" type="password" placeholder="New Password (At least 6 chars)">
-                <button onclick="handlePasswordUpdate()" style="background: #00ff88; color: #000; width: 100%;">Save New Password</button>
-                <button onclick="cancelResetMode()" style="background: #222; width: 100%; margin-top: 5px;">Cancel</button>
+                <button onclick="handlePasswordUpdate()" style="background: #00ff88; color: #000; width: 100%; margin-top: 8px;">Save New Password</button>
+                <button onclick="cancelResetMode()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); width: 100%; margin-top: 8px;">Cancel</button>
             </div>
 
-            <div id="auth-action-buttons" style="margin-top: 10px; display: flex; gap: 8px;">
+            <div id="auth-action-buttons" style="margin-top: 15px; display: flex; gap: 10px;">
                 <button onclick="handleSignUp()" style="flex:1;">Sign Up</button>
-                <button onclick="handleLogin()" style="flex:1; background:#222; border:1px solid #333;">Log In</button>
-                <button onclick="showForgotPasswordPanel()" style="background: transparent; color:#888; font-size:12px; text-decoration: underline;">Forgot?</button>
+                <button onclick="handleLogin()" style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border-color);">Log In</button>
+                <button onclick="showForgotPasswordPanel()" style="background: transparent; color:var(--text-muted); font-size:12px; text-decoration: underline; padding: 0 10px;">Forgot?</button>
             </div>
         </div>
 
         <div id="auth-logged-in" class="hidden">
             <div class="user-info">
                 <div class="user-header-row">
-                    <span id="user-display-email" style="font-size:14px; font-weight:500; color:#aaa;"></span>
-                    <button onclick="handleLogout()" style="background:#222; padding:6px 14px; font-size:12px; border:1px solid #333;">Log Out</button>
+                    <span id="user-display-email" style="font-size:14px; font-weight:500; color:#fff;"></span>
+                    <button onclick="handleLogout()" style="background:rgba(255,255,255,0.05); padding:8px 16px; font-size:12px; border:1px solid var(--border-color); cursor:pointer;">Log Out</button>
                 </div>
                 
                 <div id="name-setup" class="name-setup-box">
-                    <p style="margin: 0 0 5px 0; font-size: 13px; color: #ff4d00;">Set your Creator Display Name:</p>
+                    <p style="margin: 0 0 8px 0; font-size: 13px; color: var(--accent); font-weight: 600;">Set your Creator Display Name:</p>
                     <div style="display:flex; gap:10px;">
                         <input id="custom-display-name" placeholder="Creator name..." style="margin:0;">
-                        <button onclick="saveDisplayName()" style="padding: 0 20px;">Save</button>
+                        <button onclick="saveDisplayName()" style="padding: 0 24px;">Save</button>
                     </div>
                 </div>
-                <div id="name-confirmed" class="hidden" style="font-size:13px; color:#00ff88; margin-top:10px;">
-                    ⚡ Posting Live as: <strong id="current-display-name" style="color:#fff;"></strong>
-                    <button onclick="showNameEdit()" style="background:transparent; color:#888; font-size:11px; text-decoration:underline; padding:0; margin-left:10px; box-shadow:none; transform:none;">Change</button>
+                <div id="name-confirmed" class="hidden" style="font-size:13px; color:#00ff88; margin-top:12px; display:flex; align-items:center; gap:8px;">
+                    <span>⚡ Posting Live as: <strong id="current-display-name" style="color:#fff;"></strong> <span id="account-badge-preview"></span></span>
+                    <button onclick="showNameEdit()" style="background:transparent; color:var(--text-muted); font-size:11px; text-decoration:underline; padding:0; margin-left:5px; cursor:pointer;">Change</button>
                 </div>
             </div>
         </div>
@@ -234,13 +456,37 @@ button:hover {
             <option>Drone</option>
             <option>Editing</option>
             <option>Business</option>
+            <option>Presets & LUTs</option>
             <option>Other</option>
         </select>
         <textarea id="content" placeholder="Share your ultimate production workflows or ask a technical question..."></textarea>
+        
+        <!-- Attached Production Gallery Images Option with Multi-Image Preview & Clear Button -->
+        <div style="margin: 15px 0;">
+            <label style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 5px;">Attach Production Photos (Optional - Up to 4 images, Max 2MB each):</label>
+            
+            <label id="dropzone-label" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 130px; border: 2px dashed var(--border-color); border-radius: 12px; cursor: pointer; background: rgba(0,0,0,0.4); position: relative; overflow: hidden; transition: 0.3s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                <div id="upload-prompt" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; color: var(--accent); margin-bottom: 6px;"></i>
+                    <p style="font-size: 13px; color: #fff; font-weight: 600;">Click to upload or drag & drop (Multiple allowed)</p>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">PNG, JPG, WEBP (Max 4 images)</p>
+                </div>
+                <!-- Multi-image preview container -->
+                <div id="image-preview-container" class="hidden" style="position: absolute; inset: 0; width: 100%; height: 100%; background: #000; border-radius: 10px; display: flex; gap: 5px; padding: 5px; overflow-x: auto; align-items: center;"></div>
+                <input type="file" id="post-image-file" accept="image/*" multiple style="display: none;" onchange="previewImages(event)">
+            </label>
+            <button type="button" id="remove-image-btn" class="hidden" onclick="clearSelectedImages()" style="margin-top: 8px; background: rgba(220,53,69,0.15); border: 1px solid #dc3545; color: #ff6b6b; padding: 6px 12px; font-size: 11px; border-radius: 8px; width: auto; cursor:pointer;"><i class="fa-solid fa-trash"></i> Remove Selected Images</button>
+        </div>
+
         <button id="publishBtn" onclick="createPost()">Publish Article</button>
     </div>
     <div id="article-auth-fallback" class="auth-box auth-msg">
         🔒 Please log in to publish a knowledge article or reply to discussions.
+    </div>
+
+    <!-- Article Search Bar -->
+    <div style="margin-bottom: 20px;">
+        <input id="search-articles-input" type="text" placeholder="🔍 Search articles by title or content..." oninput="filterSearchPosts()" style="margin: 0;">
     </div>
 
     <div class="feed-filter-bar">
@@ -250,6 +496,7 @@ button:hover {
         <div class="filter-pill" onclick="filterCategoryFeed('Drone', this)">Drone Shoots</div>
         <div class="filter-pill" onclick="filterCategoryFeed('Editing', this)">Editing/Color</div>
         <div class="filter-pill" onclick="filterCategoryFeed('Business', this)">Production Business</div>
+        <div class="filter-pill" onclick="filterCategoryFeed('Presets & LUTs', this)">Presets & LUTs</div>
     </div>
 
     <div id="posts"></div>
@@ -287,17 +534,77 @@ const supabaseKey = "sb_publishable_M4-FbzuUKIxiBmRJicI1jA_zoCu9-IV";
 emailjs.init(EMAILJS_PUBLIC_KEY);
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+// ====================================================
+// 🏢 TEAM MEMBERS CONFIGURATION
+// ====================================================
+const TEAM_MEMBERS = {
+    "methun2008216@gmail.com": { title: "Founder & CEO", icon: "fa-crown" },
+    "venurasapumal2@gmail.com": { title: "CO CEO", icon: "fa-user-tie" },
+    "sanujasavithma198@gmail.com": { title: "PHOTOGRAPHER", icon: "fa-camera" },
+    "lovindu.ee123@gamil.com": { title: "PHOTOGRAPHER VIDEOGRAPHER", icon: "fa-video" }
+};
+
 let currentUser = null;
 let userDisplayName = "";
 let editPostId = null;
 let editCommentId = null;
+let globalUserPostCounts = {}; // Track user post counts for gamified top contributor badges
 
-// Helper to safely pass text containing quotes or line breaks via HTML attribute
-function safeB64Encode(str) {
-    return btoa(unescape(encodeURIComponent(str)));
+function safeB64Encode(str) { return btoa(unescape(encodeURIComponent(str))); }
+function safeB64Decode(str) { return decodeURIComponent(escape(atob(str))); }
+
+function getTeamMemberRole(email) {
+    if (!email) return null;
+    return TEAM_MEMBERS[email.trim().toLowerCase()] || null;
 }
-function safeB64Decode(str) {
-    return decodeURIComponent(escape(atob(str)));
+
+// Gamified Contributor Badge Check (Users with 3 or more posts get Top Contributor)
+function getContributorBadge(email) {
+    if (!email) return null;
+    const cleanEmail = email.trim().toLowerCase();
+    // Team members already have their specific role badge
+    if (TEAM_MEMBERS[cleanEmail]) return null;
+    
+    const count = globalUserPostCounts[cleanEmail] || 0;
+    if (count >= 3) {
+        return { title: "Top Contributor", icon: "fa-fire" };
+    }
+    return null;
+}
+
+// Optimized Multi-Image Preview Handler
+window.previewImages = function(event) {
+    const files = event.target.files;
+    const previewContainer = document.getElementById('image-preview-container');
+    const prompt = document.getElementById('upload-prompt');
+    const removeBtn = document.getElementById('remove-image-btn');
+
+    if (files && files.length > 0) {
+        previewContainer.innerHTML = "";
+        previewContainer.classList.remove('hidden');
+        prompt.classList.add('hidden');
+        removeBtn.classList.remove('hidden');
+
+        const limit = Math.min(files.length, 4);
+        for (let i = 0; i < limit; i++) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.cssText = "height: 100%; max-width: 120px; object-fit: contain; border-radius: 6px;";
+                previewContainer.appendChild(img);
+            }
+            reader.readAsDataURL(files[i]);
+        }
+    }
+}
+
+window.clearSelectedImages = function() {
+    document.getElementById('post-image-file').value = "";
+    document.getElementById('image-preview-container').innerHTML = "";
+    document.getElementById('image-preview-container').classList.add('hidden');
+    document.getElementById('upload-prompt').classList.remove('hidden');
+    document.getElementById('remove-image-btn').classList.add('hidden');
 }
 
 supabase.auth.onAuthStateChange((event, session) => {
@@ -321,6 +628,18 @@ function updateUI(isLoggedIn) {
         document.getElementById("write-article-box").classList.remove("hidden");
         document.getElementById("article-auth-fallback").classList.add("hidden");
         
+        const teamRole = getTeamMemberRole(currentUser.email);
+        const contributorRole = getContributorBadge(currentUser.email);
+        const previewContainer = document.getElementById("account-badge-preview");
+        
+        if (teamRole) {
+            previewContainer.innerHTML = `<span class="badge-team" style="margin-left: 8px;"><i class="fa-solid ${teamRole.icon}"></i> ${teamRole.title}</span>`;
+        } else if (contributorRole) {
+            previewContainer.innerHTML = `<span class="badge-contributor" style="margin-left: 8px;"><i class="fa-solid ${contributorRole.icon}"></i> ${contributorRole.title}</span>`;
+        } else {
+            previewContainer.innerHTML = "";
+        }
+
         if (userDisplayName) {
             document.getElementById("name-setup").classList.add("hidden");
             document.getElementById("name-confirmed").classList.remove("hidden");
@@ -331,7 +650,6 @@ function updateUI(isLoggedIn) {
         }
     } else {
         if (!document.getElementById("reset-password-actions").classList.contains("hidden")) return;
-        
         document.getElementById("auth-logged-out").classList.remove("hidden");
         document.getElementById("auth-logged-in").classList.add("hidden");
         document.getElementById("write-article-box").classList.add("hidden");
@@ -342,14 +660,9 @@ function updateUI(isLoggedIn) {
 async function handleLogin() {
     const email = document.getElementById("auth-email").value.trim();
     const passwordValue = document.getElementById("auth-password").value.trim();
-    
     if(!email || !passwordValue) return alert("Please enter both email and password.");
 
-    const { data, error } = await supabase.auth.signInWithPassword({ 
-        email: email, 
-        password: passwordValue 
-    });
-    
+    const { data, error } = await supabase.auth.signInWithPassword({ email: email, password: passwordValue });
     if(error) {
         alert("Login Failed: " + error.message);
     } else {
@@ -358,7 +671,6 @@ async function handleLogin() {
         userDisplayName = currentUser.user_metadata?.display_name || "";
         updateUI(true);
         loadPosts();
-        
         document.getElementById("auth-email").value = "";
         document.getElementById("auth-password").value = "";
     }
@@ -368,10 +680,7 @@ async function saveDisplayName() {
     const chosenName = document.getElementById("custom-display-name").value.trim();
     if(!chosenName) return alert("Please type a valid name!");
 
-    const { error } = await supabase.auth.updateUser({
-        data: { display_name: chosenName }
-    });
-
+    const { error } = await supabase.auth.updateUser({ data: { display_name: chosenName } });
     if(error) {
         alert(error.message);
     } else {
@@ -391,24 +700,19 @@ function showNameEdit() {
 async function handleSignUp() {
     const email = document.getElementById("auth-email").value.trim();
     const password = document.getElementById("auth-password").value.trim();
-    
     if(!email || !password) return alert("Please fill in email and password fields.");
 
     const { data, error } = await supabase.auth.signUp({ email, password });
     if(error) return alert(error.message);
 
     await supabase.auth.signOut(); 
-
     const uniqueVerificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     sessionStorage.setItem("pending_signup_email", email);
     sessionStorage.setItem("pending_signup_password", password);
     sessionStorage.setItem("pending_signup_otp", uniqueVerificationCode);
     document.getElementById("verification-token").value = ""; 
 
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_SIGNUP_TEMPLATE_ID, {
-        to_email: email,
-        token_code: uniqueVerificationCode
-    })
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_SIGNUP_TEMPLATE_ID, { to_email: email, token_code: uniqueVerificationCode })
     .then(() => {
         alert("A 6-digit security code has been sent to your email. Please verify!");
         document.getElementById("main-auth-inputs").classList.add("hidden");
@@ -430,9 +734,8 @@ async function handleVerifyOTP() {
     if (userEnteredCode === generatedOTP && realEmail) {
         alert("Code confirmed successfully! Logging you in...");
         const { data, error } = await supabase.auth.signInWithPassword({ email: realEmail, password: realPassword });
-        if (error) { 
-            alert(error.message); 
-        } else {
+        if (error) { alert(error.message); } 
+        else {
             currentUser = data.user;
             userDisplayName = currentUser.user_metadata?.display_name || "";
             document.getElementById("verification-otp-box").classList.add("hidden");
@@ -455,10 +758,7 @@ async function showForgotPasswordPanel() {
     document.getElementById("verification-token").value = ""; 
     alert("Sending verification code via EmailJS...");
     
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_RESET_TEMPLATE_ID, {
-        to_email: email,
-        token_code: resetOTPCode
-    })
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_RESET_TEMPLATE_ID, { to_email: email, token_code: resetOTPCode })
     .then(() => {
         alert("A 6-digit password recovery code has been sent to your email!");
         document.getElementById("main-auth-inputs").classList.add("hidden");
@@ -501,6 +801,17 @@ async function handlePasswordUpdate() {
     }
 }
 
+async function sendNotificationEmail(recipientEmail, actionTitle, actionDetails) {
+    try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_SIGNUP_TEMPLATE_ID, {
+            to_email: recipientEmail,
+            token_code: `Notification: ${actionTitle} - ${actionDetails}`
+        });
+    } catch (e) {
+        console.log("Notification email dispatch failed:", e);
+    }
+}
+
 function cancelResetMode() {
     document.getElementById("auth-title").innerText = "Sign In / Sign Up";
     document.getElementById("main-auth-inputs").classList.remove("hidden");
@@ -537,51 +848,175 @@ function filterCategoryFeed(category, element) {
     });
 }
 
-// 📰 ARTICLES LOAD ENGINE
+// 🔍 SEARCH ARTICLES ENGINE
+function filterSearchPosts() {
+    const query = document.getElementById("search-articles-input").value.toLowerCase();
+    const posts = document.querySelectorAll(".post-card");
+    
+    posts.forEach(post => {
+        const titleText = post.querySelector("h2").innerText.toLowerCase();
+        const bodyText = post.querySelector(".post-body").innerText.toLowerCase();
+        
+        if (titleText.includes(query) || bodyText.includes(query)) {
+            post.classList.remove("search-hide");
+        } else {
+            post.classList.add("search-hide");
+        }
+    });
+}
+
+// 📰 LOAD POSTS ENGINE
 async function loadPosts() {
     const { data, error } = await supabase.from("posts").select("*").order("id", { ascending:false });
     if(error) return console.log(error);
 
-    const box = document.getElementById("posts");
-    box.innerHTML = "";
+    // Calculate post counts per author email for gamified badges with case/space normalization
+    globalUserPostCounts = {};
+    if (data) {
+        data.forEach(p => {
+            if (p.author_email) {
+                const em = p.author_email.trim().toLowerCase();
+                globalUserPostCounts[em] = (globalUserPostCounts[em] || 0) + 1;
+            }
+        });
+    }
 
-    for(const post of data){
+    // Refresh current user UI badge status based on updated counts
+    if (currentUser) {
+        updateUI(true);
+    }
+
+    const box = document.getElementById("posts");
+    box.innerHTML = ""; 
+
+    if (!data || data.length === 0) {
+        box.innerHTML = `<div class="auth-msg">No discussions or articles found yet. Be the first to publish one!</div>`;
+        return;
+    }
+
+    const uniquePosts = [];
+    const seenIds = new Set();
+    for (const post of data) {
+        if (!seenIds.has(post.id)) {
+            seenIds.add(post.id);
+            uniquePosts.push(post);
+        }
+    }
+
+    // Sort to place pinned posts at the very top
+    uniquePosts.sort((a, b) => (b.is_pinned === true ? 1 : 0) - (a.is_pinned === true ? 1 : 0));
+
+    for(const post of uniquePosts){
         const isVerified = post.verified === true;
+        const isPinned = post.is_pinned === true;
+        const teamInfo = getTeamMemberRole(post.author_email);
+        const contributorInfo = getContributorBadge(post.author_email);
+        const isAdmin = currentUser && getTeamMemberRole(currentUser.email);
+
         const commentFormHTML = currentUser 
             ? `<div class="comment-form-block">
                 <input id="cmsg-${post.id}" placeholder="Write a response...">
-                <button id="cbtn-${post.id}" onclick="addComment(${post.id})">Reply</button>
+                <button id="cbtn-${post.id}" onclick="addComment(${post.id}, '${post.author_email}')">Reply</button>
                </div>`
-            : `<div class="auth-msg" style="font-size:12px; padding: 10px 0 0 0; text-align:left;">🔒 Log in to respond to this discussion.</div>`;
+            : `<div class="auth-msg" style="font-size:12px; padding: 12px 0 0 0; text-align:left; background:none; border:none;">🔒 Log in to respond to this discussion.</div>`;
 
         let creatorControlsHTML = "";
-        if (currentUser && (post.user_id === currentUser.id || post.author === userDisplayName || currentUser.email === 'methun2008216@gmail.com')) {
+        let isOwnerOrAdmin = currentUser && (post.user_id === currentUser.id || post.author === userDisplayName || getTeamMemberRole(currentUser.email));
+        if (isOwnerOrAdmin) {
             const encTitle = safeB64Encode(post.title || "");
             const encContent = safeB64Encode(post.content || "");
             const encCategory = safeB64Encode(post.category || "");
 
+            let pinButtonHTML = "";
+            if (isAdmin) {
+                pinButtonHTML = `<button class="btn-control btn-control-pin" onclick="togglePinPost(${post.id}, ${isPinned})"><i class="fa-solid fa-thumbtack"></i> ${isPinned ? 'Unpin' : 'Pin'}</button>`;
+            }
+
             creatorControlsHTML = `
                 <div class="creator-control">
+                    ${pinButtonHTML}
                     <button class="btn-control btn-control-edit" onclick="triggerEditPost(${post.id}, '${encTitle}', '${encCategory}', '${encContent}')"><i class="fa-solid fa-pen"></i> Edit</button>
                     <button class="btn-control btn-control-delete" onclick="deletePost(${post.id})"><i class="fa-solid fa-trash"></i> Delete</button>
                 </div>
             `;
+        } else if (isAdmin) {
+            creatorControlsHTML = `
+                <div class="creator-control">
+                    <button class="btn-control btn-control-pin" onclick="togglePinPost(${post.id}, ${isPinned})"><i class="fa-solid fa-thumbtack"></i> ${isPinned ? 'Unpin' : 'Pin'}</button>
+                </div>
+            `;
         }
 
+        let verifiedBadgeHTML = isVerified ? `<span class="badge"><i class="fa-solid fa-circle-check"></i> Next Frame Certified</span>` : "";
+        let teamBadgeHTML = teamInfo ? `<span class="badge-team"><i class="fa-solid ${teamInfo.icon}"></i> ${teamInfo.title}</span>` : "";
+        let contributorBadgeHTML = (!teamInfo && contributorInfo) ? `<span class="badge-contributor"><i class="fa-solid ${contributorInfo.icon}"></i> ${contributorInfo.title}</span>` : "";
+        let pinnedBadgeHTML = isPinned ? `<span class="badge-pinned"><i class="fa-solid fa-thumbtack"></i> Pinned Announcement</span>` : "";
+        
+        let postMediaHTML = "";
+        if (post.image_urls && Array.isArray(post.image_urls) && post.image_urls.length > 0) {
+            const authorWatermarkName = post.author || "Next Frame Digital";
+            if (post.image_urls.length === 1) {
+                postMediaHTML = `
+                    <div class="media-container">
+                        <img src="${post.image_urls[0]}" alt="Production Post Image">
+                        <div class="photo-watermark">
+                            <i class="fa-solid fa-camera-retro"></i> <span>${authorWatermarkName}</span>
+                        </div>
+                    </div>`;
+            } else {
+                let slidesHTML = "";
+                let dotsHTML = "";
+                post.image_urls.forEach((url, idx) => {
+                    slidesHTML += `<div class="carousel-slide"><img src="${url}" alt="Slide ${idx + 1}"></div>`;
+                    dotsHTML += `<div class="carousel-dot ${idx === 0 ? 'active' : ''}" onclick="currentSlide(${post.id}, ${idx})"></div>`;
+                });
+                postMediaHTML = `
+                    <div class="carousel-container" id="carousel-${post.id}">
+                        <div class="carousel-track-wrapper" id="track-${post.id}">
+                            ${slidesHTML}
+                        </div>
+                        <button class="carousel-btn carousel-prev" onclick="moveCarousel(${post.id}, -1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="carousel-btn carousel-next" onclick="moveCarousel(${post.id}, 1)"><i class="fa-solid fa-chevron-right"></i></button>
+                        <div class="carousel-dots" id="dots-${post.id}">
+                            ${dotsHTML}
+                        </div>
+                        <div class="photo-watermark">
+                            <i class="fa-solid fa-camera-retro"></i> <span>${authorWatermarkName}</span>
+                        </div>
+                    </div>`;
+            }
+        } else if (post.image_url) {
+            const authorWatermarkName = post.author || "Next Frame Digital";
+            postMediaHTML = `
+                <div class="media-container">
+                    <img src="${post.image_url}" alt="Production Post Image">
+                    <div class="photo-watermark">
+                        <i class="fa-solid fa-camera-retro"></i> <span>${authorWatermarkName}</span>
+                    </div>
+                </div>`;
+        }
+
+        const shareMessage = `🎬 "${post.title}" by ${post.author || 'Creator'} (${post.category})\n\nExplore insights, creative media stories, and production updates from Next Frame Digital - Frame Masters Community.\n\nRead more here: ${window.location.href}`;
+
         box.innerHTML += `
-            <div class="post-card" data-category="${post.category}">
+            <div class="post-card ${isPinned ? 'pinned-post' : ''}" data-category="${post.category}">
                 <h2>${post.title}</h2>
                 <div class="meta-row">
                     <span>By <strong>${post.author || 'Anonymous'}</strong></span>
                     <span>Tag: <span style="color:#fff;">#${post.category}</span></span>
-                    ${isVerified ? '<span class="badge">✔ Next Frame Certified</span>' : ''}
+                    ${pinnedBadgeHTML}
+                    ${verifiedBadgeHTML}
+                    ${teamBadgeHTML}
+                    ${contributorBadgeHTML}
                 </div>
+                ${postMediaHTML}
                 <div class="post-body">${post.content}</div>
                 
                 <div class="actions-footer">
                     <div class="like-trigger" onclick="likePost(${post.id}, ${post.likes || 0})">
                         <i class="fa-solid fa-heart"></i> <span>${post.likes || 0} Likes</span>
                     </div>
+                    <button class="btn-control" onclick="shareArticle(\`${encodeURIComponent(shareMessage)}\`)" style="background: rgba(255,255,255,0.03);"><i class="fa-solid fa-share-nodes"></i> Share Article</button>
                     ${creatorControlsHTML}
                 </div>
 
@@ -597,6 +1032,84 @@ async function loadPosts() {
     if(activePill) activePill.click();
 }
 
+// Carousel Navigation Helpers
+window.moveCarousel = function(postId, direction) {
+    const track = document.getElementById(`track-${postId}`);
+    if(!track) return;
+    const slideWidth = track.clientWidth;
+    track.scrollBy({ left: direction * slideWidth, behavior: 'smooth' });
+    setTimeout(() => updateCarouselDots(postId), 300);
+}
+
+window.currentSlide = function(postId, index) {
+    const track = document.getElementById(`track-${postId}`);
+    if(!track) return;
+    const slideWidth = track.clientWidth;
+    track.scrollTo({ left: index * slideWidth, behavior: 'smooth' });
+    setTimeout(() => updateCarouselDots(postId), 300);
+}
+
+function updateCarouselDots(postId) {
+    const track = document.getElementById(`track-${postId}`);
+    const dotsContainer = document.getElementById(`dots-${postId}`);
+    if(!track || !dotsContainer) return;
+    const index = Math.round(track.scrollLeft / track.clientWidth);
+    const dots = dotsContainer.children;
+    for(let i=0; i<dots.length; i++) {
+        if(i === index) dots[i].classList.add('active');
+        else dots[i].classList.remove('active');
+    }
+}
+
+// 🌐 ROBUST SHARE FUNCTION WITH CLIPBOARD FALLBACK
+window.shareArticle = function(encodedMessage) {
+    const message = decodeURIComponent(encodedMessage);
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Next Frame Digital Community',
+            text: message,
+            url: window.location.href
+        }).catch(() => {
+            copyToClipboardFallback(message);
+        });
+    } else {
+        copyToClipboardFallback(message);
+    }
+};
+
+function copyToClipboardFallback(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Article details and link copied to clipboard! Share it anywhere.');
+        }).catch(() => {
+            forceTextAreaCopy(text);
+        });
+    } else {
+        forceTextAreaCopy(text);
+    }
+}
+
+function forceTextAreaCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed"; 
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            alert('Article details and link copied to clipboard!');
+        } else {
+            alert('Could not copy automatically. Please copy the link manually.');
+        }
+    } catch (err) {
+        alert('Sharing error occurred.');
+    }
+    document.body.removeChild(textarea);
+}
+
 async function createPost(){
     if(!currentUser) return alert("You must be logged in to post!");
     if(!userDisplayName) return alert("Please save a Display Name first!");
@@ -605,20 +1118,87 @@ async function createPost(){
     const content = document.getElementById("content").value.trim();
     if(!title || !content) return alert("Please fill in all fields.");
 
+    const isTeamMember = getTeamMemberRole(currentUser.email);
+    let imageUrls = [];
+    const imageFiles = document.getElementById("post-image-file").files;
+    const publishBtn = document.getElementById("publishBtn");
+
+    if (imageFiles && imageFiles.length > 0) {
+        publishBtn.innerText = "Uploading Photos & Publishing...";
+        publishBtn.disabled = true;
+
+        const limit = Math.min(imageFiles.length, 4);
+        for (let i = 0; i < limit; i++) {
+            const imageFile = imageFiles[i];
+            const maxSize = 2 * 1024 * 1024;
+            if (imageFile.size > maxSize) {
+                alert(`Image ${imageFile.name} is larger than 2MB and will be skipped.`);
+                continue;
+            }
+
+            const fileExt = imageFile.name.split('.').pop();
+            const fileName = `${Date.now()}_${i}.${fileExt}`;
+            const filePath = `post-images/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage.from('post-images').upload(filePath, imageFile);
+            if (!uploadError) {
+                const { data: publicURLData } = supabase.storage.from('post-images').getPublicUrl(filePath);
+                imageUrls.push(publicURLData.publicUrl);
+            }
+        }
+    }
+
     if (editPostId) {
-        await supabase.from("posts").update({ title, category, content }).eq("id", editPostId);
+        let updateData = { title, category, content };
+        if (imageUrls.length > 0) {
+            updateData.image_urls = imageUrls;
+            updateData.image_url = imageUrls[0];
+        }
+        await supabase.from("posts").update(updateData).eq("id", editPostId);
         alert("Article updated successfully!");
         editPostId = null;
         document.getElementById("form-panel-title").innerText = "Write New Article";
-        document.getElementById("publishBtn").innerText = "Publish Article";
+        publishBtn.innerText = "Publish Article";
     } else {
-        await supabase.from("posts").insert([{ title, author: userDisplayName, user_id: currentUser.id, category, content, likes:0, verified:false }]);
+        const { error: insertError } = await supabase.from("posts").insert([{ 
+            title, 
+            author: userDisplayName, 
+            user_id: currentUser.id, 
+            author_email: currentUser.email, 
+            category, 
+            content, 
+            image_urls: imageUrls,
+            image_url: imageUrls.length > 0 ? imageUrls[0] : "",
+            likes: 0, 
+            verified: isTeamMember ? true : false,
+            is_pinned: false
+        }]);
+        
+        if (insertError) {
+            alert("Error publishing article: " + insertError.message);
+            publishBtn.disabled = false;
+            publishBtn.innerText = "Publish Article";
+            return;
+        }
         alert("Article published successfully!");
     }
 
     document.getElementById("title").value = "";
     document.getElementById("content").value = "";
+    clearSelectedImages();
+    publishBtn.disabled = false;
     loadPosts();
+}
+
+async function togglePinPost(postId, currentPinnedStatus) {
+    const newStatus = !currentPinnedStatus;
+    const { error } = await supabase.from("posts").update({ is_pinned: newStatus }).eq("id", postId);
+    if (error) {
+        alert("Error updating pinned status: " + error.message);
+    } else {
+        alert(newStatus ? "Article pinned to top!" : "Article unpinned.");
+        loadPosts();
+    }
 }
 
 function triggerEditPost(id, encTitle, encCategory, encContent) {
@@ -634,15 +1214,13 @@ function triggerEditPost(id, encTitle, encCategory, encContent) {
 
 async function deletePost(id) {
     if (!confirm("Are you sure you want to permanently delete this article?")) return;
-    
     await supabase.from("comments").delete().eq("post_id", id);
     await supabase.from("posts").delete().eq("id", id);
-    
     alert("Article deleted successfully!");
     loadPosts();
 }
 
-async function addComment(postId){
+async function addComment(postId, authorEmail){
     if(!currentUser) return alert("You must be logged in to comment!");
     const commenterName = userDisplayName || currentUser.email.split('@')[0];
     const commentInput = document.getElementById("cmsg-"+postId);
@@ -653,30 +1231,41 @@ async function addComment(postId){
         await supabase.from("comments").update({ comment: commentText }).eq("id", editCommentId);
         alert("Response updated successfully!");
         editCommentId = null;
-        
         const btn = document.getElementById("cbtn-"+postId);
         if(btn) btn.innerText = "Reply";
     } else {
         await supabase.from("comments").insert([{ post_id: postId, name: commenterName, user_id: currentUser.id, comment: commentText }]);
+        if (authorEmail && authorEmail !== currentUser.email) {
+            sendNotificationEmail(authorEmail, "New Response on Your Article", `${commenterName} replied to your discussion.`);
+        }
     }
     
     commentInput.value = "";
     loadComments(postId);
 }
 
-// 💬 COMMENTS REPLIES ARCHITECTURE
 async function loadComments(postId){
     const { data, error } = await supabase.from("comments").select("*").eq("post_id", postId).order("id", { ascending: true });
     if(error) return console.log(error);
 
     const cBox = document.getElementById("comments-" + postId);
     cBox.innerHTML = "";
+    if (!data) return;
 
-    data.forEach(comment => {
+    const uniqueComments = [];
+    const seenCommentIds = new Set();
+    for (const c of data) {
+        if (!seenCommentIds.has(c.id)) {
+            seenCommentIds.add(c.id);
+            uniqueComments.push(c);
+        }
+    }
+
+    uniqueComments.forEach(comment => {
         let commentControlsHTML = "";
-        if (currentUser && (comment.user_id === currentUser.id || comment.name === userDisplayName || currentUser.email === 'methun2008216@gmail.com')) {
+        let canManageComment = currentUser && (comment.user_id === currentUser.id || comment.name === userDisplayName || getTeamMemberRole(currentUser.email));
+        if (canManageComment) {
             const encComment = safeB64Encode(comment.comment || "");
-            
             commentControlsHTML = `
                 <div class="comment-controls">
                     <button class="btn-comment-control btn-comment-edit" onclick="triggerEditComment(${postId}, ${comment.id}, '${encComment}')"><i class="fa-solid fa-pen"></i></button>
@@ -700,7 +1289,6 @@ window.triggerEditComment = function(postId, commentId, encComment) {
     const decodedComment = safeB64Decode(encComment);
     const input = document.getElementById("cmsg-" + postId);
     const btn = document.getElementById("cbtn-" + postId);
-    
     if(input && btn) {
         input.value = decodedComment;
         btn.innerText = "Save";
@@ -711,7 +1299,6 @@ window.triggerEditComment = function(postId, commentId, encComment) {
 
 window.deleteComment = function(postId, commentId) {
     if (!confirm("Delete this response permanently?")) return;
-    
     supabase.from("comments").delete().eq("id", commentId)
     .then(() => {
         alert("Response removed.");
@@ -724,7 +1311,6 @@ async function likePost(id, currentLikes){
     if(localStorage.getItem(likedStorageKey)) {
         return alert("You have already liked this article.");
     }
-
     const { error } = await supabase.from("posts").update({ likes: currentLikes + 1 }).eq("id", id);
     if(!error) {
         localStorage.setItem(likedStorageKey, "true");
@@ -732,7 +1318,6 @@ async function likePost(id, currentLikes){
     }
 }
 
-// Global exposure for inline execution 
 window.handleLogin = handleLogin;
 window.handleSignUp = handleSignUp;
 window.handleVerifyOTP = handleVerifyOTP;
@@ -744,11 +1329,13 @@ window.handleLogout = handleLogout;
 window.saveDisplayName = saveDisplayName;
 window.showNameEdit = showNameEdit;
 window.createPost = createPost;
+window.togglePinPost = togglePinPost;
 window.triggerEditPost = triggerEditPost;
 window.deletePost = deletePost;
 window.addComment = addComment;
 window.likePost = likePost;
 window.filterCategoryFeed = filterCategoryFeed;
+window.filterSearchPosts = filterSearchPosts;
 
 });
 </script>

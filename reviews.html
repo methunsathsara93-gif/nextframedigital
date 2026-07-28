@@ -6,125 +6,243 @@
 <title>Client Reviews - Next Frame Digital</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:#0a0a0a;color:#fff;scroll-behavior:smooth;overflow-x: hidden;}
+:root {
+    --bg-base: #050505;
+    --bg-card: rgba(18, 18, 20, 0.75);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-glow: rgba(255, 77, 0, 0.4);
+    --accent: #ff4d00;
+    --accent-gradient: linear-gradient(135deg, #ff4d00 0%, #ff8800 100%);
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
+body{background:var(--bg-base);color:var(--text-main);scroll-behavior:smooth;overflow-x:hidden;}
+
+/* Background Ambient Glow */
+body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255,77,0,0.12) 0%, rgba(0,0,0,0) 70%);
+    z-index: -1;
+    pointer-events: none;
+}
 
 /* 🌟 NAVIGATION */
-nav{display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.8);position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); border-bottom: 1px solid #111;}
-nav img{height:45px;}
+nav{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:18px 50px;background:rgba(5,5,5,0.85);
+    position: sticky; top: 0; z-index: 1000;
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-color);
+}
+nav img{height:40px; filter: drop-shadow(0 2px 8px rgba(255,77,0,0.3));}
 nav ul{display:flex;gap:20px;list-style:none;}
-nav li{cursor:pointer;transition: 0.3s;font-weight: 500;}
-nav li:hover{color:#ff4d00;}
+nav li{
+    cursor:pointer; transition: 0.3s; font-weight: 500; font-size: 14px;
+    background: rgba(255,255,255,0.04); padding: 8px 16px; border-radius: 50px;
+    border: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px;
+}
+nav li:hover{background: var(--accent); border-color: var(--accent); color:#fff; box-shadow: 0 4px 20px rgba(255,77,0,0.4);}
 
 .container{
-    max-width: 750px;
-    margin: 40px auto;
+    max-width: 850px;
+    margin: 50px auto;
     padding: 0 20px;
 }
 
-h1 {
+/* Header Typography */
+.hero-header {
     text-align: center;
-    font-size: 36px;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    background: linear-gradient(45deg, #fff, #ff4d00);
+    margin-bottom: 40px;
+}
+h1 {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+    background: linear-gradient(180deg, #fff 30%, #a1a1aa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+h1 span {
+    background: var(--accent-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 .sub-title {
-    text-align: center;
-    color: #ccc;
-    font-size: 14px;
-    margin-bottom: 40px;
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.5;
 }
+
+/* 📊 STATS COUNTER BAR */
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+.stat-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 18px;
+    border-radius: 14px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+.stat-box h4 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.stat-box p { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
 /* 📝 FORM CARD */
 .card{
-    background: #111;
-    padding: 30px;
-    border-radius: 16px;
+    background: var(--bg-card);
+    padding: 35px;
+    border-radius: 20px;
     margin-bottom: 40px;
-    border: 1px solid #222;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    transition: border-color 0.4s;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    backdrop-filter: blur(16px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+.card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+    background: var(--accent-gradient);
+    opacity: 0.6;
 }
 .card:focus-within {
-    border-color: #ff4d00;
+    border-color: var(--border-glow);
+    box-shadow: 0 20px 50px rgba(255, 77, 0, 0.15);
+}
+
+.input-group { position: relative; margin-bottom: 16px; }
+.input-group i {
+    position: absolute; top: 18px; left: 16px; color: var(--text-muted); font-size: 15px; transition: 0.3s;
 }
 
 input, textarea {
     width: 100%;
-    padding: 14px;
-    margin: 10px 0;
-    background: #000;
+    padding: 15px 15px 15px 48px;
+    background: rgba(0, 0, 0, 0.4);
     color: white;
-    border: 1px solid #262626;
-    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
     outline: none;
     font-size: 14px;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
+textarea { padding-left: 16px; height: 120px; resize: none; }
+
 input:focus, textarea:focus {
-    border-color: #555;
-    background: #050505;
+    border-color: var(--accent);
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 0 4px rgba(255, 77, 0, 0.1);
+}
+input:focus ~ i { color: var(--accent); }
+
+.char-counter {
+    text-align: right; font-size: 11px; color: var(--text-muted); margin-top: -10px; margin-bottom: 15px;
 }
 
-textarea { height: 110px; resize: none; }
-
-.stars-selector-label { font-size: 13px; color: #888; margin-top: 10px; }
-.stars{ display: flex; gap: 8px; margin: 8px 0 20px 0; cursor: pointer; }
-.star{ font-size: 32px; color: #252525; transition: all 0.2s ease-in-out; }
-.star:hover { transform: scale(1.15); }
-.star.active{ color: #ffcc00; text-shadow: 0 0 15px rgba(255, 204, 0, 0.6); }
-
-button{
-    width: 100%; padding: 14px; background: #ff4d00; color: white; border: none; border-radius: 10px;
-    cursor: pointer; font-size: 15px; font-weight: 700; letter-spacing: 0.5px; transition: 0.3s;
+.stars-container-wrapper {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+    background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 12px; border: 1px solid var(--border-color);
 }
-button:hover{ transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 77, 0, 0.35); }
+.stars-selector-label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+.stars{ display: flex; gap: 6px; cursor: pointer; }
+.star{ font-size: 26px; color: #26262b; transition: transform 0.2s, color 0.2s; }
+.star:hover { transform: scale(1.2); }
+.star.active{ color: #ffc107; text-shadow: 0 0 12px rgba(255, 193, 7, 0.5); }
 
-/* 💬 REVIEWS FEED */
+button#submitBtn{
+    width: 100%; padding: 16px; background: var(--accent-gradient); color: white; border: none; border-radius: 12px;
+    cursor: pointer; font-size: 15px; font-weight: 700; letter-spacing: 0.5px; transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(255, 77, 0, 0.3);
+}
+button#submitBtn:hover{ transform: translateY(-2px); box-shadow: 0 15px 30px rgba(255, 77, 0, 0.5); filter: brightness(1.1); }
+
+/* 💬 REVIEWS FEED SECTION */
+.feed-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+}
+.feed-header h2 { font-size: 20px; font-weight: 700; }
+
 .review{
-    background: #111; padding: 22px; border-radius: 14px; margin-top: 20px; border: 1px solid #1a1a1a;
-    display: flex; gap: 16px; align-items: flex-start; transition: all 0.4s ease; position: relative;
+    background: var(--bg-card); padding: 24px; border-radius: 16px; margin-bottom: 16px; border: 1px solid var(--border-color);
+    display: flex; gap: 18px; align-items: flex-start; transition: all 0.3s ease; position: relative;
+    backdrop-filter: blur(10px);
 }
-.review:hover{ transform: translateY(-4px); border-color: rgba(255, 77, 0, 0.3); }
+.review:hover{ transform: translateY(-3px); border-color: rgba(255, 77, 0, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
 
 .client-avatar {
-    width: 48px; height: 48px; background: linear-gradient(135deg, #222, #111); border: 1px solid #333;
-    color: #ff4d00; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0;
+    width: 50px; height: 50px; background: linear-gradient(135deg, #27272a, #18181b); border: 1px solid var(--border-color);
+    color: var(--accent); font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center; border-radius: 14px; flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .review-content { flex-grow: 1; }
-.review-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 5px; }
-.review h3{ font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; }
-.rating{ color: #ffcc00; font-size: 13px; letter-spacing: 2px; margin: 4px 0 10px 0; }
-.review p{ color: #bbb; font-size: 14px; line-height: 1.6; }
+.review-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 5px; margin-bottom: 4px;}
+.review h3{ font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 6px; }
+.rating{ color: #ffc107; font-size: 12px; letter-spacing: 3px; margin-bottom: 10px; }
+.review p{ color: #cbd5e1; font-size: 14px; line-height: 1.6; }
 
-/* 🛠️ EDIT & DELETE BUTTONS STYLE */
+/* 🛡️ PROFESSIONAL VERIFIED BADGE STYLE */
+.verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0, 218, 255, 0.1);
+    border: 1px solid rgba(0, 218, 255, 0.3);
+    color: #00daff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 6px;
+    box-shadow: 0 0 10px rgba(0, 218, 255, 0.15);
+    letter-spacing: 0.3px;
+}
+.verified-badge i {
+    font-size: 10px;
+}
+
+/* 🛠️ EDIT & DELETE BUTTONS */
 .action-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 15px;
+    display: flex; gap: 10px; margin-top: 16px;
 }
 .btn-action {
-    width: auto;
-    padding: 6px 14px;
-    font-size: 12px;
-    font-weight: 500;
-    border-radius: 6px;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    color: #ccc;
-    transition: 0.2s;
+    width: auto; padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 8px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-muted);
+    cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;
 }
-.btn-edit:hover { background: #ff4d00; border-color: #ff4d00; color: #fff; }
-.btn-delete:hover { background: #dc3545; border-color: #dc3545; color: #fff; }
+.btn-edit:hover { background: rgba(255,77,0,0.15); border-color: var(--accent); color: var(--accent); }
+.btn-delete:hover { background: rgba(220,53,69,0.15); border-color: #dc3545; color: #ff6b6b; }
 
-footer{text-align:center;padding:30px;background:#000; border-top: 1px solid #111; margin-top: 80px;}
+footer{
+    text-align:center; padding: 40px; background: #030303; border-top: 1px solid var(--border-color); margin-top: 80px; color: var(--text-muted); font-size: 13px;
+}
+
+/* Responsive */
+@media(max-width: 600px) {
+    nav { padding: 15px 20px; }
+    .container { padding: 0 15px; }
+    .card { padding: 20px; }
+    .stats-bar { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 
@@ -133,29 +251,60 @@ footer{text-align:center;padding:30px;background:#000; border-top: 1px solid #11
 <nav>
 <img src="logo.png" alt="Next Frame Digital">
 <ul>
-<li onclick="goBack()">← Back</li>
+<li onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> Back</li>
 </ul>
 </nav>
 
 <div class="container">
 
-<h1>Client Testimonials</h1>
-<p class="sub-title">See what our partners say about Next Frame Digital production</p>
+<div class="hero-header">
+    <h1>Client <span>Testimonials</span></h1>
+    <p class="sub-title">Explore professional experiences and feedback from partners working alongside Next Frame Digital.</p>
+</div>
+
+<!-- 📊 STATS COUNTER BAR -->
+<div class="stats-bar" id="statsBar">
+    <div class="stat-box">
+        <h4 id="statTotalReviews">0</h4>
+        <p>Total Reviews</p>
+    </div>
+    <div class="stat-box">
+        <h4 id="statAvgRating">0.0</h4>
+        <p>Average Rating</p>
+    </div>
+    <div class="stat-box">
+        <h4>100%</h4>
+        <p>Verified Partners</p>
+    </div>
+</div>
 
 <div class="card">
-    <input id="name" placeholder="Your Name or Company">
-    <textarea id="review" placeholder="Share your experience working with us..."></textarea>
+    <div class="input-group">
+        <input id="name" placeholder="Your Name or Company">
+        <i class="fa-solid fa-user"></i>
+    </div>
     
-    <div class="stars-selector-label">Select Your Rating:</div>
-    <div class="stars" id="stars">
-      <span class="star" onclick="setRating(1)">★</span>
-      <span class="star" onclick="setRating(2)">★</span>
-      <span class="star" onclick="setRating(3)">★</span>
-      <span class="star" onclick="setRating(4)">★</span>
-      <span class="star" onclick="setRating(5)">★</span>
+    <div class="input-group">
+        <textarea id="review" placeholder="Share your professional experience working with us..." oninput="updateCounter()"></textarea>
+    </div>
+    <div class="char-counter" id="charCounter">0 / 300 characters</div>
+
+    <div class="stars-container-wrapper">
+        <div class="stars-selector-label">Select Your Rating:</div>
+        <div class="stars" id="stars">
+          <span class="star" onclick="setRating(1)">★</span>
+          <span class="star" onclick="setRating(2)">★</span>
+          <span class="star" onclick="setRating(3)">★</span>
+          <span class="star" onclick="setRating(4)">★</span>
+          <span class="star" onclick="setRating(5)">★</span>
+        </div>
     </div>
 
-    <button id="submitBtn" onclick="saveReview()">Post Review</button>
+    <button id="submitBtn" onclick="saveReview()"><i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Post Review</button>
+</div>
+
+<div class="feed-header">
+    <h2>Recent Feedbacks</h2>
 </div>
 
 <div id="reviews"></div>
@@ -163,7 +312,7 @@ footer{text-align:center;padding:30px;background:#000; border-top: 1px solid #11
 </div>
 
 <footer>
-<p>© 2026 Next Frame Digital</p>
+<p>© 2026 Next Frame Digital • All Rights Reserved</p>
 </footer>
 
 <script>
@@ -171,14 +320,12 @@ const supabaseUrl = "https://xuxdkjeypwrhccgthepn.supabase.co";
 const supabaseKey = "sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI";
 const { createClient } = supabase;
 
-// 🌟 LocalStorage එකෙන් Owner Token එක මුලින්ම සෙට් කරගන්නවා (RLS ආරක්ෂාව සඳහා)
 let token = localStorage.getItem("nfd_review_token");
 if (!token) {
     token = "token_" + Math.random().toString(36).substr(2, 9) + Date.now();
     localStorage.setItem("nfd_review_token", token);
 }
 
-// 🚀 Supabase Client එක හදනකොට ග්ලෝබල් හෙඩර් එකක් විදිහට 'x-owner-token' එක පාස් කරනවා
 const client = createClient(supabaseUrl, supabaseKey, {
   global: {
     headers: {
@@ -190,7 +337,10 @@ const client = createClient(supabaseUrl, supabaseKey, {
 let rating = 0;
 let editModeId = null;
 
-function goBack(){ window.history.back(); }
+// 🔗 BACK BUTTON FUNCTION (Directly redirects to index.html)
+function goBack(){ 
+    window.location.href = "index.html"; 
+}
 
 function setRating(value){
     rating = value;
@@ -200,7 +350,11 @@ function setRating(value){
     });
 }
 
-/* 🚀 SAVE OR UPDATE REVIEW */
+function updateCounter() {
+    const text = document.getElementById("review").value;
+    document.getElementById("charCounter").innerText = `${text.length} / 300 characters`;
+}
+
 async function saveReview(){
     const name = document.getElementById("name").value.trim();
     const review = document.getElementById("review").value.trim();
@@ -211,7 +365,6 @@ async function saveReview(){
     }
 
     if (editModeId) {
-        // UPDATE EXISTING REVIEW (RLS එකෙන් Database මට්ටමෙන්ම Owner Token එක සමානද කියලා බලනවා)
         const { error } = await client
         .from("feedbacks")
         .update({ name: name, review: review, rating: rating })
@@ -220,36 +373,34 @@ async function saveReview(){
         if(error) { alert("RLS Error: " + error.message); return; }
         alert("Review Updated!");
         editModeId = null;
-        document.getElementById("submitBtn").innerText = "Post Review";
+        document.getElementById("submitBtn").innerHTML = '<i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Post Review';
     } else {
-        // INSERT NEW REVIEW
+        // NOTE: 'verified' is NOT passed here, so it defaults to false/null in Supabase until you check it from your database dashboard.
         const { error } = await client
         .from("feedbacks")
         .insert([{ name: name, review: review, rating: rating, owner_token: token }]);
 
         if(error) { alert("RLS Error: " + error.message); return; }
-        alert("Review Posted!");
+        alert("Review Posted! It will display as verified once approved.");
     }
 
     location.reload();
 }
 
-/* ✏️ TRIGGER EDIT MODE */
 function triggerEdit(id, name, review, currentRating) {
     document.getElementById("name").value = name;
     document.getElementById("review").value = review;
     setRating(currentRating);
+    updateCounter();
     
     editModeId = id;
-    document.getElementById("submitBtn").innerText = "Update My Review 🔄";
+    document.getElementById("submitBtn").innerHTML = '<i class="fa-solid fa-rotate" style="margin-right: 8px;"></i> Update My Review';
     document.querySelector(".card").scrollIntoView({ behavior: 'smooth' });
 }
 
-/* 🗑️ DELETE REVIEW */
 async function deleteReview(id) {
     if (!confirm("Are you sure you want to delete this review?")) return;
 
-    // DELETE REVIEW (RLS එකෙන් Database මට්ටමෙන්ම බ්ලොක් කරනවා වෙන කෙනෙක් මකන්න හැදුවොත්)
     const { error } = await client
     .from("feedbacks")
     .delete()
@@ -261,7 +412,6 @@ async function deleteReview(id) {
     location.reload();
 }
 
-/* 💬 FETCH & RENDER REVIEWS */
 async function loadReviews(){
     const { data, error } = await client
     .from("feedbacks")
@@ -270,14 +420,25 @@ async function loadReviews(){
 
     if (error || !data) return;
 
+    let totalReviews = data.length;
+    let avgRating = totalReviews > 0 ? (data.reduce((acc, item) => acc + (item.rating || 0), 0) / totalReviews).toFixed(1) : "0.0";
+    
+    document.getElementById("statTotalReviews").innerText = totalReviews;
+    document.getElementById("statAvgRating").innerText = avgRating;
+
     let html = "";
 
     data.forEach(item => {
         let starsDisplay = "★".repeat(item.rating || 0) + "☆".repeat(5 - (item.rating || 0));
         let firstLetter = item.name ? item.name.charAt(0).toUpperCase() : "C";
-        let verifiedBadge = item.verified ? `<i class="fa-solid fa-circle-check" style="color:#00daff; margin-left:6px; font-size:13px;"></i>` : "";
+        
+        // 🛡️ PROFESSIONAL VERIFIED BADGE (Only renders if 'verified' is true in Supabase)
+        let verifiedBadge = item.verified ? `
+            <span class="verified-badge">
+                <i class="fa-solid fa-circle-check"></i> Verified Partner
+            </span>
+        ` : "";
 
-        // UI එකේ Edit/Delete බොත්තම් පෙන්වන්නේ මේ බ්‍රවුසර් එකේ ටෝකන් එකට අදාල රිවීව්ස් වලට විතරයි
         let actionButtons = "";
         if (item.owner_token && item.owner_token === token) {
             actionButtons = `
