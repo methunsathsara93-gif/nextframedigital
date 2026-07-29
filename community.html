@@ -5,7 +5,7 @@
 <title>Frame Masters Community - Next Frame Digital</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Open Graph Meta Tags for Rich Social Sharing (WhatsApp, Facebook, Social Previews) -->
+<!-- Open Graph Meta Tags -->
 <meta property="og:title" content="Frame Masters Community - Next Frame Digital">
 <meta property="og:description" content="Explore cinematic articles, professional production workflows, drone shoots, color grading insights, and digital media updates from Next Frame Digital. Learn, Share & Grow with creators!">
 <meta property="og:type" content="website">
@@ -25,10 +25,20 @@
     --accent-gradient: linear-gradient(135deg, #ff4d00 0%, #ff8800 100%);
     --text-main: #ffffff;
     --text-muted: #94a3b8;
+    --input-bg: rgba(0,0,0,0.4);
+}
+
+body.light-theme {
+    --bg-base: #f4f6f9;
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --border-color: rgba(0, 0, 0, 0.1);
+    --text-main: #111827;
+    --text-muted: #64748b;
+    --input-bg: rgba(230,235,240,0.8);
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
-body{background:var(--bg-base);color:var(--text-main);scroll-behavior:smooth;overflow-x:hidden;}
+body{background:var(--bg-base);color:var(--text-main);scroll-behavior:smooth;overflow-x:hidden;transition: background 0.3s, color 0.3s;}
 
 body::before {
     content: '';
@@ -50,44 +60,107 @@ nav{
     backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border-color);
 }
-nav h1{font-size: 20px; font-weight: 700; letter-spacing: 0.5px; color:#fff;}
+body.light-theme nav { background: rgba(255,255,255,0.85); }
+nav h1{font-size: 20px; font-weight: 700; letter-spacing: 0.5px; color:var(--text-main);}
 nav h1 span{background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
 .nav-tagline { font-size: 12px; color: var(--text-muted); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
 
-.container{max-width:950px;margin:40px auto;padding:0 20px;}
+.nav-right-actions { display: flex; align-items: center; gap: 15px; }
+.nav-avatar-btn {
+    width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--accent);
+    cursor: pointer; object-fit: cover; background: #1a1a1a; display: flex;
+    align-items: center; justify-content: center; color: #fff; font-size: 18px;
+    transition: 0.3s;
+}
+.nav-avatar-btn:hover { transform: scale(1.08); box-shadow: 0 0 15px rgba(255, 77, 0, 0.5); }
 
-.auth-box, .post-box, .post-card{
+.nav-icon-btn {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
+    color: var(--text-main); width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    font-size: 16px; position: relative; transition: 0.3s;
+}
+.nav-icon-btn:hover { background: var(--accent); color: #fff; }
+.notif-badge {
+    position: absolute; top: 2px; right: 2px; width: 10px; height: 10px;
+    background: #ff0055; border-radius: 50%; border: 2px solid var(--bg-base); display: none;
+}
+.notif-badge.active { display: block; }
+
+.notif-dropdown {
+    position: absolute; top: 70px; right: 50px; width: 320px;
+    background: var(--bg-card); border: 1px solid var(--border-color);
+    border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    padding: 15px; z-index: 1001; backdrop-filter: blur(16px); display: none;
+}
+.notif-dropdown.active { display: block; }
+.notif-dropdown h4 { font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; color: var(--text-main); }
+.notif-item { font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--border-color); color: var(--text-muted); }
+.notif-item:last-child { border-bottom: none; }
+
+.container{max-width:1200px;margin:40px auto;padding:0 20px;}
+.main-layout { display: flex; flex-direction: column; gap: 25px; }
+
+@media (max-width: 900px) {
+    nav { padding: 15px 20px; }
+    .nav-tagline { display: none; }
+    .notif-dropdown { right: 20px; width: 280px; }
+}
+
+.auth-box, .post-box, .post-card, .sidebar-widget {
     background: var(--bg-card);
     padding: 30px;
     border-radius: 20px;
     margin-bottom: 25px;
     border: 1px solid var(--border-color);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     backdrop-filter: blur(16px);
     position: relative;
     overflow: hidden;
 }
-.auth-box::before, .post-box::before, .post-card::before {
+.auth-box::before, .post-box::before, .post-card::before, .sidebar-widget::before {
     content: '';
     position: absolute; top: 0; left: 0; width: 100%; height: 2px;
     background: var(--accent-gradient);
     opacity: 0.6;
 }
-.auth-box h3, .post-box h3 {
+.auth-box h3, .post-box h3, .sidebar-widget h3 {
     font-size: 18px;
     margin-bottom: 18px;
     letter-spacing: 0.5px;
-    color: #fff;
+    color: var(--text-main);
     display: flex;
     align-items: center;
     gap: 10px;
 }
-.auth-box h3::before, .post-box h3::before {
+.auth-box h3::before, .post-box h3::before, .sidebar-widget h3::before {
     content: '';
     width: 4px; height: 18px;
     background: var(--accent);
     border-radius: 4px;
 }
+
+.password-field-wrapper {
+    position: relative;
+    width: 100%;
+    margin: 8px 0;
+}
+.password-field-wrapper input {
+    margin: 0 !important;
+    padding-right: 45px !important;
+}
+.toggle-password-eye {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+    z-index: 10;
+}
+.toggle-password-eye:hover { color: var(--text-main); }
 
 input, textarea, select{
     width:100%;
@@ -95,15 +168,14 @@ input, textarea, select{
     margin:8px 0;
     border:1px solid var(--border-color);
     border-radius:12px;
-    background:rgba(0,0,0,0.4);
-    color:white;
+    background: var(--input-bg);
+    color: var(--text-main);
     outline: none;
     font-size: 14px;
     transition: all 0.3s ease;
 }
 input:focus, textarea:focus, select:focus {
     border-color: var(--accent);
-    background: rgba(0,0,0,0.7);
     box-shadow: 0 0 0 4px rgba(255, 77, 0, 0.1);
 }
 textarea { height: 120px; resize: none; }
@@ -131,9 +203,9 @@ button:hover {
 .hidden { display: none !important; }
 .search-hide { display: none !important; }
 
-.user-info { background: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); }
+.user-info { background: rgba(0, 0, 0, 0.2); padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); }
 .user-header-row { display: flex; justify-content: space-between; align-items: center; }
-.name-setup-box { background: rgba(0, 0, 0, 0.6); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 15px; }
+.name-setup-box { background: rgba(0, 0, 0, 0.3); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 15px; }
 
 .feed-filter-bar {
     display: flex;
@@ -164,65 +236,42 @@ button:hover {
 
 .post-card { transition: all 0.4s ease; }
 .post-card.filter-hide { display: none !important; }
-.post-card.pinned-post { border: 1px solid var(--accent); background: linear-gradient(135deg, rgba(255,77,0,0.06) 0%, rgba(18,18,20,0.8) 100%); }
-.post-card h2 { font-size: 22px; color: #fff; margin-bottom: 10px; font-weight: 700; }
+.post-card.pinned-post { border: 1px solid var(--accent); background: linear-gradient(135deg, rgba(255,77,0,0.06) 0%, var(--bg-card) 100%); }
+.post-card.highlight-target { border: 2px solid #00ff88 !important; box-shadow: 0 0 30px rgba(0, 255, 136, 0.4); }
+.post-card h2 { font-size: 22px; color: var(--text-main); margin-bottom: 10px; font-weight: 700; }
 .meta-row { display: flex; gap: 15px; font-size: 13px; color: var(--text-muted); margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
-.meta-row strong { color: #fff; }
+.meta-row strong { color: var(--text-main); }
+
+/* Clickable Profile Image Styling */
+.author-meta-box { display: flex; align-items: center; gap: 10px; cursor: pointer; transition: transform 0.2s; }
+.author-meta-box:hover { transform: scale(1.03); }
+.author-avatar-img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); background: #111; }
 
 .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: rgba(0, 218, 255, 0.1);
-    border: 1px solid rgba(0, 218, 255, 0.3);
-    color: #00daff;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.3px;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(0, 218, 255, 0.1); border: 1px solid rgba(0, 218, 255, 0.3);
+    color: #00daff; font-size: 11px; font-weight: 600; padding: 3px 10px;
+    border-radius: 20px; letter-spacing: 0.3px;
 }
 
 .badge-team {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: rgba(255, 77, 0, 0.15);
-    border: 1px solid rgba(255, 77, 0, 0.4);
-    color: #ff8800;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 20px;
-    box-shadow: 0 0 12px rgba(255, 77, 0, 0.2);
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255, 77, 0, 0.15); border: 1px solid rgba(255, 77, 0, 0.4);
+    color: #ff8800; font-size: 11px; font-weight: 700; padding: 3px 10px;
+    border-radius: 20px; box-shadow: 0 0 12px rgba(255, 77, 0, 0.2);
     animation: badge-glow 2s infinite alternate;
 }
 
-/* Gamified Contribution Badges */
 .badge-contributor {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: rgba(0, 255, 136, 0.15);
-    border: 1px solid rgba(0, 255, 136, 0.4);
-    color: #00ff88;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 20px;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(0, 255, 136, 0.15); border: 1px solid rgba(0, 255, 136, 0.4);
+    color: #00ff88; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
 }
 
 .badge-pinned {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: rgba(255, 136, 0, 0.2);
-    border: 1px solid rgba(255, 136, 0, 0.5);
-    color: #ffaa00;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 20px;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255, 136, 0, 0.2); border: 1px solid rgba(255, 136, 0, 0.5);
+    color: #ffaa00; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
 }
 
 @keyframes badge-glow {
@@ -230,128 +279,75 @@ button:hover {
     100% { box-shadow: 0 0 16px rgba(255, 77, 0, 0.6); }
 }
 
-.post-body { color: #cbd5e1; font-size: 15px; line-height: 1.7; margin-bottom: 22px; white-space: pre-wrap; }
+.post-body { color: var(--text-main); opacity: 0.9; font-size: 15px; line-height: 1.7; margin-bottom: 22px; white-space: pre-wrap; }
 
-/* Fully optimized photo container showing full image without cropping */
+/* Responsive YouTube Video Container */
+.video-embed-container {
+    position: relative; 
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0; 
+    overflow: hidden;
+    width: 100%; 
+    border-radius: 12px; 
+    margin-bottom: 18px; 
+    border: 1px solid var(--border-color);
+    background: #000;
+}
+.video-embed-container iframe {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+}
+
 .media-container {
-    position: relative;
-    width: 100%;
-    background: #000;
-    border-radius: 12px;
-    margin-bottom: 18px;
-    border: 1px solid var(--border-color);
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: relative; width: 100%; background: #000; border-radius: 12px;
+    margin-bottom: 18px; border: 1px solid var(--border-color); overflow: hidden;
+    display: flex; justify-content: center; align-items: center;
 }
-.media-container img {
-    width: 100%;
-    max-height: 550px;
-    object-fit: contain;
-    display: block;
-}
+.media-container img { width: 100%; max-height: 550px; object-fit: contain; display: block; }
 
-/* Carousel Gallery Styling */
 .carousel-container {
-    position: relative;
-    width: 100%;
-    background: #000;
-    border-radius: 12px;
-    margin-bottom: 18px;
-    border: 1px solid var(--border-color);
-    overflow: hidden;
+    position: relative; width: 100%; background: #000; border-radius: 12px;
+    margin-bottom: 18px; border: 1px solid var(--border-color); overflow: hidden;
 }
 .carousel-track-wrapper {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+    scrollbar-width: none; -ms-overflow-style: none;
 }
 .carousel-track-wrapper::-webkit-scrollbar { display: none; }
 .carousel-slide {
-    min-width: 100%;
-    scroll-snap-align: start;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-height: 550px;
-    background: #000;
+    min-width: 100%; scroll-snap-align: start; display: flex;
+    justify-content: center; align-items: center; max-height: 550px; background: #000;
 }
-.carousel-slide img {
-    width: 100%;
-    max-height: 550px;
-    object-fit: contain;
-    display: block;
-}
+.carousel-slide img { width: 100%; max-height: 550px; object-fit: contain; display: block; }
 .carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: 0.2s;
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; cursor: pointer; z-index: 10; transition: 0.2s;
 }
 .carousel-btn:hover { background: var(--accent); border-color: var(--accent); }
 .carousel-prev { left: 10px; }
 .carousel-next { right: 10px; }
 .carousel-dots {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 6px;
-    z-index: 10;
+    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 6px; z-index: 10;
 }
-.carousel-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.4);
-    cursor: pointer;
-    transition: 0.2s;
-}
+.carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); cursor: pointer; transition: 0.2s; }
 .carousel-dot.active { background: var(--accent); width: 20px; border-radius: 4px; }
 
-/* Watermark embedded over photo */
 .photo-watermark {
-    position: absolute;
-    bottom: 14px;
-    right: 14px;
-    background: rgba(0, 0, 0, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
-    padding: 6px 14px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 8px;
-    backdrop-filter: blur(6px);
-    letter-spacing: 0.5px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    pointer-events: none;
+    position: absolute; bottom: 14px; right: 14px; background: rgba(0, 0, 0, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 6px 14px;
+    font-size: 12px; font-weight: 700; border-radius: 8px; backdrop-filter: blur(6px);
+    letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5); pointer-events: none;
 }
-.photo-watermark span {
-    color: var(--accent);
-}
+.photo-watermark span { color: var(--accent); }
 
-.actions-footer { display: flex; gap: 20px; align-items: center; border-top: 1px solid var(--border-color); padding-top: 18px; flex-wrap: wrap; }
-.like-trigger { color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; transition: 0.2s; }
-.like-trigger:hover { color: var(--accent); transform: scale(1.05); }
+.actions-footer { display: flex; gap: 15px; align-items: center; border-top: 1px solid var(--border-color); padding-top: 18px; flex-wrap: wrap; }
+.like-trigger, .bookmark-trigger { color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; transition: 0.2s; }
+.like-trigger:hover, .bookmark-trigger:hover { color: var(--accent); transform: scale(1.05); }
 .like-trigger i { color: var(--accent); }
+.bookmark-trigger.saved i { color: var(--accent); }
 
 .creator-control { display: flex; gap: 10px; margin-left: auto; flex-wrap: wrap; }
 .btn-control { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 14px; font-size: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
@@ -359,14 +355,14 @@ button:hover {
 .btn-control-delete:hover { background: rgba(220,53,69,0.15); border-color: #dc3545; color: #ff6b6b; }
 .btn-control-pin:hover { background: rgba(255,136,0,0.15); border-color: #ff8800; color: #ffaa00; }
 
-.comments-segment { margin-top: 25px; background: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); }
+.comments-segment { margin-top: 25px; background: rgba(0, 0, 0, 0.15); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); }
 .comment-node { 
     font-size: 14px; padding: 14px 18px; margin-bottom: 12px; background: var(--bg-card); 
-    border-radius: 12px; border: 1px solid var(--border-color); color: #e2e8f0; 
+    border-radius: 12px; border: 1px solid var(--border-color); color: var(--text-main); 
     line-height: 1.6; display: flex; justify-content: space-between; align-items: center; 
 }
 .comment-node:last-child { margin-bottom: 0; }
-.comment-node b { color: #fff; font-weight: 700; font-size: 13px; margin-right: 6px; }
+.comment-node b { color: var(--text-main); font-weight: 700; font-size: 13px; margin-right: 6px; }
 .comment-content-left { flex: 1; padding-right: 15px; white-space: pre-wrap; }
 .comment-controls { display: flex; gap: 8px; }
 .btn-comment-control { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 13px; padding: 6px; }
@@ -376,6 +372,62 @@ button:hover {
 .comment-form-block { display: flex; gap: 12px; margin-top: 18px; }
 .comment-form-block input { margin: 0; padding: 14px 18px; font-size: 14px; }
 .comment-form-block button { padding: 0 24px; font-size: 14px; }
+
+.leaderboard-list { list-style: none; margin-top: 10px; display: flex; flex-wrap: wrap; gap: 15px; }
+.leaderboard-item { display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(0,0,0,0.2); flex: 1; min-width: 180px; }
+.rank-num { font-weight: 800; font-size: 14px; color: var(--accent); width: 20px; }
+.leaderboard-info { flex: 1; }
+.leaderboard-name { font-size: 13px; font-weight: 700; color: var(--text-main); display: block; }
+.leaderboard-stats { font-size: 11px; color: var(--text-muted); }
+
+.tag-click { color: var(--accent); cursor: pointer; font-weight: 600; }
+.tag-click:hover { text-decoration: underline; }
+
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
+    z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; pointer-events: none; transition: 0.3s ease;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.dashboard-modal {
+    background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px;
+    width: 100%; max-width: 650px; padding: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+    position: relative; max-height: 90vh; overflow-y: auto; color: var(--text-main);
+}
+.dashboard-modal h3 { font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+.close-modal-btn { background: transparent; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+.close-modal-btn:hover { color: var(--text-main); }
+
+.dash-profile-header {
+    display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.03);
+    padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 20px;
+}
+.dash-avatar-wrapper { position: relative; width: 80px; height: 80px; }
+.dash-avatar-wrapper img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+.dash-avatar-upload-btn {
+    position: absolute; bottom: 0; right: 0; background: var(--accent); color: #fff;
+    width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; cursor: pointer; border: 2px solid #0f0f12;
+}
+
+.dash-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card {
+    background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); padding: 15px;
+    border-radius: 14px; text-align: center;
+}
+.stat-card h4 { font-size: 22px; color: var(--accent); font-weight: 800; }
+.stat-card p { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
+
+.dash-tab-bar { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+.dash-tab { padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; color: var(--text-muted); }
+.dash-tab.active { background: var(--accent); color: #fff; }
+
+.tasks-container { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); padding: 18px; border-radius: 16px; }
+.task-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+.task-item:last-child { border-bottom: none; }
+.task-status { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; }
+.task-status.completed { background: rgba(0,255,136,0.15); color: #00ff88; border: 1px solid rgba(0,255,136,0.3); }
+.task-status.pending { background: rgba(255,255,255,0.05); color: var(--text-muted); }
 
 .cinematic-marquee { width: 100%; background: #030303; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); overflow: hidden; padding: 18px 0; margin-top: 60px; display: flex; }
 .marquee-content { display: flex; white-space: nowrap; gap: 50px; animation: scroll-left 25s linear infinite; }
@@ -389,117 +441,174 @@ button:hover {
 
 <nav>
     <h1>Frame Masters <span>Community</span></h1>
-    <span class="nav-tagline">Learn • Share • Grow</span>
+    <div class="nav-right-actions">
+        <span class="nav-tagline">Learn • Share • Grow</span>
+        <button class="nav-icon-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+            <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+
+        <div style="position: relative;">
+            <button class="nav-icon-btn" onclick="toggleNotifications()" title="Notifications">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notif-badge" id="notif-badge"></span>
+            </button>
+            <div class="notif-dropdown" id="notif-dropdown">
+                <h4>Notifications</h4>
+                <div id="notif-list">
+                    <div class="notif-item">No new notifications.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="nav-user-profile-btn" class="nav-avatar-btn hidden" onclick="openProfileDashboard()" title="Open Profile Dashboard">
+            <i class="fa-solid fa-user" id="nav-avatar-icon"></i>
+            <img id="nav-avatar-img" class="hidden" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+        </div>
+    </div>
 </nav>
 
 <div class="container">
-<button onclick="window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255, 255, 255, 0.08); color: #fff; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;">
+<button onclick="window.location.href='index.html'" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; margin-bottom: 20px;">
     <i class="fa-solid fa-arrow-left"></i> Back to Home
 </button>
-    <div id="auth-section" class="auth-box">
-        <div id="auth-logged-out">
-            <h3 id="auth-title">Community Portal</h3>
-            <div id="main-auth-inputs">
-                <input id="auth-email" type="email" placeholder="Email Address">
-                <input id="auth-password" type="password" placeholder="Password">
-            </div>
-            
-            <div id="verification-otp-box" class="hidden" style="margin: 12px 0; padding: 18px; background: rgba(0,0,0,0.6); border-radius: 12px; border: 1px solid var(--accent);">
-                <p id="otp-message-text" style="margin:0 0 10px 0; color: #00daff; font-size:13px; font-weight: 600;">📬 Enter the 6-Digit Code sent to your email:</p>
-                <input id="verification-token" placeholder="X X X X X X" style="text-align: center; font-size: 18px; letter-spacing: 5px;">
-                <button id="btn-verify-signup" onclick="handleVerifyOTP()" class="hidden" style="background:#00ff88; color:#000; width: 100%; margin-top:12px;">Verify & Complete Sign Up</button>
-                <button id="btn-verify-reset" onclick="handleVerifyResetOTP()" class="hidden" style="width: 100%; margin-top:12px;">Verify Recovery Code</button>
-            </div>
 
-            <div id="reset-password-actions" class="hidden">
-                <p style="color: var(--accent); margin: 0 0 8px 0; font-size:13px; font-weight: 600;">Enter your new secure password:</p>
-                <input id="new-password-input" type="password" placeholder="New Password (At least 6 chars)">
-                <button onclick="handlePasswordUpdate()" style="background: #00ff88; color: #000; width: 100%; margin-top: 8px;">Save New Password</button>
-                <button onclick="cancelResetMode()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); width: 100%; margin-top: 8px;">Cancel</button>
-            </div>
+<div class="main-layout">
+    <div class="feed-section">
+        <div id="auth-section" class="auth-box">
+            <div id="auth-logged-out">
+                <h3 id="auth-title">Community Portal</h3>
+                <div id="main-auth-inputs">
+                    <input id="auth-email" type="email" placeholder="Email Address">
+                    
+                    <div class="password-field-wrapper">
+                        <input id="auth-password" type="password" placeholder="Password">
+                        <i class="fa-solid fa-eye toggle-password-eye" onclick="togglePasswordVisibility('auth-password', this)"></i>
+                    </div>
 
-            <div id="auth-action-buttons" style="margin-top: 15px; display: flex; gap: 10px;">
-                <button onclick="handleSignUp()" style="flex:1;">Sign Up</button>
-                <button onclick="handleLogin()" style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border-color);">Log In</button>
-                <button onclick="showForgotPasswordPanel()" style="background: transparent; color:var(--text-muted); font-size:12px; text-decoration: underline; padding: 0 10px;">Forgot?</button>
-            </div>
-        </div>
-
-        <div id="auth-logged-in" class="hidden">
-            <div class="user-info">
-                <div class="user-header-row">
-                    <span id="user-display-email" style="font-size:14px; font-weight:500; color:#fff;"></span>
-                    <button onclick="handleLogout()" style="background:rgba(255,255,255,0.05); padding:8px 16px; font-size:12px; border:1px solid var(--border-color); cursor:pointer;">Log Out</button>
-                </div>
-                
-                <div id="name-setup" class="name-setup-box">
-                    <p style="margin: 0 0 8px 0; font-size: 13px; color: var(--accent); font-weight: 600;">Set your Creator Display Name:</p>
-                    <div style="display:flex; gap:10px;">
-                        <input id="custom-display-name" placeholder="Creator name..." style="margin:0;">
-                        <button onclick="saveDisplayName()" style="padding: 0 24px;">Save</button>
+                    <div id="signup-confirm-password-block" class="hidden">
+                        <div class="password-field-wrapper">
+                            <input id="auth-confirm-password" type="password" placeholder="Confirm Password">
+                            <i class="fa-solid fa-eye toggle-password-eye" onclick="togglePasswordVisibility('auth-confirm-password', this)"></i>
+                        </div>
                     </div>
                 </div>
-                <div id="name-confirmed" class="hidden" style="font-size:13px; color:#00ff88; margin-top:12px; display:flex; align-items:center; gap:8px;">
-                    <span>⚡ Posting Live as: <strong id="current-display-name" style="color:#fff;"></strong> <span id="account-badge-preview"></span></span>
-                    <button onclick="showNameEdit()" style="background:transparent; color:var(--text-muted); font-size:11px; text-decoration:underline; padding:0; margin-left:5px; cursor:pointer;">Change</button>
+                
+                <div id="verification-otp-box" class="hidden" style="margin: 12px 0; padding: 18px; background: rgba(0,0,0,0.6); border-radius: 12px; border: 1px solid var(--accent);">
+                    <p id="otp-message-text" style="margin:0 0 10px 0; color: #00daff; font-size:13px; font-weight: 600;">📬 Enter the 6-Digit Code sent to your email:</p>
+                    <input id="verification-token" placeholder="X X X X X X" style="text-align: center; font-size: 18px; letter-spacing: 5px;">
+                    <button id="btn-verify-signup" onclick="handleVerifyOTP()" class="hidden" style="background:#00ff88; color:#000; width: 100%; margin-top:12px;">Verify & Complete Sign Up</button>
+                    <button id="btn-verify-reset" onclick="handleVerifyResetOTP()" class="hidden" style="width: 100%; margin-top:12px;">Verify Recovery Code</button>
+                </div>
+
+                <div id="reset-password-actions" class="hidden">
+                    <p style="color: var(--accent); margin: 0 0 8px 0; font-size:13px; font-weight: 600;">Enter your new secure password:</p>
+                    <div class="password-field-wrapper">
+                        <input id="new-password-input" type="password" placeholder="New Password (At least 6 chars)">
+                        <i class="fa-solid fa-eye toggle-password-eye" onclick="togglePasswordVisibility('new-password-input', this)"></i>
+                    </div>
+                    <button onclick="handlePasswordUpdate()" style="background: #00ff88; color: #000; width: 100%; margin-top: 8px;">Save New Password</button>
+                    <button onclick="cancelResetMode()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); width: 100%; margin-top: 8px;">Cancel</button>
+                </div>
+
+                <div id="auth-action-buttons" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button id="btn-show-signup" onclick="toggleAuthMode('signup')" style="flex:1;">Sign Up</button>
+                    <button id="btn-show-login" onclick="toggleAuthMode('login')" style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border-color);">Log In</button>
+                    <button onclick="showForgotPasswordPanel()" style="background: transparent; color:var(--text-muted); font-size:12px; text-decoration: underline; padding: 0 10px;">Forgot?</button>
+                </div>
+            </div>
+
+            <div id="auth-logged-in" class="hidden">
+                <div class="user-info">
+                    <div class="user-header-row">
+                        <span id="user-display-email" style="font-size:14px; font-weight:500; color:var(--text-main);"></span>
+                        <div style="display:flex; gap:10px;">
+                            <button onclick="openProfileDashboard()" style="background: var(--accent); padding:8px 16px; font-size:12px; cursor:pointer;"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
+                            <button onclick="handleLogout()" style="background:rgba(255,255,255,0.05); padding:8px 16px; font-size:12px; border:1px solid var(--border-color); cursor:pointer;">Log Out</button>
+                        </div>
+                    </div>
+                    
+                    <div id="name-setup" class="name-setup-box">
+                        <p style="margin: 0 0 8px 0; font-size: 13px; color: var(--accent); font-weight: 600;">Set your Creator Display Name:</p>
+                        <div style="display:flex; gap:10px;">
+                            <input id="custom-display-name" placeholder="Creator name..." style="margin:0;">
+                            <button onclick="saveDisplayName()" style="padding: 0 24px;">Save</button>
+                        </div>
+                    </div>
+                    <div id="name-confirmed" class="hidden" style="font-size:13px; color:#00ff88; margin-top:12px; display:flex; align-items:center; gap:8px;">
+                        <span>⚡ Posting Live as: <strong id="current-display-name" style="color:var(--text-main);"></strong> <span id="account-badge-preview"></span></span>
+                        <button onclick="showNameEdit()" style="background:transparent; color:var(--text-muted); font-size:11px; text-decoration:underline; padding:0; margin-left:5px; cursor:pointer;">Change</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="write-article-box" class="post-box hidden">
-        <h3 id="form-panel-title">Write New Article</h3>
-        <input id="title" placeholder="Article Title">
-        <select id="category">
-            <option>Photography</option>
-            <option>Videography</option>
-            <option>Drone</option>
-            <option>Editing</option>
-            <option>Business</option>
-            <option>Presets & LUTs</option>
-            <option>Other</option>
-        </select>
-        <textarea id="content" placeholder="Share your ultimate production workflows or ask a technical question..."></textarea>
-        
-        <!-- Attached Production Gallery Images Option with Multi-Image Preview & Clear Button -->
-        <div style="margin: 15px 0;">
-            <label style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 5px;">Attach Production Photos (Optional - Up to 4 images, Max 2MB each):</label>
+        <div id="write-article-box" class="post-box hidden">
+            <h3 id="form-panel-title">Write New Article</h3>
+            <input id="title" placeholder="Article Title">
+            <select id="category">
+                <option>Photography</option>
+                <option>Videography</option>
+                <option>Drone</option>
+                <option>Editing</option>
+                <option>Business</option>
+                <option>Presets & LUTs</option>
+                <option>Other</option>
+            </select>
+            <textarea id="content" placeholder="Share your ultimate production workflows, add #tags, or ask a technical question..."></textarea>
+
+            <input id="video-url" placeholder="🎥 YouTube Link (e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...)">
             
-            <label id="dropzone-label" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 130px; border: 2px dashed var(--border-color); border-radius: 12px; cursor: pointer; background: rgba(0,0,0,0.4); position: relative; overflow: hidden; transition: 0.3s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-color)'">
-                <div id="upload-prompt" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px;">
-                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; color: var(--accent); margin-bottom: 6px;"></i>
-                    <p style="font-size: 13px; color: #fff; font-weight: 600;">Click to upload or drag & drop (Multiple allowed)</p>
-                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">PNG, JPG, WEBP (Max 4 images)</p>
-                </div>
-                <!-- Multi-image preview container -->
-                <div id="image-preview-container" class="hidden" style="position: absolute; inset: 0; width: 100%; height: 100%; background: #000; border-radius: 10px; display: flex; gap: 5px; padding: 5px; overflow-x: auto; align-items: center;"></div>
-                <input type="file" id="post-image-file" accept="image/*" multiple style="display: none;" onchange="previewImages(event)">
-            </label>
-            <button type="button" id="remove-image-btn" class="hidden" onclick="clearSelectedImages()" style="margin-top: 8px; background: rgba(220,53,69,0.15); border: 1px solid #dc3545; color: #ff6b6b; padding: 6px 12px; font-size: 11px; border-radius: 8px; width: auto; cursor:pointer;"><i class="fa-solid fa-trash"></i> Remove Selected Images</button>
+            <div style="margin: 15px 0;">
+                <label style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 5px;">Attach Production Photos (Optional - Up to 4 images, Max 2MB each):</label>
+                
+                <label id="dropzone-label" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 130px; border: 2px dashed var(--border-color); border-radius: 12px; cursor: pointer; background: var(--input-bg); position: relative; overflow: hidden; transition: 0.3s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                    <div id="upload-prompt" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px;">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; color: var(--accent); margin-bottom: 6px;"></i>
+                        <p style="font-size: 13px; color: var(--text-main); font-weight: 600;">Click to upload or drag & drop (Multiple allowed)</p>
+                        <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">PNG, JPG, WEBP (Max 4 images)</p>
+                    </div>
+                    <div id="image-preview-container" class="hidden" style="position: absolute; inset: 0; width: 100%; height: 100%; background: #000; border-radius: 10px; display: flex; gap: 5px; padding: 5px; overflow-x: auto; align-items: center;"></div>
+                    <input type="file" id="post-image-file" accept="image/*" multiple style="display: none;" onchange="previewImages(event)">
+                </label>
+                <button type="button" id="remove-image-btn" class="hidden" onclick="clearSelectedImages()" style="margin-top: 8px; background: rgba(220,53,69,0.15); border: 1px solid #dc3545; color: #ff6b6b; padding: 6px 12px; font-size: 11px; border-radius: 8px; width: auto; cursor:pointer;"><i class="fa-solid fa-trash"></i> Remove Selected Images</button>
+            </div>
+
+            <button id="publishBtn" onclick="createPost()">Publish Article</button>
+        </div>
+        <div id="article-auth-fallback" class="auth-box auth-msg">
+            🔒 Please log in to publish a knowledge article or reply to discussions.
         </div>
 
-        <button id="publishBtn" onclick="createPost()">Publish Article</button>
-    </div>
-    <div id="article-auth-fallback" class="auth-box auth-msg">
-        🔒 Please log in to publish a knowledge article or reply to discussions.
-    </div>
+        <div class="sidebar-widget">
+            <h3><i class="fa-solid fa-trophy" style="color: gold;"></i> Top 5 Creators</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Most active community members based on posts & likes.</p>
+            <ul class="leaderboard-list" id="leaderboard-container">
+                <li class="leaderboard-item"><span class="leaderboard-stats">Loading leaderboard...</span></li>
+            </ul>
+        </div>
 
-    <!-- Article Search Bar -->
-    <div style="margin-bottom: 20px;">
-        <input id="search-articles-input" type="text" placeholder="🔍 Search articles by title or content..." oninput="filterSearchPosts()" style="margin: 0;">
-    </div>
+        <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <input id="search-articles-input" type="text" placeholder="🔍 Search articles, #tags, author..." oninput="filterSearchPosts()" style="margin: 0; flex: 1;">
+            <select id="sort-posts-select" onchange="sortPostsFeed()" style="margin: 0; width: 160px;">
+                <option value="latest">Latest</option>
+                <option value="liked">Most Liked</option>
+                <option value="commented">Most Commented</option>
+            </select>
+        </div>
 
-    <div class="feed-filter-bar">
-        <div class="filter-pill active" onclick="filterCategoryFeed('all', this)">All Discussions</div>
-        <div class="filter-pill" onclick="filterCategoryFeed('Photography', this)">Photography</div>
-        <div class="filter-pill" onclick="filterCategoryFeed('Videography', this)">Videography</div>
-        <div class="filter-pill" onclick="filterCategoryFeed('Drone', this)">Drone Shoots</div>
-        <div class="filter-pill" onclick="filterCategoryFeed('Editing', this)">Editing/Color</div>
-        <div class="filter-pill" onclick="filterCategoryFeed('Business', this)">Production Business</div>
-        <div class="filter-pill" onclick="filterCategoryFeed('Presets & LUTs', this)">Presets & LUTs</div>
-    </div>
+        <div class="feed-filter-bar">
+            <div class="filter-pill active" onclick="filterCategoryFeed('all', this)">All Discussions</div>
+            <div class="filter-pill" onclick="filterCategoryFeed('Photography', this)">Photography</div>
+            <div class="filter-pill" onclick="filterCategoryFeed('Videography', this)">Videography</div>
+            <div class="filter-pill" onclick="filterCategoryFeed('Drone', this)">Drone Shoots</div>
+            <div class="filter-pill" onclick="filterCategoryFeed('Editing', this)">Editing/Color</div>
+            <div class="filter-pill" onclick="filterCategoryFeed('Business', this)">Production Business</div>
+            <div class="filter-pill" onclick="filterCategoryFeed('Presets & LUTs', this)">Presets & LUTs</div>
+        </div>
 
-    <div id="posts"></div>
+        <div id="posts"></div>
+    </div>
+</div>
 
     <div class="cinematic-marquee">
         <div class="marquee-content">
@@ -520,6 +629,122 @@ button:hover {
 
 </div>
 
+<!-- 👤 Own Profile Modal -->
+<div id="profile-dashboard-modal" class="modal-overlay">
+    <div class="dashboard-modal">
+        <h3>
+            <span><i class="fa-solid fa-id-card" style="color:var(--accent);"></i> Creator Dashboard</span>
+            <button class="close-modal-btn" onclick="closeProfileDashboard()"><i class="fa-solid fa-xmark"></i></button>
+        </h3>
+
+        <div class="dash-profile-header">
+            <div class="dash-avatar-wrapper">
+                <img id="dash-avatar-img" src="https://via.placeholder.com/150/111/fff?text=User" alt="Profile Picture">
+                <label class="dash-avatar-upload-btn" title="Upload New Profile Picture">
+                    <i class="fa-solid fa-camera"></i>
+                    <input type="file" id="dash-avatar-file-input" accept="image/*" style="display:none;" onchange="uploadProfilePicture(event)">
+                </label>
+            </div>
+            <div>
+                <h4 id="dash-user-name" style="font-size:18px; color:var(--text-main);">Creator Name</h4>
+                <p id="dash-user-email" style="font-size:12px; color:var(--text-muted); margin-top:2px;">email@domain.com</p>
+                <div id="dash-badges-container" style="margin-top: 8px; display:flex; gap:6px; flex-wrap:wrap;"></div>
+            </div>
+        </div>
+
+        <div class="dash-stats-grid">
+            <div class="stat-card">
+                <h4 id="dash-stat-posts">0</h4>
+                <p>Articles Published</p>
+            </div>
+            <div class="stat-card">
+                <h4 id="dash-stat-likes">0</h4>
+                <p>Total Likes Received</p>
+            </div>
+            <div class="stat-card">
+                <h4 id="dash-stat-level">Lvl 1</h4>
+                <p id="dash-stat-xp" style="font-size:10px; color:#00ff88;">0 XP</p>
+            </div>
+        </div>
+
+        <div class="dash-tab-bar">
+            <div class="dash-tab active" id="tab-tasks-btn" onclick="switchDashTab('tasks')">Tasks</div>
+            <div class="dash-tab" id="tab-saved-btn" onclick="switchDashTab('saved')">Saved Articles 🔖</div>
+        </div>
+
+        <div id="dash-tasks-view" class="tasks-container">
+            <h4 style="font-size: 14px; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-list-check" style="color:var(--accent);"></i> Creator Progression Tasks
+            </h4>
+            
+            <div class="task-item">
+                <span><i class="fa-solid fa-image"></i> Set Custom Profile Picture (+20 XP)</span>
+                <span id="task-pp-status" class="task-status pending">Pending</span>
+            </div>
+            <div class="task-item">
+                <span><i class="fa-solid fa-pen-nib"></i> Publish 1st Knowledge Article (+50 XP)</span>
+                <span id="task-first-post-status" class="task-status pending">Pending</span>
+            </div>
+            <div class="task-item">
+                <span><i class="fa-solid fa-share-nodes"></i> Share 3 Articles (+60 XP)</span>
+                <span id="task-share-3-status" class="task-status pending">Pending</span>
+            </div>
+            <div class="task-item">
+                <span><i class="fa-solid fa-fire"></i> Publish 3 Articles (Top Contributor) (+100 XP)</span>
+                <span id="task-3-post-status" class="task-status pending">Pending</span>
+            </div>
+                <div class="task-item">
+                <span><i class="fa-solid fa-heart"></i> Get 10 Total Article Likes (+100 XP)</span>
+                <span id="task-likes-status" class="task-status pending">Pending</span>
+            </div>
+        </div>
+
+        <div id="dash-saved-view" class="tasks-container hidden">
+            <h4 style="font-size: 14px; color: var(--text-main); margin-bottom: 12px;">
+                <i class="fa-solid fa-bookmark" style="color:var(--accent);"></i> Saved Articles
+            </h4>
+            <div id="saved-articles-list">
+                <p style="font-size:12px; color:var(--text-muted);">No saved articles yet.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 👤 External Public Profile Modal -->
+<div id="public-profile-modal" class="modal-overlay">
+    <div class="dashboard-modal">
+        <h3>
+            <span><i class="fa-solid fa-user-circle" style="color:var(--accent);"></i> Creator Profile</span>
+            <button class="close-modal-btn" onclick="closePublicProfile()"><i class="fa-solid fa-xmark"></i></button>
+        </h3>
+
+        <div class="dash-profile-header">
+            <div class="dash-avatar-wrapper">
+                <img id="pub-avatar-img" src="https://via.placeholder.com/150/111/fff?text=User" alt="Profile Picture">
+            </div>
+            <div>
+                <h4 id="pub-user-name" style="font-size:18px; color:var(--text-main);">Creator Name</h4>
+                <div id="pub-badges-container" style="margin-top: 8px; display:flex; gap:6px; flex-wrap:wrap;"></div>
+            </div>
+        </div>
+
+        <div class="dash-stats-grid">
+            <div class="stat-card">
+                <h4 id="pub-stat-posts">0</h4>
+                <p>Articles Published</p>
+            </div>
+            <div class="stat-card">
+                <h4 id="pub-stat-likes">0</h4>
+                <p>Total Likes</p>
+            </div>
+            <div class="stat-card">
+                <h4 id="pub-stat-level">Lvl 1</h4>
+                <p style="font-size:10px; color:#00ff88;">Active Member</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -534,45 +759,113 @@ const supabaseKey = "sb_publishable_M4-FbzuUKIxiBmRJicI1jA_zoCu9-IV";
 emailjs.init(EMAILJS_PUBLIC_KEY);
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-// ====================================================
-// 🏢 TEAM MEMBERS CONFIGURATION
-// ====================================================
 const TEAM_MEMBERS = {
     "methun2008216@gmail.com": { title: "Founder & CEO", icon: "fa-crown" },
     "venurasapumal2@gmail.com": { title: "CO CEO", icon: "fa-user-tie" },
-    "sanujasavithma198@gmail.com": { title: "PHOTOGRAPHER", icon: "fa-camera" },
-    "lovindu.ee123@gamil.com": { title: "PHOTOGRAPHER VIDEOGRAPHER", icon: "fa-video" }
+    "sanujasavithma198@gmail.com": { title: "NFD PHOTOGRAPHER ", icon: "fa-camera" },
+    "lovindu.ee123@gmail.com": { title: "NFD PHOTOGRAPHER VIDEOGRAPHER", icon: "fa-video" }
 };
 
 let currentUser = null;
 let userDisplayName = "";
 let editPostId = null;
 let editCommentId = null;
-let globalUserPostCounts = {}; // Track user post counts for gamified top contributor badges
+let globalUserPostCounts = {}; 
+let globalUserLikesCounts = {}; 
+let globalUserAvatars = {};
+let currentAuthMode = 'signup'; 
+let rawPostsData = [];
 
 function safeB64Encode(str) { return btoa(unescape(encodeURIComponent(str))); }
 function safeB64Decode(str) { return decodeURIComponent(escape(atob(str))); }
+
+window.toggleTheme = function() {
+    document.body.classList.toggle("light-theme");
+    const icon = document.getElementById("theme-icon");
+    if(document.body.classList.contains("light-theme")) {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+    } else {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+    }
+};
+
+window.toggleNotifications = function() {
+    const dropdown = document.getElementById("notif-dropdown");
+    dropdown.classList.toggle("active");
+    document.getElementById("notif-badge").classList.remove("active");
+};
+
+function addNotification(text) {
+    const list = document.getElementById("notif-list");
+    const badge = document.getElementById("notif-badge");
+    if(list.children[0] && list.children[0].innerText === "No new notifications.") {
+        list.innerHTML = "";
+    }
+    list.innerHTML = `<div class="notif-item">${text}</div>` + list.innerHTML;
+    badge.classList.add("active");
+}
+
+window.togglePasswordVisibility = function(inputId, eyeIcon) {
+    const input = document.getElementById(inputId);
+    if (input.type === "password") {
+        input.type = "text";
+        eyeIcon.classList.remove("fa-eye");
+        eyeIcon.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        eyeIcon.classList.remove("fa-eye-slash");
+        eyeIcon.classList.add("fa-eye");
+    }
+};
+
+window.toggleAuthMode = function(mode) {
+    currentAuthMode = mode;
+    const confirmBlock = document.getElementById("signup-confirm-password-block");
+    const btnSignup = document.getElementById("btn-show-signup");
+    const btnLogin = document.getElementById("btn-show-login");
+
+    if (mode === 'signup') {
+        confirmBlock.classList.remove("hidden");
+        btnSignup.style.background = "var(--accent-gradient)";
+        btnLogin.style.background = "rgba(255,255,255,0.05)";
+        btnSignup.setAttribute("onclick", "handleSignUp()");
+        btnLogin.setAttribute("onclick", "toggleAuthMode('login')");
+    } else {
+        confirmBlock.classList.add("hidden");
+        btnLogin.style.background = "var(--accent-gradient)";
+        btnSignup.style.background = "rgba(255,255,255,0.05)";
+        btnLogin.setAttribute("onclick", "handleLogin()");
+        btnSignup.setAttribute("onclick", "toggleAuthMode('signup')");
+    }
+};
 
 function getTeamMemberRole(email) {
     if (!email) return null;
     return TEAM_MEMBERS[email.trim().toLowerCase()] || null;
 }
 
-// Gamified Contributor Badge Check (Users with 3 or more posts get Top Contributor)
-function getContributorBadge(email) {
+function getContributorBadge(email, totalLikes = 0) {
     if (!email) return null;
     const cleanEmail = email.trim().toLowerCase();
-    // Team members already have their specific role badge
     if (TEAM_MEMBERS[cleanEmail]) return null;
     
     const count = globalUserPostCounts[cleanEmail] || 0;
-    if (count >= 3) {
+    const likes = totalLikes || (globalUserLikesCounts[cleanEmail] || 0);
+    
+    if (count >= 10 || likes >= 25) {
+        return { title: "Community Legend", icon: "fa-crown" };
+    } else if (count >= 5 || likes >= 10) {
+        return { title: "Master Creator", icon: "fa-award" };
+    } else if (count >= 3) {
         return { title: "Top Contributor", icon: "fa-fire" };
+    } else if (count >= 1) {
+        return { title: "Newbie Creator", icon: "fa-seedling" };
     }
     return null;
 }
 
-// Optimized Multi-Image Preview Handler
 window.previewImages = function(event) {
     const files = event.target.files;
     const previewContainer = document.getElementById('image-preview-container');
@@ -621,12 +914,27 @@ supabase.auth.onAuthStateChange((event, session) => {
 });
 
 function updateUI(isLoggedIn) {
+    const navProfileBtn = document.getElementById("nav-user-profile-btn");
+    const navAvatarImg = document.getElementById("nav-avatar-img");
+    const navAvatarIcon = document.getElementById("nav-avatar-icon");
+
     if(isLoggedIn) {
         document.getElementById("auth-logged-out").classList.add("hidden");
         document.getElementById("auth-logged-in").classList.remove("hidden");
         document.getElementById("user-display-email").innerText = `Account: ${currentUser.email}`;
         document.getElementById("write-article-box").classList.remove("hidden");
         document.getElementById("article-auth-fallback").classList.add("hidden");
+        navProfileBtn.classList.remove("hidden");
+
+        const customAvatar = currentUser.user_metadata?.avatar_url;
+        if (customAvatar) {
+            navAvatarImg.src = customAvatar;
+            navAvatarImg.classList.remove("hidden");
+            navAvatarIcon.classList.add("hidden");
+        } else {
+            navAvatarImg.classList.add("hidden");
+            navAvatarIcon.classList.remove("hidden");
+        }
         
         const teamRole = getTeamMemberRole(currentUser.email);
         const contributorRole = getContributorBadge(currentUser.email);
@@ -649,11 +957,13 @@ function updateUI(isLoggedIn) {
             document.getElementById("name-confirmed").classList.add("hidden");
         }
     } else {
+        navProfileBtn.classList.add("hidden");
         if (!document.getElementById("reset-password-actions").classList.contains("hidden")) return;
         document.getElementById("auth-logged-out").classList.remove("hidden");
         document.getElementById("auth-logged-in").classList.add("hidden");
         document.getElementById("write-article-box").classList.add("hidden");
         document.getElementById("article-auth-fallback").classList.remove("hidden");
+        toggleAuthMode('signup');
     }
 }
 
@@ -700,7 +1010,10 @@ function showNameEdit() {
 async function handleSignUp() {
     const email = document.getElementById("auth-email").value.trim();
     const password = document.getElementById("auth-password").value.trim();
-    if(!email || !password) return alert("Please fill in email and password fields.");
+    const confirmPassword = document.getElementById("auth-confirm-password").value.trim();
+
+    if(!email || !password || !confirmPassword) return alert("Please fill in email, password, and confirm password fields.");
+    if(password !== confirmPassword) return alert("Passwords do not match! Please re-check.");
 
     const { data, error } = await supabase.auth.signUp({ email, password });
     if(error) return alert(error.message);
@@ -801,11 +1114,14 @@ async function handlePasswordUpdate() {
     }
 }
 
-async function sendNotificationEmail(recipientEmail, actionTitle, actionDetails) {
+async function sendNotificationEmail(recipientEmail, actionTitle, articleTitle, postId) {
     try {
+        const articleLink = `${window.location.origin}${window.location.pathname}?post=${postId}`;
+        const messageDetails = `Article: "${articleTitle}"\nDirect Link to view: ${articleLink}`;
+
         await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_SIGNUP_TEMPLATE_ID, {
             to_email: recipientEmail,
-            token_code: `Notification: ${actionTitle} - ${actionDetails}`
+            token_code: `${actionTitle} | ${messageDetails}`
         });
     } catch (e) {
         console.log("Notification email dispatch failed:", e);
@@ -820,6 +1136,7 @@ function cancelResetMode() {
     document.getElementById("verification-otp-box").classList.add("hidden");
     document.getElementById("auth-email").value = "";
     document.getElementById("auth-password").value = "";
+    document.getElementById("auth-confirm-password").value = "";
     document.getElementById("verification-token").value = "";
     document.getElementById("new-password-input").value = "";
     sessionStorage.clear();
@@ -848,16 +1165,17 @@ function filterCategoryFeed(category, element) {
     });
 }
 
-// 🔍 SEARCH ARTICLES ENGINE
 function filterSearchPosts() {
-    const query = document.getElementById("search-articles-input").value.toLowerCase();
+    const query = document.getElementById("search-articles-input").value.toLowerCase().trim();
     const posts = document.querySelectorAll(".post-card");
     
     posts.forEach(post => {
-        const titleText = post.querySelector("h2").innerText.toLowerCase();
-        const bodyText = post.querySelector(".post-body").innerText.toLowerCase();
+        const titleText = (post.querySelector("h2")?.innerText || "").toLowerCase();
+        const bodyText = (post.querySelector(".post-body")?.innerText || "").toLowerCase();
+        const authorText = (post.getAttribute("data-author") || "").toLowerCase();
+        const categoryText = (post.getAttribute("data-category") || "").toLowerCase();
         
-        if (titleText.includes(query) || bodyText.includes(query)) {
+        if (query === "" || titleText.includes(query) || bodyText.includes(query) || authorText.includes(query) || categoryText.includes(query)) {
             post.classList.remove("search-hide");
         } else {
             post.classList.add("search-hide");
@@ -865,27 +1183,105 @@ function filterSearchPosts() {
     });
 }
 
-// 📰 LOAD POSTS ENGINE
+window.filterByTag = function(tag) {
+    const searchInput = document.getElementById("search-articles-input");
+    searchInput.value = tag;
+    filterSearchPosts();
+    searchInput.scrollIntoView({ behavior: 'smooth' });
+};
+
+window.sortPostsFeed = function() {
+    const sortVal = document.getElementById("sort-posts-select").value;
+    loadPostsUI(rawPostsData, sortVal);
+};
+
+function updateLeaderboard(posts) {
+    const creators = {};
+    posts.forEach(p => {
+        const name = p.author || 'Anonymous';
+        const email = p.author_email || '';
+        if(!creators[name]) creators[name] = { name: name, posts: 0, likes: 0, email: email };
+        creators[name].posts += 1;
+        creators[name].likes += (p.likes || 0);
+    });
+
+    const sorted = Object.values(creators).sort((a,b) => (b.likes + b.posts * 2) - (a.likes + a.posts * 2)).slice(0, 5);
+    const container = document.getElementById("leaderboard-container");
+    container.innerHTML = "";
+
+    sorted.forEach((c, idx) => {
+        const encEmail = safeB64Encode(c.email || "");
+        const encName = safeB64Encode(c.name || "");
+        container.innerHTML += `
+            <li class="leaderboard-item" style="cursor:pointer;" onclick="openPublicProfile('${encName}', '${encEmail}')">
+                <span class="rank-num">#${idx + 1}</span>
+                <div class="leaderboard-info">
+                    <span class="leaderboard-name">${c.name}</span>
+                    <span class="leaderboard-stats">${c.posts} Articles • ${c.likes} Likes</span>
+                </div>
+            </li>
+        `;
+    });
+}
+
+/* FIX 1: FIXED YOUTUBE & VIMEO EMBED FUNCTION */
+function getEmbedVideoHTML(url) {
+    if (!url) return "";
+    let embedUrl = "";
+    
+    // Support youtube.com/watch?v=, youtube.com/shorts/, youtu.be/, youtube.com/embed/
+    const ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const ytMatch = url.match(ytRegExp);
+
+    if (ytMatch && ytMatch[2].length === 11) {
+        embedUrl = `https://www.youtube.com/embed/${ytMatch[2]}?rel=0`;
+    } else if (url.includes("vimeo.com")) {
+        const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+        if (vimeoMatch) embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+    }
+
+    if (embedUrl) {
+        return `<div class="video-embed-container"><iframe src="${embedUrl}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>`;
+    }
+    return "";
+}
+
+function formatHashtags(text) {
+    if(!text) return "";
+    return text.replace(/#(\w+)/g, '<span class="tag-click" onclick="filterByTag(\'#$1\')">#$1</span>');
+}
+
 async function loadPosts() {
     const { data, error } = await supabase.from("posts").select("*").order("id", { ascending:false });
     if(error) return console.log(error);
 
-    // Calculate post counts per author email for gamified badges with case/space normalization
+    rawPostsData = data || [];
+    
     globalUserPostCounts = {};
+    globalUserLikesCounts = {};
+    globalUserAvatars = {};
+
     if (data) {
         data.forEach(p => {
             if (p.author_email) {
                 const em = p.author_email.trim().toLowerCase();
                 globalUserPostCounts[em] = (globalUserPostCounts[em] || 0) + 1;
+                globalUserLikesCounts[em] = (globalUserLikesCounts[em] || 0) + (p.likes || 0);
+                if (p.author_avatar) globalUserAvatars[em] = p.author_avatar;
             }
         });
     }
 
-    // Refresh current user UI badge status based on updated counts
     if (currentUser) {
         updateUI(true);
     }
 
+    updateLeaderboard(rawPostsData);
+    const sortVal = document.getElementById("sort-posts-select") ? document.getElementById("sort-posts-select").value : "latest";
+    loadPostsUI(rawPostsData, sortVal);
+}
+
+async function loadPostsUI(data, sortBy = "latest") {
     const box = document.getElementById("posts");
     box.innerHTML = ""; 
 
@@ -894,7 +1290,7 @@ async function loadPosts() {
         return;
     }
 
-    const uniquePosts = [];
+    let uniquePosts = [];
     const seenIds = new Set();
     for (const post of data) {
         if (!seenIds.has(post.id)) {
@@ -903,20 +1299,27 @@ async function loadPosts() {
         }
     }
 
-    // Sort to place pinned posts at the very top
+    if (sortBy === "liked") {
+        uniquePosts.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+    } else {
+        uniquePosts.sort((a, b) => b.id - a.id);
+    }
+
     uniquePosts.sort((a, b) => (b.is_pinned === true ? 1 : 0) - (a.is_pinned === true ? 1 : 0));
 
     for(const post of uniquePosts){
         const isVerified = post.verified === true;
         const isPinned = post.is_pinned === true;
         const teamInfo = getTeamMemberRole(post.author_email);
-        const contributorInfo = getContributorBadge(post.author_email);
+        const contributorInfo = getContributorBadge(post.author_email, post.likes || 0);
         const isAdmin = currentUser && getTeamMemberRole(currentUser.email);
+
+        const authorAvatarUrl = post.author_avatar || globalUserAvatars[post.author_email?.trim().toLowerCase()] || "https://via.placeholder.com/150/111/fff?text=User";
 
         const commentFormHTML = currentUser 
             ? `<div class="comment-form-block">
                 <input id="cmsg-${post.id}" placeholder="Write a response...">
-                <button id="cbtn-${post.id}" onclick="addComment(${post.id}, '${post.author_email}')">Reply</button>
+                <button id="cbtn-${post.id}" onclick="addComment(${post.id}, '${post.author_email}', '${safeB64Encode(post.title || '')}')">Reply</button>
                </div>`
             : `<div class="auth-msg" style="font-size:12px; padding: 12px 0 0 0; text-align:left; background:none; border:none;">🔒 Log in to respond to this discussion.</div>`;
 
@@ -935,7 +1338,7 @@ async function loadPosts() {
             creatorControlsHTML = `
                 <div class="creator-control">
                     ${pinButtonHTML}
-                    <button class="btn-control btn-control-edit" onclick="triggerEditPost(${post.id}, '${encTitle}', '${encCategory}', '${encContent}')"><i class="fa-solid fa-pen"></i> Edit</button>
+                    <button class="btn-control btn-control-edit" onclick="triggerEditPost(${post.id}, '${encTitle}', '${encCategory}', '${encContent}', '${post.video_url || ''}')"><i class="fa-solid fa-pen"></i> Edit</button>
                     <button class="btn-control btn-control-delete" onclick="deletePost(${post.id})"><i class="fa-solid fa-trash"></i> Delete</button>
                 </div>
             `;
@@ -952,11 +1355,12 @@ async function loadPosts() {
         let contributorBadgeHTML = (!teamInfo && contributorInfo) ? `<span class="badge-contributor"><i class="fa-solid ${contributorInfo.icon}"></i> ${contributorInfo.title}</span>` : "";
         let pinnedBadgeHTML = isPinned ? `<span class="badge-pinned"><i class="fa-solid fa-thumbtack"></i> Pinned Announcement</span>` : "";
         
-        let postMediaHTML = "";
+        let postMediaHTML = getEmbedVideoHTML(post.video_url);
+
         if (post.image_urls && Array.isArray(post.image_urls) && post.image_urls.length > 0) {
             const authorWatermarkName = post.author || "Next Frame Digital";
             if (post.image_urls.length === 1) {
-                postMediaHTML = `
+                postMediaHTML += `
                     <div class="media-container">
                         <img src="${post.image_urls[0]}" alt="Production Post Image">
                         <div class="photo-watermark">
@@ -970,7 +1374,7 @@ async function loadPosts() {
                     slidesHTML += `<div class="carousel-slide"><img src="${url}" alt="Slide ${idx + 1}"></div>`;
                     dotsHTML += `<div class="carousel-dot ${idx === 0 ? 'active' : ''}" onclick="currentSlide(${post.id}, ${idx})"></div>`;
                 });
-                postMediaHTML = `
+                postMediaHTML += `
                     <div class="carousel-container" id="carousel-${post.id}">
                         <div class="carousel-track-wrapper" id="track-${post.id}">
                             ${slidesHTML}
@@ -987,7 +1391,7 @@ async function loadPosts() {
             }
         } else if (post.image_url) {
             const authorWatermarkName = post.author || "Next Frame Digital";
-            postMediaHTML = `
+            postMediaHTML += `
                 <div class="media-container">
                     <img src="${post.image_url}" alt="Production Post Image">
                     <div class="photo-watermark">
@@ -996,25 +1400,35 @@ async function loadPosts() {
                 </div>`;
         }
 
-        const shareMessage = `🎬 "${post.title}" by ${post.author || 'Creator'} (${post.category})\n\nExplore insights, creative media stories, and production updates from Next Frame Digital - Frame Masters Community.\n\nRead more here: ${window.location.href}`;
+        const isSaved = isArticleSaved(post.id);
+        const shareMessage = `🎬 "${post.title}" by ${post.author || 'Creator'} (${post.category})\n\nExplore insights, creative media stories, and production updates from Next Frame Digital - Frame Masters Community.\n\nRead more here: ${window.location.origin}${window.location.pathname}?post=${post.id}`;
+
+        const encAuthorName = safeB64Encode(post.author || 'Anonymous');
+        const encAuthorEmail = safeB64Encode(post.author_email || '');
 
         box.innerHTML += `
-            <div class="post-card ${isPinned ? 'pinned-post' : ''}" data-category="${post.category}">
+            <div class="post-card ${isPinned ? 'pinned-post' : ''}" id="post-card-${post.id}" data-category="${post.category}" data-author="${post.author || ''}">
                 <h2>${post.title}</h2>
                 <div class="meta-row">
-                    <span>By <strong>${post.author || 'Anonymous'}</strong></span>
-                    <span>Tag: <span style="color:#fff;">#${post.category}</span></span>
+                    <div class="author-meta-box" onclick="openPublicProfile('${encAuthorName}', '${encAuthorEmail}')" title="View Creator Profile">
+                        <img src="${authorAvatarUrl}" class="author-avatar-img" alt="Author Avatar">
+                        <span>By <strong>${post.author || 'Anonymous'}</strong></span>
+                    </div>
+                    <span>Tag: <span style="color:var(--text-main);" class="tag-click" onclick="filterByTag('#${post.category}')">#${post.category}</span></span>
                     ${pinnedBadgeHTML}
                     ${verifiedBadgeHTML}
                     ${teamBadgeHTML}
                     ${contributorBadgeHTML}
                 </div>
                 ${postMediaHTML}
-                <div class="post-body">${post.content}</div>
+                <div class="post-body">${formatHashtags(post.content)}</div>
                 
                 <div class="actions-footer">
                     <div class="like-trigger" onclick="likePost(${post.id}, ${post.likes || 0})">
                         <i class="fa-solid fa-heart"></i> <span>${post.likes || 0} Likes</span>
+                    </div>
+                    <div class="bookmark-trigger ${isSaved ? 'saved' : ''}" id="bm-btn-${post.id}" onclick="toggleBookmarkArticle(${post.id}, '${safeB64Encode(post.title || '')}')">
+                        <i class="fa-solid fa-bookmark"></i> <span>${isSaved ? 'Saved' : 'Save'}</span>
                     </div>
                     <button class="btn-control" onclick="shareArticle(\`${encodeURIComponent(shareMessage)}\`)" style="background: rgba(255,255,255,0.03);"><i class="fa-solid fa-share-nodes"></i> Share Article</button>
                     ${creatorControlsHTML}
@@ -1030,9 +1444,114 @@ async function loadPosts() {
     
     const activePill = document.querySelector(".filter-pill.active");
     if(activePill) activePill.click();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetPostId = urlParams.get('post');
+    if (targetPostId) {
+        setTimeout(() => {
+            const targetEl = document.getElementById(`post-card-${targetPostId}`);
+            if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                targetEl.classList.add('highlight-target');
+                setTimeout(() => targetEl.classList.remove('highlight-target'), 4000);
+            }
+        }, 500);
+    }
 }
 
-// Carousel Navigation Helpers
+window.openPublicProfile = function(encName, encEmail) {
+    const authorName = safeB64Decode(encName);
+    const authorEmail = safeB64Decode(encEmail).trim().toLowerCase();
+
+    if (currentUser && currentUser.email.toLowerCase() === authorEmail) {
+        openProfileDashboard();
+        return;
+    }
+
+    document.getElementById("pub-user-name").innerText = authorName;
+    const avatarUrl = globalUserAvatars[authorEmail] || "https://via.placeholder.com/150/111/fff?text=User";
+    document.getElementById("pub-avatar-img").src = avatarUrl;
+
+    const postsCount = globalUserPostCounts[authorEmail] || 0;
+    const likesCount = globalUserLikesCounts[authorEmail] || 0;
+
+    document.getElementById("pub-stat-posts").innerText = postsCount;
+    document.getElementById("pub-stat-likes").innerText = likesCount;
+
+    let calculatedLevel = Math.floor(Math.sqrt(((postsCount * 50) + (likesCount * 10)) / 10)) + 1;
+    document.getElementById("pub-stat-level").innerText = `Lvl ${calculatedLevel}`;
+
+    const badgesBox = document.getElementById("pub-badges-container");
+    badgesBox.innerHTML = "";
+    
+    const teamRole = getTeamMemberRole(authorEmail);
+    const contributorBadge = getContributorBadge(authorEmail, likesCount);
+
+    if (teamRole) badgesBox.innerHTML += `<span class="badge-team"><i class="fa-solid ${teamRole.icon}"></i> ${teamRole.title}</span>`;
+    if (contributorBadge) badgesBox.innerHTML += `<span class="badge-contributor"><i class="fa-solid ${contributorBadge.icon}"></i> ${contributorBadge.title}</span>`;
+
+    document.getElementById("public-profile-modal").classList.add("active");
+};
+
+window.closePublicProfile = function() {
+    document.getElementById("public-profile-modal").classList.remove("active");
+};
+
+function isArticleSaved(postId) {
+    if (!currentUser) return false;
+    const saved = JSON.parse(localStorage.getItem(`saved_articles_${currentUser.id}`) || "[]");
+    return saved.some(item => item.id === postId);
+}
+
+window.toggleBookmarkArticle = function(postId, encTitle) {
+    if (!currentUser) return alert("Please log in to save articles!");
+    const key = `saved_articles_${currentUser.id}`;
+    let saved = JSON.parse(localStorage.getItem(key) || "[]");
+    const index = saved.findIndex(item => item.id === postId);
+
+    const btn = document.getElementById(`bm-btn-${postId}`);
+
+    if (index > -1) {
+        saved.splice(index, 1);
+        alert("Article removed from Saved Articles.");
+        if(btn) {
+            btn.classList.remove("saved");
+            btn.querySelector("span").innerText = "Save";
+        }
+    } else {
+        saved.push({ id: postId, title: safeB64Decode(encTitle) });
+        alert("Article saved to your Dashboard! 🔖");
+        if(btn) {
+            btn.classList.add("saved");
+            btn.querySelector("span").innerText = "Saved";
+        }
+    }
+    localStorage.setItem(key, JSON.stringify(saved));
+    renderSavedArticlesList();
+};
+
+function renderSavedArticlesList() {
+    if (!currentUser) return;
+    const key = `saved_articles_${currentUser.id}`;
+    const saved = JSON.parse(localStorage.getItem(key) || "[]");
+    const container = document.getElementById("saved-articles-list");
+
+    if (saved.length === 0) {
+        container.innerHTML = `<p style="font-size:12px; color:var(--text-muted);">No saved articles yet.</p>`;
+        return;
+    }
+
+    container.innerHTML = "";
+    saved.forEach(item => {
+        container.innerHTML += `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border-color);">
+                <span style="font-size:13px; font-weight:600; color:var(--text-main);">${item.title}</span>
+                <button onclick="window.location.href='?post=${item.id}'" style="padding:4px 10px; font-size:11px;">View</button>
+            </div>
+        `;
+    });
+}
+
 window.moveCarousel = function(postId, direction) {
     const track = document.getElementById(`track-${postId}`);
     if(!track) return;
@@ -1061,18 +1580,20 @@ function updateCarouselDots(postId) {
     }
 }
 
-// 🌐 ROBUST SHARE FUNCTION WITH CLIPBOARD FALLBACK
 window.shareArticle = function(encodedMessage) {
     const message = decodeURIComponent(encodedMessage);
-    
+    if (currentUser) {
+        let shares = parseInt(localStorage.getItem(`user_share_count_${currentUser.id}`) || "0") + 1;
+        localStorage.setItem(`user_share_count_${currentUser.id}`, shares);
+
+        if (shares === 3) {
+            alert("🎉 Congratulations! You have shared 3 articles and completed the Share Task! (+60 XP)");
+        }
+    }
+
     if (navigator.share) {
-        navigator.share({
-            title: 'Next Frame Digital Community',
-            text: message,
-            url: window.location.href
-        }).catch(() => {
-            copyToClipboardFallback(message);
-        });
+        navigator.share({ title: 'Next Frame Digital Community', text: message, url: window.location.href })
+        .catch(() => copyToClipboardFallback(message));
     } else {
         copyToClipboardFallback(message);
     }
@@ -1082,9 +1603,7 @@ function copyToClipboardFallback(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
             alert('Article details and link copied to clipboard! Share it anywhere.');
-        }).catch(() => {
-            forceTextAreaCopy(text);
-        });
+        }).catch(() => forceTextAreaCopy(text));
     } else {
         forceTextAreaCopy(text);
     }
@@ -1098,12 +1617,8 @@ function forceTextAreaCopy(text) {
     textarea.focus();
     textarea.select();
     try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-            alert('Article details and link copied to clipboard!');
-        } else {
-            alert('Could not copy automatically. Please copy the link manually.');
-        }
+        if (document.execCommand('copy')) alert('Article details and link copied to clipboard!');
+        else alert('Could not copy automatically. Please copy the link manually.');
     } catch (err) {
         alert('Sharing error occurred.');
     }
@@ -1116,9 +1631,11 @@ async function createPost(){
     const title = document.getElementById("title").value.trim();
     const category = document.getElementById("category").value;
     const content = document.getElementById("content").value.trim();
+    const videoUrl = document.getElementById("video-url").value.trim();
     if(!title || !content) return alert("Please fill in all fields.");
 
     const isTeamMember = getTeamMemberRole(currentUser.email);
+    const userAvatar = currentUser.user_metadata?.avatar_url || "";
     let imageUrls = [];
     const imageFiles = document.getElementById("post-image-file").files;
     const publishBtn = document.getElementById("publishBtn");
@@ -1149,7 +1666,7 @@ async function createPost(){
     }
 
     if (editPostId) {
-        let updateData = { title, category, content };
+        let updateData = { title, category, content, video_url: videoUrl, author_avatar: userAvatar };
         if (imageUrls.length > 0) {
             updateData.image_urls = imageUrls;
             updateData.image_url = imageUrls[0];
@@ -1165,8 +1682,10 @@ async function createPost(){
             author: userDisplayName, 
             user_id: currentUser.id, 
             author_email: currentUser.email, 
+            author_avatar: userAvatar,
             category, 
             content, 
+            video_url: videoUrl,
             image_urls: imageUrls,
             image_url: imageUrls.length > 0 ? imageUrls[0] : "",
             likes: 0, 
@@ -1180,11 +1699,13 @@ async function createPost(){
             publishBtn.innerText = "Publish Article";
             return;
         }
-        alert("Article published successfully!");
+
+        alert("🎉 Congratulations! Article published successfully!");
     }
 
     document.getElementById("title").value = "";
     document.getElementById("content").value = "";
+    document.getElementById("video-url").value = "";
     clearSelectedImages();
     publishBtn.disabled = false;
     loadPosts();
@@ -1201,10 +1722,11 @@ async function togglePinPost(postId, currentPinnedStatus) {
     }
 }
 
-function triggerEditPost(id, encTitle, encCategory, encContent) {
+function triggerEditPost(id, encTitle, encCategory, encContent, videoUrl) {
     document.getElementById("title").value = safeB64Decode(encTitle);
     document.getElementById("category").value = safeB64Decode(encCategory);
     document.getElementById("content").value = safeB64Decode(encContent);
+    document.getElementById("video-url").value = videoUrl || "";
     
     editPostId = id;
     document.getElementById("form-panel-title").innerText = "Edit Your Article 🔄";
@@ -1220,12 +1742,13 @@ async function deletePost(id) {
     loadPosts();
 }
 
-async function addComment(postId, authorEmail){
+async function addComment(postId, authorEmail, encTitle){
     if(!currentUser) return alert("You must be logged in to comment!");
     const commenterName = userDisplayName || currentUser.email.split('@')[0];
     const commentInput = document.getElementById("cmsg-"+postId);
     const commentText = commentInput.value.trim();
     if(!commentText) return alert("Comment cannot be empty.");
+    const articleTitle = safeB64Decode(encTitle || "");
 
     if (editCommentId) {
         await supabase.from("comments").update({ comment: commentText }).eq("id", editCommentId);
@@ -1236,8 +1759,9 @@ async function addComment(postId, authorEmail){
     } else {
         await supabase.from("comments").insert([{ post_id: postId, name: commenterName, user_id: currentUser.id, comment: commentText }]);
         if (authorEmail && authorEmail !== currentUser.email) {
-            sendNotificationEmail(authorEmail, "New Response on Your Article", `${commenterName} replied to your discussion.`);
+            sendNotificationEmail(authorEmail, `New Response by ${commenterName}`, articleTitle, postId);
         }
+        addNotification(`💬 ${commenterName} commented on article: "${articleTitle.substring(0, 20)}..."`);
     }
     
     commentInput.value = "";
@@ -1314,9 +1838,133 @@ async function likePost(id, currentLikes){
     const { error } = await supabase.from("posts").update({ likes: currentLikes + 1 }).eq("id", id);
     if(!error) {
         localStorage.setItem(likedStorageKey, "true");
+        addNotification(`❤️ Your post received a new like!`);
         loadPosts();
     }
 }
+
+window.switchDashTab = function(tabName) {
+    const tasksView = document.getElementById("dash-tasks-view");
+    const savedView = document.getElementById("dash-saved-view");
+    const tasksBtn = document.getElementById("tab-tasks-btn");
+    const savedBtn = document.getElementById("tab-saved-btn");
+
+    if (tabName === 'tasks') {
+        tasksView.classList.remove("hidden");
+        savedView.classList.add("hidden");
+        tasksBtn.classList.add("active");
+        savedBtn.classList.remove("active");
+    } else {
+        tasksView.classList.add("hidden");
+        savedView.classList.remove("hidden");
+        savedBtn.classList.add("active");
+        tasksBtn.classList.remove("active");
+        renderSavedArticlesList();
+    }
+};
+
+window.openProfileDashboard = async function() {
+    if (!currentUser) return alert("Please log in to view dashboard.");
+    
+    document.getElementById("dash-user-name").innerText = userDisplayName || currentUser.email.split('@')[0];
+    document.getElementById("dash-user-email").innerText = currentUser.email;
+    
+    const userAvatar = currentUser.user_metadata?.avatar_url || "https://via.placeholder.com/150/111/fff?text=User";
+    document.getElementById("dash-avatar-img").src = userAvatar;
+
+    const { data: userPosts } = await supabase.from("posts").select("likes").eq("author_email", currentUser.email);
+    const postCount = userPosts ? userPosts.length : 0;
+    const totalLikes = userPosts ? userPosts.reduce((sum, p) => sum + (p.likes || 0), 0) : 0;
+
+    document.getElementById("dash-stat-posts").innerText = postCount;
+    document.getElementById("dash-stat-likes").innerText = totalLikes;
+
+    let shareCount = parseInt(localStorage.getItem(`user_share_count_${currentUser.id}`) || "0");
+
+    const ppTask = currentUser.user_metadata?.avatar_url ? 'completed' : 'pending';
+    const firstPostTask = postCount >= 1 ? 'completed' : 'pending';
+    const share3Task = shareCount >= 3 ? 'completed' : 'pending';
+    const threePostTask = postCount >= 3 ? 'completed' : 'pending';
+    const likesTask = totalLikes >= 10 ? 'completed' : 'pending';
+
+    updateTaskStatusUI("task-pp-status", ppTask);
+    updateTaskStatusUI("task-first-post-status", firstPostTask);
+    updateTaskStatusUI("task-share-3-status", share3Task, `${shareCount}/3 Shares`);
+    updateTaskStatusUI("task-3-post-status", threePostTask);
+    updateTaskStatusUI("task-likes-status", likesTask);
+
+    let totalXP = (postCount * 50) + (totalLikes * 10);
+    if (ppTask === 'completed') totalXP += 20;
+    if (firstPostTask === 'completed') totalXP += 50;
+    if (share3Task === 'completed') totalXP += 60;
+    if (threePostTask === 'completed') totalXP += 100;
+    if (likesTask === 'completed') totalXP += 100;
+
+    let calculatedLevel = Math.floor(Math.sqrt(totalXP / 10)) + 1;
+
+    document.getElementById("dash-stat-level").innerText = `Lvl ${calculatedLevel}`;
+    document.getElementById("dash-stat-xp").innerText = `${totalXP} Total XP`;
+
+    const badgesBox = document.getElementById("dash-badges-container");
+    badgesBox.innerHTML = "";
+    
+    const teamRole = getTeamMemberRole(currentUser.email);
+    const contributorBadge = getContributorBadge(currentUser.email, totalLikes);
+
+    if (teamRole) badgesBox.innerHTML += `<span class="badge-team"><i class="fa-solid ${teamRole.icon}"></i> ${teamRole.title}</span>`;
+    if (contributorBadge) badgesBox.innerHTML += `<span class="badge-contributor"><i class="fa-solid ${contributorBadge.icon}"></i> ${contributorBadge.title}</span>`;
+
+    renderSavedArticlesList();
+    document.getElementById("profile-dashboard-modal").classList.add("active");
+};
+
+function updateTaskStatusUI(elementId, status, customProgressText = "") {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    if (status === 'completed') {
+        el.className = "task-status completed";
+        el.innerText = "Completed ✓";
+    } else {
+        el.className = "task-status pending";
+        el.innerText = customProgressText ? `Pending (${customProgressText})` : "Pending";
+    }
+}
+
+window.closeProfileDashboard = function() {
+    document.getElementById("profile-dashboard-modal").classList.remove("active");
+};
+
+window.uploadProfilePicture = async function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) return alert("Profile image must be less than 2MB.");
+
+    const fileExt = file.name.split('.').pop();
+    const filePath = `avatars/${currentUser.id}_${Date.now()}.${fileExt}`;
+
+    alert("Uploading new profile picture...");
+    const { error: uploadError } = await supabase.storage.from('post-images').upload(filePath, file);
+
+    if (uploadError) return alert("Avatar Upload Error: " + uploadError.message);
+
+    const { data: publicURLData } = supabase.storage.from('post-images').getPublicUrl(filePath);
+    const newAvatarUrl = publicURLData.publicUrl;
+
+    const { error: updateError } = await supabase.auth.updateUser({
+        data: { avatar_url: newAvatarUrl }
+    });
+
+    if (updateError) {
+        alert("Error saving profile picture: " + updateError.message);
+    } else {
+        await supabase.from("posts").update({ author_avatar: newAvatarUrl }).eq("author_email", currentUser.email);
+        alert("🎉 Profile picture updated successfully! Task Completed! (+20 XP)");
+        updateUI(true);
+        openProfileDashboard();
+        loadPosts();
+    }
+};
 
 window.handleLogin = handleLogin;
 window.handleSignUp = handleSignUp;
