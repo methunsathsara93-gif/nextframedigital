@@ -107,6 +107,18 @@ nav h1 span{background: var(--accent-gradient); -webkit-background-clip: text; -
     .notif-dropdown { right: 20px; width: 280px; }
 }
 
+@media (max-width: 600px) {
+    .user-header-row {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 12px;
+    }
+    .user-header-row > div {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
 .auth-box, .post-box, .post-card, .sidebar-widget {
     background: var(--bg-card);
     padding: 30px;
@@ -242,7 +254,6 @@ button:hover {
 .meta-row { display: flex; gap: 15px; font-size: 13px; color: var(--text-muted); margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
 .meta-row strong { color: var(--text-main); }
 
-/* Clickable Profile Image Styling */
 .author-meta-box { display: flex; align-items: center; gap: 10px; cursor: pointer; transition: transform 0.2s; }
 .author-meta-box:hover { transform: scale(1.03); }
 .author-avatar-img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); background: #111; }
@@ -281,10 +292,9 @@ button:hover {
 
 .post-body { color: var(--text-main); opacity: 0.9; font-size: 15px; line-height: 1.7; margin-bottom: 22px; white-space: pre-wrap; }
 
-/* Responsive YouTube Video Container */
 .video-embed-container {
     position: relative; 
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    padding-bottom: 56.25%;
     height: 0; 
     overflow: hidden;
     width: 100%; 
@@ -434,6 +444,28 @@ button:hover {
 .marquee-item { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
 .marquee-item span { color: var(--accent); }
 @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+.guidelines-card {
+    background: rgba(255, 0, 0, 0.05);
+    border: 1px solid rgba(255, 77, 0, 0.3);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+.guideline-list {
+    margin-top: 10px;
+    padding-left: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+.contact-info-box {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-top: 15px;
+}
 </style>
 </head>
 
@@ -745,6 +777,87 @@ button:hover {
     </div>
 </div>
 
+<!-- 🚫 Public Banned Creator Notice Modal (When viewing a banned user's post/profile) -->
+<div id="banned-profile-modal" class="modal-overlay">
+    <div class="dashboard-modal">
+        <h3>
+            <span style="color: #ff4d00;"><i class="fa-solid fa-user-slash"></i> Account Restricted</span>
+            <button class="close-modal-btn" onclick="closeBannedProfileModal()"><i class="fa-solid fa-xmark"></i></button>
+        </h3>
+
+        <div class="guidelines-card">
+            <h4 style="color: #ff4d00; font-size: 15px; margin-bottom: 6px;">
+                ⚠️ This user account has been banned & removed.
+            </h4>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                This creator's account has been restricted or removed from the Next Frame Digital platform due to a violation of our <strong>Community Guidelines</strong>.
+            </p>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <h4 style="font-size: 14px; color: var(--text-main); margin-bottom: 8px;">
+                📌 Community Guidelines:
+            </h4>
+            <ul class="guideline-list">
+                <li><strong>Respectful Conduct:</strong> No offensive, abusive, or inappropriate content/comments.</li>
+                <li><strong>Original Work:</strong> Post genuine cinematography, video editing, or production insights.</li>
+                <li><strong>No Spamming:</strong> Unwanted promotional spam or duplicate posts are strictly prohibited.</li>
+                <li><strong>Safety & Integrity:</strong> Adhere to Next Frame Digital system and safety protocols.</li>
+            </ul>
+        </div>
+
+        <button onclick="closeBannedProfileModal()" style="width: 100%; margin-top: 20px; background: var(--accent-gradient);">Close</button>
+    </div>
+</div>
+
+<!-- ⚠️ Account Removal / Community Guidelines Notice Modal -->
+<div id="removal-notice-modal" class="modal-overlay">
+    <div class="dashboard-modal">
+        <h3>
+            <span style="color: #ff4d00;"><i class="fa-solid fa-triangle-exclamation"></i> Account Notice</span>
+            <button class="close-modal-btn" onclick="closeRemovalNotice()"><i class="fa-solid fa-xmark"></i></button>
+        </h3>
+
+        <div class="guidelines-card">
+            <h4 style="color: #ff4d00; font-size: 15px; margin-bottom: 6px;">
+                ⚠️ This account has been removed from the system.
+            </h4>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+                Your account was removed due to a violation of our <strong>Community Guidelines</strong> or an administrative action by Next Frame Digital.
+            </p>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <h4 style="font-size: 14px; color: var(--text-main); margin-bottom: 8px;">
+                📌 Community Guidelines:
+            </h4>
+            <ul class="guideline-list">
+                <li><strong>Respectful Conduct:</strong> No offensive, abusive, or inappropriate content/comments.</li>
+                <li><strong>Original Work:</strong> Post genuine cinematography, video editing, or production insights.</li>
+                <li><strong>No Spamming:</strong> Unwanted promotional spam or duplicate posts are strictly prohibited.</li>
+                <li><strong>Safety & Integrity:</strong> Adhere to Next Frame Digital system and safety protocols.</li>
+            </ul>
+        </div>
+
+        <div class="contact-info-box">
+            <h4 style="font-size: 13px; color: var(--accent); margin-bottom: 6px;">
+                📞 Need Assistance or Want to Appeal?
+            </h4>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">
+                If you believe this was an error, please reach out to our team:
+            </p>
+            <p style="font-size: 13px; color: var(--text-main); font-weight: 600;">
+                ✉️ Email: <a href="mailto:contactnextframedigital@gmail.com" style="color: #00daff; text-decoration: none;">contactnextframedigital@gmail.com</a>
+            </p>
+            <p style="font-size: 13px; color: var(--text-main); font-weight: 600; margin-top: 2px;">
+                💬 WhatsApp / Call: <a href="https://wa.me/94705131882" target="_blank" style="color: #00ff88; text-decoration: none;">0705131882</a>
+            </p>
+        </div>
+
+        <button onclick="closeRemovalNotice()" style="width: 100%; margin-top: 20px; background: var(--accent-gradient);">Understand & Close</button>
+    </div>
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -900,11 +1013,52 @@ window.clearSelectedImages = function() {
     document.getElementById('remove-image-btn').classList.add('hidden');
 }
 
-supabase.auth.onAuthStateChange((event, session) => {
-    if (session) {
-        currentUser = session.user;
-        userDisplayName = currentUser.user_metadata?.display_name || "";
-        updateUI(true);
+/* Helper function to check if an email is banned */
+async function isEmailBanned(email) {
+    if(!email) return false;
+    const { data, error } = await supabase
+        .from('banned_emails')
+        .select('email')
+        .ilike('email', email.trim())
+        .maybeSingle();
+    return !!data;
+}
+
+/* Supabase Session Listener (Handles User Removal Auto Logout & Guidelines Modal) */
+supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'USER_DELETED' || (currentUser && !session && event === 'AUTO SIGNED_OUT')) {
+        const wasLoggedIn = !!currentUser;
+        currentUser = null;
+        userDisplayName = "";
+        updateUI(false);
+        if (wasLoggedIn) {
+            showRemovalNoticeModal();
+        }
+    } else if (session) {
+        // Double check if account or email is banned
+        const banned = await isEmailBanned(session.user.email);
+        if (banned) {
+            await supabase.auth.signOut();
+            currentUser = null;
+            userDisplayName = "";
+            updateUI(false);
+            showRemovalNoticeModal();
+            return;
+        }
+
+        supabase.auth.getUser().then(({ data, error }) => {
+            if (error || !data.user) {
+                supabase.auth.signOut();
+                currentUser = null;
+                userDisplayName = "";
+                updateUI(false);
+                showRemovalNoticeModal();
+            } else {
+                currentUser = session.user;
+                userDisplayName = currentUser.user_metadata?.display_name || "";
+                updateUI(true);
+            }
+        });
     } else {
         currentUser = null;
         userDisplayName = "";
@@ -912,6 +1066,18 @@ supabase.auth.onAuthStateChange((event, session) => {
     }
     loadPosts(); 
 });
+
+window.showRemovalNoticeModal = function() {
+    document.getElementById("removal-notice-modal").classList.add("active");
+};
+
+window.closeRemovalNotice = function() {
+    document.getElementById("removal-notice-modal").classList.remove("active");
+};
+
+window.closeBannedProfileModal = function() {
+    document.getElementById("banned-profile-modal").classList.remove("active");
+};
 
 function updateUI(isLoggedIn) {
     const navProfileBtn = document.getElementById("nav-user-profile-btn");
@@ -972,6 +1138,13 @@ async function handleLogin() {
     const passwordValue = document.getElementById("auth-password").value.trim();
     if(!email || !passwordValue) return alert("Please enter both email and password.");
 
+    // Check if banned
+    const banned = await isEmailBanned(email);
+    if(banned) {
+        showRemovalNoticeModal();
+        return;
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({ email: email, password: passwordValue });
     if(error) {
         alert("Login Failed: " + error.message);
@@ -990,15 +1163,35 @@ async function saveDisplayName() {
     const chosenName = document.getElementById("custom-display-name").value.trim();
     if(!chosenName) return alert("Please type a valid name!");
 
-    const { error } = await supabase.auth.updateUser({ data: { display_name: chosenName } });
-    if(error) {
-        alert(error.message);
-    } else {
-        userDisplayName = chosenName;
-        alert("Display name updated successfully!");
-        updateUI(true);
-        loadPosts();
+    const { data: existingUser, error: checkError } = await supabase
+        .from("profiles")
+        .select("email")
+        .ilike("display_name", chosenName)
+        .neq("email", currentUser.email)
+        .maybeSingle();
+
+    if (existingUser) {
+        return alert("⚠️ මේ නම වෙනත් ගිණුමක පාවිච්චි කර ඇත. වෙනත් නමක් තෝරන්න!");
     }
+
+    const { error: profileError } = await supabase
+        .from("profiles")
+        .upsert({ 
+            id: currentUser.id, 
+            email: currentUser.email, 
+            display_name: chosenName 
+        });
+
+    if (profileError) return alert(profileError.message);
+
+    await supabase.auth.updateUser({ data: { display_name: chosenName } });
+    
+    await supabase.from("posts").update({ author: chosenName }).eq("author_email", currentUser.email);
+
+    userDisplayName = chosenName;
+    alert("✨ Display name updated successfully!");
+    updateUI(true);
+    loadPosts();
 }
 
 function showNameEdit() {
@@ -1014,6 +1207,13 @@ async function handleSignUp() {
 
     if(!email || !password || !confirmPassword) return alert("Please fill in email, password, and confirm password fields.");
     if(password !== confirmPassword) return alert("Passwords do not match! Please re-check.");
+
+    // Check if email is in Banned list before Sign Up
+    const banned = await isEmailBanned(email);
+    if(banned) {
+        showRemovalNoticeModal();
+        return;
+    }
 
     const { data, error } = await supabase.auth.signUp({ email, password });
     if(error) return alert(error.message);
@@ -1045,6 +1245,14 @@ async function handleVerifyOTP() {
     const generatedOTP = sessionStorage.getItem("pending_signup_otp");
 
     if (userEnteredCode === generatedOTP && realEmail) {
+        // Double check ban on OTP submit
+        const banned = await isEmailBanned(realEmail);
+        if(banned) {
+            sessionStorage.clear();
+            showRemovalNoticeModal();
+            return;
+        }
+
         alert("Code confirmed successfully! Logging you in...");
         const { data, error } = await supabase.auth.signInWithPassword({ email: realEmail, password: realPassword });
         if (error) { alert(error.message); } 
@@ -1064,6 +1272,13 @@ async function handleVerifyOTP() {
 async function showForgotPasswordPanel() {
     const email = document.getElementById("auth-email").value.trim();
     if (!email) return alert("Please type your Email address first in the input box!");
+
+    const banned = await isEmailBanned(email);
+    if(banned) {
+        showRemovalNoticeModal();
+        return;
+    }
+
     const resetOTPCode = Math.floor(100000 + Math.random() * 900000).toString();
     
     sessionStorage.setItem("reset_password_email", email);
@@ -1111,20 +1326,6 @@ async function handlePasswordUpdate() {
     else {
         alert("✨ Password updated successfully! You can now log in with your new password.");
         cancelResetMode();
-    }
-}
-
-async function sendNotificationEmail(recipientEmail, actionTitle, articleTitle, postId) {
-    try {
-        const articleLink = `${window.location.origin}${window.location.pathname}?post=${postId}`;
-        const messageDetails = `Article: "${articleTitle}"\nDirect Link to view: ${articleLink}`;
-
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_SIGNUP_TEMPLATE_ID, {
-            to_email: recipientEmail,
-            token_code: `${actionTitle} | ${messageDetails}`
-        });
-    } catch (e) {
-        console.log("Notification email dispatch failed:", e);
     }
 }
 
@@ -1224,12 +1425,10 @@ function updateLeaderboard(posts) {
     });
 }
 
-/* FIX 1: FIXED YOUTUBE & VIMEO EMBED FUNCTION */
 function getEmbedVideoHTML(url) {
     if (!url) return "";
     let embedUrl = "";
     
-    // Support youtube.com/watch?v=, youtube.com/shorts/, youtu.be/, youtube.com/embed/
     const ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const ytMatch = url.match(ytRegExp);
 
@@ -1459,9 +1658,16 @@ async function loadPostsUI(data, sortBy = "latest") {
     }
 }
 
-window.openPublicProfile = function(encName, encEmail) {
+window.openPublicProfile = async function(encName, encEmail) {
     const authorName = safeB64Decode(encName);
     const authorEmail = safeB64Decode(encEmail).trim().toLowerCase();
+
+    // Check if author is banned in banned_emails table
+    const banned = await isEmailBanned(authorEmail);
+    if (banned) {
+        document.getElementById("banned-profile-modal").classList.add("active");
+        return;
+    }
 
     if (currentUser && currentUser.email.toLowerCase() === authorEmail) {
         openProfileDashboard();
@@ -1758,9 +1964,7 @@ async function addComment(postId, authorEmail, encTitle){
         if(btn) btn.innerText = "Reply";
     } else {
         await supabase.from("comments").insert([{ post_id: postId, name: commenterName, user_id: currentUser.id, comment: commentText }]);
-        if (authorEmail && authorEmail !== currentUser.email) {
-            sendNotificationEmail(authorEmail, `New Response by ${commenterName}`, articleTitle, postId);
-        }
+        
         addNotification(`💬 ${commenterName} commented on article: "${articleTitle.substring(0, 20)}..."`);
     }
     
@@ -1838,7 +2042,6 @@ async function likePost(id, currentLikes){
     const { error } = await supabase.from("posts").update({ likes: currentLikes + 1 }).eq("id", id);
     if(!error) {
         localStorage.setItem(likedStorageKey, "true");
-        addNotification(`❤️ Your post received a new like!`);
         loadPosts();
     }
 }
