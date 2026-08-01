@@ -1024,6 +1024,26 @@ async function isEmailBanned(email) {
     return !!data;
 }
 
+/* ⚡ SUPABASE REALTIME SUBSCRIPTION FOR AUTOMATIC REALTIME BAN DETECTION & UPDATES */
+supabase
+    .channel('realtime-community-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'banned_emails' }, async (payload) => {
+        if (currentUser && currentUser.email) {
+            const banned = await isEmailBanned(currentUser.email);
+            if (banned) {
+                await supabase.auth.signOut();
+                currentUser = null;
+                userDisplayName = "";
+                updateUI(false);
+                showRemovalNoticeModal();
+            }
+        }
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, () => {
+        loadPosts();
+    })
+    .subscribe();
+
 /* Supabase Session Listener (Handles User Removal Auto Logout & Guidelines Modal) */
 supabase.auth.onAuthStateChange(async (event, session) => {
     if (event === 'USER_DELETED' || (currentUser && !session && event === 'AUTO SIGNED_OUT')) {
@@ -1833,6 +1853,18 @@ function forceTextAreaCopy(text) {
 
 async function createPost(){
     if(!currentUser) return alert("You must be logged in to post!");
+    
+    // Check if email is banned before creating post
+    const banned = await isEmailBanned(currentUser.email);
+    if(banned) {
+        await supabase.auth.signOut();
+        currentUser = null;
+        userDisplayName = "";
+        updateUI(false);
+        showRemovalNoticeModal();
+        return;
+    }
+
     if(!userDisplayName) return alert("Please save a Display Name first!");
     const title = document.getElementById("title").value.trim();
     const category = document.getElementById("category").value;
@@ -1950,6 +1982,18 @@ async function deletePost(id) {
 
 async function addComment(postId, authorEmail, encTitle){
     if(!currentUser) return alert("You must be logged in to comment!");
+
+    // Check if email is banned before posting comment
+    const banned = await isEmailBanned(currentUser.email);
+    if(banned) {
+        await supabase.auth.signOut();
+        currentUser = null;
+        userDisplayName = "";
+        updateUI(false);
+        showRemovalNoticeModal();
+        return;
+    }
+
     const commenterName = userDisplayName || currentUser.email.split('@')[0];
     const commentInput = document.getElementById("cmsg-"+postId);
     const commentText = commentInput.value.trim();
@@ -2035,6 +2079,18 @@ window.deleteComment = function(postId, commentId) {
 };
 
 async function likePost(id, currentLikes){
+    if (currentUser) {
+        const banned = await isEmailBanned(currentUser.email);
+        if(banned) {
+            await supabase.auth.signOut();
+            currentUser = null;
+            userDisplayName = "";
+            updateUI(false);
+            showRemovalNoticeModal();
+            return;
+        }
+    }
+
     const likedStorageKey = `liked_post_${id}`;
     if(localStorage.getItem(likedStorageKey)) {
         return alert("You have already liked this article.");
