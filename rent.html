@@ -697,14 +697,15 @@
             </div>
         </div>
 
-        <!-- Quick Filter Category Pills (Including Camera & Lens, SD Card, Tripod sections) -->
+        <!-- Quick Filter Category Pills -->
         <div class="quick-pills">
             <button class="pill-btn active" onclick="filterByPill('all', this)">All Gear</button>
             <button class="pill-btn" onclick="filterByPill('camera', this)">Cameras</button>
             <button class="pill-btn" onclick="filterByPill('lens', this)">Lenses</button>
             <button class="pill-btn" onclick="filterByPill('camera&lens', this)">Camera & Lens Combos</button>
-            <button class="pill-btn" onclick="filterByPill('tripod', this)">Tripods & Supports</button>
-            <button class="pill-btn" onclick="filterByPill('sdcard', this)">SD Cards & Media</button>
+            <button class="pill-btn" onclick="filterByPill('Tripods & Stands', this)">Tripods & Supports</button>
+            <button class="pill-btn" onclick="filterByPill('mounts & accessories', this)">Mounts & Harnesses</button>
+            <button class="pill-btn" onclick="filterByPill('SD Cards & Media', this)">SD Cards & Media</button>
             <button class="pill-btn" onclick="filterByPill('lighting', this)">Lighting</button>
             <button class="pill-btn" onclick="filterByPill('gimbal', this)">Gimbals</button>
             <button class="pill-btn" onclick="filterByPill('audio', this)">Audio</button>
@@ -768,8 +769,9 @@
                         <label class="checkbox-label"><input type="checkbox" name="cat" value="camera" onchange="filterGear()"> Photography (Cameras)</label>
                         <label class="checkbox-label"><input type="checkbox" name="cat" value="lens" onchange="filterGear()"> Lenses & Optics</label>
                         <label class="checkbox-label"><input type="checkbox" name="cat" value="camera&lens" onchange="filterGear()"> Camera & Lens Kits</label>
-                        <label class="checkbox-label"><input type="checkbox" name="cat" value="tripod" onchange="filterGear()"> Tripods & Stands</label>
-                        <label class="checkbox-label"><input type="checkbox" name="cat" value="sdcard" onchange="filterGear()"> SD Cards & Media</label>
+                        <label class="checkbox-label"><input type="checkbox" name="cat" value="Tripods & Stands" onchange="filterGear()"> Tripods & Stands</label>
+                        <label class="checkbox-label"><input type="checkbox" name="cat" value="mounts & accessories" onchange="filterGear()"> Mounts & Body Harnesses</label>
+                        <label class="checkbox-label"><input type="checkbox" name="cat" value="SD Cards & Media" onchange="filterGear()"> SD Cards & Media</label>
                         <label class="checkbox-label"><input type="checkbox" name="cat" value="gimbal" onchange="filterGear()"> Gimbals & Stabilization</label>
                         <label class="checkbox-label"><input type="checkbox" name="cat" value="lighting" onchange="filterGear()"> Lighting</label>
                         <label class="checkbox-label"><input type="checkbox" name="cat" value="audio" onchange="filterGear()"> Audio & Mics</label>
@@ -1021,13 +1023,15 @@
 
             // Icon selection based on category
             let iconClass = 'fa-camera';
-            if (item.category === 'lens') iconClass = 'fa-camera-retro';
-            else if (item.category === 'camera&lens') iconClass = 'fa-photo-film';
-            else if (item.category === 'tripod') iconClass = 'fa-sliders';
-            else if (item.category === 'sdcard') iconClass = 'fa-sd-card';
-            else if (item.category === 'lighting') iconClass = 'fa-lightbulb';
-            else if (item.category === 'gimbal') iconClass = 'fa-video';
-            else if (item.category === 'audio') iconClass = 'fa-microphone';
+            const itemCat = (item.category || '').toLowerCase();
+            if (itemCat === 'lens') iconClass = 'fa-camera-retro';
+            else if (itemCat === 'camera&lens') iconClass = 'fa-photo-film';
+            else if (itemCat === 'tripods & stands' || itemCat === 'tripod') iconClass = 'fa-sliders';
+            else if (itemCat === 'mounts & accessories' || itemCat === 'mount') iconClass = 'fa-vest';
+            else if (itemCat === 'sd cards & media' || itemCat === 'sdcard') iconClass = 'fa-sd-card';
+            else if (itemCat === 'lighting') iconClass = 'fa-lightbulb';
+            else if (itemCat === 'gimbal') iconClass = 'fa-video';
+            else if (itemCat === 'audio') iconClass = 'fa-microphone';
 
             // Image display logic
             let mediaHtml = `<i class="fa-solid ${iconClass}"></i>`;
@@ -1368,7 +1372,7 @@
             document.querySelectorAll('input[name="cat"]').forEach(cb => cb.checked = false);
         } else {
             document.querySelectorAll('input[name="cat"]').forEach(cb => {
-                cb.checked = (cb.value === category);
+                cb.checked = (cb.value.toLowerCase() === category.toLowerCase());
             });
         }
         filterGear();
@@ -1494,13 +1498,13 @@
         const verifiedOnly = document.getElementById('filterVerifiedOnly').checked;
         const topReviewedOnly = document.getElementById('filterTopReviewed').checked;
         
-        const checkedCategories = Array.from(document.querySelectorAll('input[name="cat"]:checked')).map(cb => cb.value);
+        const checkedCategories = Array.from(document.querySelectorAll('input[name="cat"]:checked')).map(cb => cb.value.toLowerCase());
         const cards = document.querySelectorAll('.gear-card');
         let visibleCount = 0;
 
         cards.forEach(card => {
             const name = card.getAttribute('data-name');
-            const cat = card.getAttribute('data-category');
+            const cat = (card.getAttribute('data-category') || '').toLowerCase();
             const cond = card.getAttribute('data-condition');
             const loc = card.getAttribute('data-location');
             const isVerified = card.getAttribute('data-verified') === 'true';
