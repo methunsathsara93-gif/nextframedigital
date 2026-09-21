@@ -358,7 +358,7 @@
             </div>
             <button class="logout-btn" onclick="handleLogout()">Sign Out</button>
         </div>
-        <h4 style="color: var(--accent); margin-bottom: 15px; font-size: 16px; font-weight: 600;">Partner Requests, Collections & Auto-Commission Calculator</h4>
+        <h4 style="color: var(--accent); margin-bottom: 15px; font-size: 16px; font-weight: 600;">Partner Requests, Collections & Multi-Record Auto-Commission Calculator</h4>
         <div class="table-responsive">
             <table>
                 <thead>
@@ -366,7 +366,7 @@
                         <th>Partner Name</th>
                         <th>Email / Contact</th>
                         <th>Equipment & Serial Codes</th>
-                        <th>Rental Period & Commission Financials</th>
+                        <th>Rental Records & Financial Summary</th>
                         <th>Status & Agreement</th>
                         <th>Actions</th>
                     </tr>
@@ -376,13 +376,20 @@
         </div>
     </div>
 
-    <!-- EDIT RENTAL & COMMISSION MODAL FOR ADMIN -->
-    <div id="edit-modal" class="container hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; max-width: 480px; width: 95%; background: var(--card-bg); border: 1px solid var(--accent); max-height: 90vh; overflow-y: auto;">
-        <h2>Edit <span>Rental & Commission</span></h2>
-        <div class="subtitle">Set customer payment and commission percentage (e.g. 9.09%)</div>
+    <!-- EDIT RENTAL & COMMISSION MODAL FOR ADMIN (MULTI-RECORD SUPPORT) -->
+    <div id="edit-modal" class="container hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; max-width: 650px; width: 95%; background: var(--card-bg); border: 1px solid var(--accent); max-height: 90vh; overflow-y: auto;">
+        <h2>Manage Rental <span>Records</span></h2>
+        <div class="subtitle" id="edit-modal-subtitle">Add, edit or remove multiple rental records for this partner</div>
         <div id="edit-error" class="error-msg hidden"></div>
-        <form onsubmit="saveRentalEdit(event)">
-            <input type="hidden" id="edit-partner-id">
+
+        <div id="rental-records-list-container" style="margin-bottom: 20px;"></div>
+
+        <button type="button" class="action-btns btn-edit" style="width: 100%; margin-bottom: 20px; padding: 12px; font-weight: 700;" onclick="addNewRentalRecordSlot()">➕ Add Another Rental Record</button>
+
+        <!-- Single Record Edit Sub-Form -->
+        <div id="single-record-form" class="hidden" style="background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); padding: 18px; border-radius: 10px; margin-bottom: 20px;">
+            <h4 id="form-slot-title" style="color: var(--accent); margin-bottom: 12px; font-size: 15px;">Edit Rental Record</h4>
+            <input type="hidden" id="edit-record-index" value="-1">
             <div class="form-group">
                 <label>Rental Details / Notes</label>
                 <input type="text" id="edit-notes" placeholder="e.g. FX3 Camera rental package">
@@ -403,6 +410,13 @@
                 </div>
             </div>
             <div class="form-group">
+                <label>Return Status (Complete / Incomplete)</label>
+                <select id="edit-return-complete">
+                    <option value="false">❌ Not Completed (Incomplete)</option>
+                    <option value="true">✅ Completed (Returned Successfully)</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label>Total Collected from Customer (Rs.)</label>
                 <input type="number" step="any" id="edit-customer-payment" placeholder="5500" oninput="calculateNetPayoutFromCommission()">
             </div>
@@ -418,11 +432,17 @@
                 <label>Net Payout to Partner (Rs.) [Auto Calculated]</label>
                 <input type="number" step="any" id="edit-payment" readonly style="background: rgba(16, 185, 129, 0.1); color: var(--success); font-weight: 700;">
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
-                <button type="submit" style="margin-top:0; flex: 1;">Save Changes</button>
-                <button type="button" onclick="closeEditModal()" style="margin-top:0; background: #374151; color: white; flex: 1;">Cancel</button>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button type="button" onclick="saveCurrentRecordSlot()" style="margin-top:0; flex: 1; background: var(--success); color: white;">Save This Record</button>
+                <button type="button" onclick="cancelRecordSlotEdit()" style="margin-top:0; background: #374151; color: white; flex: 1;">Cancel</button>
             </div>
-        </form>
+        </div>
+
+        <input type="hidden" id="edit-partner-id">
+        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+            <button type="button" onclick="saveAllPartnerRentals()" style="margin-top:0; flex: 1;">Save All Changes to Database</button>
+            <button type="button" onclick="closeEditModal()" style="margin-top:0; background: #374151; color: white; flex: 1;">Close</button>
+        </div>
     </div>
 
     <!-- BARCODE SCANNER MODAL OVERLAY -->
@@ -439,9 +459,16 @@
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         const ADMIN_EMAIL = 'admin@nfd.lk';
-        const ADMIN_WHATSAPP_PHONE = '94705131882'; // Next Frame Digital Admin WhatsApp
+        const ADMIN_WHATSAPP_PHONE = '94705131882';
         let activeSerialInputId = null;
         let loggedInSellerData = null;
+        let currentEditingRentalsArray = [];
+        let currentEditingPartnerId = null;
+        let currentEditingPartnerName = '';
+        let currentEditingPartnerEmail = '';
+        let currentEditingPartnerPhone = '';
+        let currentEditingPartnerGear = '';
+        let currentEditingPartnerSerials = '';
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedSession = localStorage.getItem('nfd_session');
@@ -545,6 +572,28 @@
             document.getElementById('scanner-modal').classList.add('hidden');
         }
 
+        function parseRentals(profile) {
+            try {
+                if (profile.rental_notes && profile.rental_notes.trim().startsWith('[')) {
+                    const parsed = JSON.parse(profile.rental_notes);
+                    if (Array.isArray(parsed)) return parsed;
+                }
+            } catch(e) {}
+            
+            // Backward compatibility fallback to legacy single record columns
+            return [{
+                notes: profile.rental_notes || 'Gear Rental Payout',
+                serials: profile.serial_codes || '',
+                startDate: profile.rental_start_date || '',
+                dueDate: profile.due_date || '',
+                returnCompleted: profile.return_completed || false,
+                customerPayment: parseFloat(profile.customer_payment) || 0,
+                commissionPct: parseFloat(profile.commission_pct) || 9.09,
+                nfdFee: parseFloat(profile.nfd_fee) || 0,
+                income: parseFloat(profile.income) || 0
+            }];
+        }
+
         async function handleRegister(e) {
             e.preventDefault();
             const name = document.getElementById('regName').value.trim();
@@ -573,6 +622,18 @@
                 return;
             }
 
+            const initialRentalRecord = [{
+                notes: 'Initial Registration Rental',
+                serials: serial_codes,
+                startDate: '',
+                dueDate: '',
+                returnCompleted: false,
+                customerPayment: 0,
+                commissionPct: 9.09,
+                nfdFee: 0,
+                income: 0
+            }];
+
             const { error } = await supabaseClient
                 .from('profiles')
                 .insert([{ 
@@ -581,8 +642,9 @@
                     role: 'seller', status: 'pending',
                     agreement_accepted: true,
                     income: 0, customer_payment: 0, nfd_fee: 0,
-                    commission_pct: 9.09, rental_notes: 'No rentals yet',
-                    rental_start_date: null, due_date: null
+                    commission_pct: 9.09, rental_notes: JSON.stringify(initialRentalRecord),
+                    rental_start_date: null, due_date: null,
+                    return_completed: false
                 }]);
 
             if (error) {
@@ -651,11 +713,9 @@
                 loadSellerDashboard(data);
             } else if (status === 'rejected') {
                 showScreen('rejected');
-                // Pre-fill support form details
                 document.getElementById('supportName').value = data.full_name || '';
                 document.getElementById('supportEmail').value = data.email || '';
             } else {
-                // Pending status -> Waiting to approve UI
                 showScreen('waiting');
                 const waMsg = `Hello Next Frame Digital Admin,\n\nI have registered as a new rent seller partner and my account is waiting for approval.\n\n*Name:* ${data.full_name}\n*Email:* ${data.email}\n*Phone:* ${data.phone || 'N/A'}\n\nPlease approve my account. Thank you!`;
                 document.getElementById('whatsapp-notify-btn').href = `https://wa.me/${ADMIN_WHATSAPP_PHONE}?text=${encodeURIComponent(waMsg)}`;
@@ -672,20 +732,35 @@
             window.open(`https://wa.me/${ADMIN_WHATSAPP_PHONE}?text=${encodeURIComponent(waMsg)}`, '_blank');
         }
 
-        function checkDueStatus(dueDateStr) {
-            if (!dueDateStr) return { label: 'No Due Date Set', class: 'badge-pending', alertClass: 'safe', icon: 'ℹ️', text: 'No active rental due date scheduled.' };
-            
+        function checkDueStatus(dueDateStr, returnCompleted, startDateStr) {
+            if (!startDateStr || !dueDateStr) {
+                return { label: 'No Active Rental Period', class: 'badge-pending', alertClass: 'safe', icon: 'ℹ️', text: 'No active rental dates scheduled yet.' };
+            }
+
             const today = new Date();
             today.setHours(0,0,0,0);
+            
+            const startDate = new Date(startDateStr);
+            startDate.setHours(0,0,0,0);
+
             const dueDate = new Date(dueDateStr);
             dueDate.setHours(0,0,0,0);
+
+            if (returnCompleted === true || returnCompleted === 'true') {
+                return { label: 'Returned & Completed', class: 'badge-approved', alertClass: 'safe', icon: '✅', text: 'Equipment return successfully completed.' };
+            }
+
+            if (today < startDate) {
+                const daysToStart = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+                return { label: `Starts in ${daysToStart} days`, class: 'badge-pending', alertClass: 'safe', icon: '⏳', text: `Rental starts on ${startDateStr} (Countdown running).` };
+            }
 
             const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
 
             if (diffDays < 0) {
-                return { label: `Overdue (${Math.abs(diffDays)}d ago)`, class: 'badge-overdue', alertClass: 'danger', icon: '🚨', text: `URGENT: Equipment return is Overdue by ${Math.abs(diffDays)} day(s)!` };
+                return { label: `Overdue (${Math.abs(diffDays)}d ago)`, class: 'badge-overdue', alertClass: 'danger', icon: '🚨', text: `URGENT: Equipment return is Overdue by ${Math.abs(diffDays)} day(s)! Return is not completed.` };
             } else if (diffDays === 0) {
-                return { label: 'Due Today!', class: 'badge-pending', alertClass: 'warning', icon: '⚠️', text: `ATTENTION: Equipment rental is DUE TODAY (${dueDateStr}).` };
+                return { label: 'Due Today!', class: 'badge-pending', alertClass: 'warning', icon: '⚠️', text: `ATTENTION: Equipment rental return is DUE TODAY (${dueDateStr}).` };
             } else {
                 return { label: `Due in ${diffDays} days`, class: 'badge-approved', alertClass: 'safe', icon: '✅', text: `Active Rental. Return due date is ${dueDateStr}.` };
             }
@@ -700,11 +775,14 @@
             document.getElementById('client-gear').innerText = data.camera_details || 'No equipment listed';
             document.getElementById('client-serial').innerText = data.serial_codes || 'No serial codes recorded';
             
-            const income = parseFloat(data.income) || 0;
-            document.getElementById('client-total-income').innerText = 'Rs. ' + income.toLocaleString();
+            const rentals = parseRentals(data);
+            let totalNetIncome = 0;
+            rentals.forEach(r => { totalNetIncome += (parseFloat(r.income) || 0); });
+            document.getElementById('client-total-income').innerText = 'Rs. ' + totalNetIncome.toLocaleString();
 
             const warningBanner = document.getElementById('client-warning-banner');
-            const dueInfo = checkDueStatus(data.due_date);
+            const activeRecord = rentals.find(r => !(r.returnCompleted === true || r.returnCompleted === 'true')) || rentals[0] || {};
+            const dueInfo = checkDueStatus(activeRecord.dueDate, activeRecord.returnCompleted, activeRecord.startDate);
             warningBanner.className = `alert-banner ${dueInfo.alertClass}`;
             document.getElementById('warning-banner-icon').innerText = dueInfo.icon;
             document.getElementById('warning-banner-text').innerText = dueInfo.text;
@@ -718,23 +796,30 @@
             document.getElementById('banner-desc').innerText = 'Your partner account is fully verified and active on Next Frame Digital.';
 
             const rentalsTbody = document.getElementById('client-rentals-list');
-            const custPayment = parseFloat(data.customer_payment) || 0;
-            
-            if (custPayment > 0 || income > 0 || data.due_date || data.rental_start_date) {
-                const periodText = `${data.rental_start_date || 'N/A'} ➔ ${data.due_date || 'N/A'}`;
-                rentalsTbody.innerHTML = `<tr>
-                    <td>${data.rental_notes || 'Gear Rental Payout'}</td>
-                    <td>
-                        <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">${periodText}</div>
-                        <span class="badge ${dueInfo.class}">${dueInfo.label}</span>
-                    </td>
-                    <td style="font-size: 13px;">
-                        Customer Paid: Rs. ${custPayment.toLocaleString()}<br>
-                        <span style="color: var(--accent);">Commission (${data.commission_pct || 9.09}%): - Rs. ${(parseFloat(data.nfd_fee) || 0).toLocaleString()}</span>
-                    </td>
-                    <td style="color: var(--success); font-weight: 600;">Rs. ${income.toLocaleString()}</td>
-                    <td><button class="action-btns btn-pdf" onclick="downloadPartnerStatementPDF('${data.full_name}', '${data.email}', '${data.phone || 'N/A'}', '${data.camera_details || 'N/A'}', '${data.serial_codes || 'N/A'}', '${data.rental_notes || 'Gear Rental Payout'}', '${custPayment}', '${data.nfd_fee || 0}', '${income}', '${data.rental_start_date || 'N/A'}', '${data.due_date || 'N/A'}', '${data.commission_pct || 9.09}')">📄 Download Statement</button></td>
-                </tr>`;
+            rentalsTbody.innerHTML = '';
+
+            if (rentals.length > 0) {
+                rentals.forEach(r => {
+                    const custPayment = parseFloat(r.customerPayment) || 0;
+                    const nfdFee = parseFloat(r.nfdFee) || 0;
+                    const inc = parseFloat(r.income) || 0;
+                    const periodText = `${r.startDate || 'N/A'} ➔ ${r.dueDate || 'N/A'}`;
+                    const rDueInfo = checkDueStatus(r.dueDate, r.returnCompleted, r.startDate);
+
+                    rentalsTbody.innerHTML += `<tr>
+                        <td>${r.notes || 'Gear Rental Payout'}</td>
+                        <td>
+                            <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">${periodText}</div>
+                            <span class="badge ${rDueInfo.class}">${rDueInfo.label}</span>
+                        </td>
+                        <td style="font-size: 13px;">
+                            Customer Paid: Rs. ${custPayment.toLocaleString()}<br>
+                            <span style="color: var(--accent);">Commission (${r.commissionPct || 9.09}%): - Rs. ${nfdFee.toLocaleString()}</span>
+                        </td>
+                        <td style="color: var(--success); font-weight: 600;">Rs. ${inc.toLocaleString()}</td>
+                        <td><button class="action-btns btn-pdf" onclick="downloadPartnerStatementPDF('${data.full_name}', '${data.email}', '${data.phone || 'N/A'}', '${data.camera_details || 'N/A'}', '${r.serials || data.serial_codes || 'N/A'}', '${r.notes || 'Gear Rental Payout'}', '${custPayment}', '${nfdFee}', '${inc}', '${r.startDate || 'N/A'}', '${r.dueDate || 'N/A'}', '${r.commissionPct || 9.09}')">📄 Download Statement</button></td>
+                    </tr>`;
+                });
             } else {
                 rentalsTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No completed payouts found yet.</td></tr>`;
             }
@@ -759,14 +844,20 @@
                 data.forEach(item => {
                     if(item.email !== ADMIN_EMAIL) {
                         const statusVal = item.status ? item.status.toLowerCase() : 'pending';
-                        const inc = parseFloat(item.income) || 0;
-                        const custPay = parseFloat(item.customer_payment) || 0;
-                        const nfdFee = parseFloat(item.nfd_fee) || 0;
-                        const commPct = parseFloat(item.commission_pct) || 9.09;
-                        const dueInfo = checkDueStatus(item.due_date);
-                        const periodText = `${item.rental_start_date || 'Not set'} to ${item.due_date || 'Not set'}`;
+                        const rentals = parseRentals(item);
+                        let totalInc = 0;
+                        rentals.forEach(r => totalInc += (parseFloat(r.income) || 0));
                         const agreementBadge = item.agreement_accepted ? '<span class="badge badge-approved">✓ Signed</span>' : '<span class="badge badge-pending">Pending</span>';
                         
+                        let rentalsSummaryHTML = `<div style="font-size: 13px; margin-bottom: 4px;"><strong>${rentals.length} Rental Record(s)</strong></div>`;
+                        rentals.forEach((r, idx) => {
+                            const rDue = checkDueStatus(r.dueDate, r.returnCompleted, r.startDate);
+                            rentalsSummaryHTML += `<div style="font-size: 11px; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px; margin-top: 4px;">
+                                #${idx+1}: ${r.notes || 'Rental'} (${r.startDate || 'N/A'} → ${r.dueDate || 'N/A'}) <span class="badge ${rDue.class}" style="font-size:9px; padding:2px 6px;">${rDue.label}</span><br>
+                                Net Payout: <strong style="color:var(--success);">Rs. ${(parseFloat(r.income)||0).toLocaleString()}</strong>
+                            </div>`;
+                        });
+
                         tbody.innerHTML += `<tr>
                             <td><strong>${item.full_name || 'N/A'}</strong> ${statusVal === 'approved' ? '<span class="verified-badge" style="font-size:9px; padding:1px 5px;">✔</span>' : ''}</td>
                             <td>${item.email}<br><span style="color:var(--text-muted); font-size:12px;">${item.phone || ''}</span></td>
@@ -775,10 +866,8 @@
                                 <span style="color: var(--accent);"><strong>Serial:</strong> ${item.serial_codes || 'None'}</span>
                             </td>
                             <td>
-                                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">📅 ${periodText}</div>
-                                <span class="badge ${dueInfo.class}" style="margin-bottom:4px;">${dueInfo.label}</span><br>
-                                <span style="font-size:12px;">Customer: Rs. ${custPay.toLocaleString()} | <strong>Comm (${commPct}%):</strong> <span style="color:var(--accent);">Rs. ${nfdFee.toLocaleString()}</span></span><br>
-                                <span style="color: var(--success); font-size: 13px; font-weight: 600;">Net Payout: Rs. ${inc.toLocaleString()}</span>
+                                ${rentalsSummaryHTML}
+                                <div style="margin-top: 6px; font-weight: 700; color: var(--accent);">Total Income: Rs. ${totalInc.toLocaleString()}</div>
                             </td>
                             <td>
                                 <span class="badge badge-${statusVal}" style="margin-bottom:4px;">${statusVal}</span><br>
@@ -787,8 +876,7 @@
                             <td class="action-btns">
                                 ${statusVal !== 'approved' ? `<button class="btn-approve" onclick="updateStatus('${item.id}', 'approved')">Approve</button>` : ''}
                                 ${statusVal !== 'rejected' ? `<button class="btn-reject" onclick="updateStatus('${item.id}', 'rejected')">Reject</button>` : ''}
-                                <button class="btn-edit" onclick="openEditModal('${item.id}', '${item.rental_start_date || ''}', '${item.due_date || ''}', '${custPay}', '${nfdFee}', '${inc}', '${item.rental_notes || ''}', '${item.serial_codes || ''}', '${commPct}')">Edit</button>
-                                <button class="btn-pdf" onclick="downloadPartnerStatementPDF('${item.full_name}', '${item.email}', '${item.phone || 'N/A'}', '${item.camera_details || 'N/A'}', '${item.serial_codes || 'N/A'}', '${item.rental_notes || 'Gear Rental Payout'}', '${custPay}', '${nfdFee}', '${inc}', '${item.rental_start_date || 'N/A'}', '${item.due_date || 'N/A'}', '${commPct}')">Statement</button>
+                                <button class="btn-edit" onclick="openEditModalForPartner('${item.id}')">Manage Rentals (${rentals.length})</button>
                                 <button class="btn-pdf" style="background:#059669; margin-top:4px;" onclick="downloadPartnerAgreementPDFAdmin('${item.full_name}', '${item.email}', '${item.phone || 'N/A'}', '${item.camera_details || 'N/A'}', '${item.serial_codes || 'N/A'}')">Agreement PDF</button>
                             </td>
                         </tr>`;
@@ -802,17 +890,106 @@
             loadAdminSellers();
         }
 
-        function openEditModal(id, startDate, dueDate, custPay, nfdFee, income, notes, serials, commPct) {
-            document.getElementById('edit-partner-id').value = id;
-            document.getElementById('edit-startdate').value = startDate;
-            document.getElementById('edit-duedate').value = dueDate;
-            document.getElementById('edit-customer-payment').value = custPay;
-            document.getElementById('edit-commission-pct').value = commPct || 9.09;
-            document.getElementById('edit-calculated-commission').value = nfdFee;
-            document.getElementById('edit-payment').value = income;
-            document.getElementById('edit-notes').value = notes;
-            document.getElementById('edit-serial').value = serials;
+        async function openEditModalForPartner(partnerId) {
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .eq('id', partnerId)
+                .maybeSingle();
+
+            if (error || !data) {
+                alert('Could not load partner record.');
+                return;
+            }
+
+            currentEditingPartnerId = data.id;
+            currentEditingPartnerName = data.full_name;
+            currentEditingPartnerEmail = data.email;
+            currentEditingPartnerPhone = data.phone || 'N/A';
+            currentEditingPartnerGear = data.camera_details || 'N/A';
+            currentEditingPartnerSerials = data.serial_codes || 'N/A';
+            currentEditingRentalsArray = parseRentals(data);
+
+            document.getElementById('edit-partner-id').value = data.id;
+            document.getElementById('edit-modal-subtitle').innerText = `Manage multiple rental & commission records for ${data.full_name}`;
+            
+            renderEditingRentalsList();
+            cancelRecordSlotEdit();
             document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function renderEditingRentalsList() {
+            const container = document.getElementById('rental-records-list-container');
+            container.innerHTML = '';
+
+            if (currentEditingRentalsArray.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No rental records added yet. Click below to add one.</p>`;
+                return;
+            }
+
+            currentEditingRentalsArray.forEach((r, idx) => {
+                const custPay = parseFloat(r.customerPayment) || 0;
+                const netInc = parseFloat(r.income) || 0;
+                container.innerHTML += `<div style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); padding: 14px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; color: var(--text-main);">Record #${idx + 1}: ${r.notes || 'Rental'}</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Period: ${r.startDate || 'N/A'} → ${r.dueDate || 'N/A'} | Customer: Rs. ${custPay.toLocaleString()} | <strong style="color: var(--success);">Net: Rs. ${netInc.toLocaleString()}</strong></div>
+                    </div>
+                    <div class="action-btns" style="display: flex; gap: 4px;">
+                        <button class="btn-edit" onclick="editRentalRecordSlot(${idx})">Edit</button>
+                        <button class="btn-pdf" onclick="downloadPartnerStatementPDF('${currentEditingPartnerName}', '${currentEditingPartnerEmail}', '${currentEditingPartnerPhone}', '${currentEditingPartnerGear}', '${r.serials || currentEditingPartnerSerials}', '${r.notes || 'Rental'}', '${custPay}', '${r.nfdFee || 0}', '${netInc}', '${r.startDate || 'N/A'}', '${r.dueDate || 'N/A'}', '${r.commissionPct || 9.09}')">Statement</button>
+                        ${currentEditingRentalsArray.length > 1 ? `<button class="btn-reject" onclick="deleteRentalRecordSlot(${idx})">Delete</button>` : ''}
+                    </div>
+                </div>`;
+            });
+        }
+
+        function addNewRentalRecordSlot() {
+            document.getElementById('form-slot-title').innerText = 'Add New Rental Record';
+            document.getElementById('edit-record-index').value = -1;
+            document.getElementById('edit-notes').value = 'Gear Rental Package';
+            document.getElementById('edit-serial').value = currentEditingPartnerSerials;
+            document.getElementById('edit-startdate').value = '';
+            document.getElementById('edit-duedate').value = '';
+            document.getElementById('edit-return-complete').value = 'false';
+            document.getElementById('edit-customer-payment').value = '';
+            document.getElementById('edit-commission-pct').value = '9.09';
+            document.getElementById('edit-calculated-commission').value = '';
+            document.getElementById('edit-payment').value = '';
+            document.getElementById('single-record-form').classList.remove('hidden');
+        }
+
+        function editRentalRecordSlot(index) {
+            const r = currentEditingRentalsArray[index];
+            document.getElementById('form-slot-title').innerText = `Edit Rental Record #${index + 1}`;
+            document.getElementById('edit-record-index').value = index;
+            document.getElementById('edit-notes').value = r.notes || '';
+            document.getElementById('edit-serial').value = r.serials || '';
+            document.getElementById('edit-startdate').value = r.startDate || '';
+            document.getElementById('edit-duedate').value = r.dueDate || '';
+            document.getElementById('edit-return-complete').value = (r.returnCompleted === true || r.returnCompleted === 'true') ? 'true' : 'false';
+            document.getElementById('edit-customer-payment').value = r.customerPayment || 0;
+            document.getElementById('edit-commission-pct').value = r.commissionPct || 9.09;
+            document.getElementById('edit-calculated-commission').value = r.nfdFee || 0;
+            document.getElementById('edit-payment').value = r.income || 0;
+            document.getElementById('single-record-form').classList.remove('hidden');
+        }
+
+        function cancelRecordSlotEdit() {
+            document.getElementById('single-record-form').classList.add('hidden');
+            document.getElementById('edit-record-index').value = -1;
+        }
+
+        function deleteRentalRecordSlot(index) {
+            if (currentEditingRentalsArray.length <= 1) {
+                alert('Partner must have at least one rental record.');
+                return;
+            }
+            if (confirm('Are you sure you want to delete this rental record?')) {
+                currentEditingRentalsArray.splice(index, 1);
+                renderEditingRentalsList();
+                cancelRecordSlotEdit();
+            }
         }
 
         function calculateNetPayoutFromCommission() {
@@ -826,33 +1003,74 @@
             document.getElementById('edit-payment').value = netPayout;
         }
 
-        function closeEditModal() {
-            document.getElementById('edit-modal').classList.add('hidden');
+        function saveCurrentRecordSlot() {
+            const index = parseInt(document.getElementById('edit-record-index').value);
+            const notes = document.getElementById('edit-notes').value.trim();
+            const serials = document.getElementById('edit-serial').value.trim();
+            const startDate = document.getElementById('edit-startdate').value;
+            const dueDate = document.getElementById('edit-duedate').value;
+            const returnCompleted = document.getElementById('edit-return-complete').value === 'true';
+            const customerPayment = parseFloat(document.getElementById('edit-customer-payment').value) || 0;
+            const commissionPct = parseFloat(document.getElementById('edit-commission-pct').value) || 9.09;
+            const nfdFee = parseFloat(document.getElementById('edit-calculated-commission').value) || 0;
+            const income = parseFloat(document.getElementById('edit-payment').value) || 0;
+
+            const recordObj = { notes, serials, startDate, dueDate, returnCompleted, customerPayment, commissionPct, nfdFee, income };
+
+            if (index === -1) {
+                currentEditingRentalsArray.push(recordObj);
+            } else {
+                currentEditingRentalsArray[index] = recordObj;
+            }
+
+            renderEditingRentalsList();
+            cancelRecordSlotEdit();
         }
 
-        async function saveRentalEdit(e) {
-            e.preventDefault();
-            const id = document.getElementById('edit-partner-id').value;
-            const rental_start_date = document.getElementById('edit-startdate').value;
-            const due_date = document.getElementById('edit-duedate').value;
-            const customer_payment = parseFloat(document.getElementById('edit-customer-payment').value) || 0;
-            const commission_pct = parseFloat(document.getElementById('edit-commission-pct').value) || 9.09;
-            const nfd_fee = parseFloat(document.getElementById('edit-calculated-commission').value) || 0;
-            const income = parseFloat(document.getElementById('edit-payment').value) || 0;
-            const rental_notes = document.getElementById('edit-notes').value;
-            const serial_codes = document.getElementById('edit-serial').value;
+        async function saveAllPartnerRentals() {
+            if (!currentEditingPartnerId) return;
+
+            let totalIncome = 0;
+            let totalCustomerPayment = 0;
+            let totalNfdFee = 0;
+            let latestStartDate = null;
+            let latestDueDate = null;
+            let latestReturnCompleted = false;
+
+            currentEditingRentalsArray.forEach(r => {
+                totalIncome += (parseFloat(r.income) || 0);
+                totalCustomerPayment += (parseFloat(r.customerPayment) || 0);
+                totalNfdFee += (parseFloat(r.nfdFee) || 0);
+                latestStartDate = r.startDate || latestStartDate;
+                latestDueDate = r.dueDate || latestDueDate;
+                latestReturnCompleted = r.returnCompleted;
+            });
+
+            const rental_notes_json = JSON.stringify(currentEditingRentalsArray);
 
             const { error } = await supabaseClient
                 .from('profiles')
-                .update({ rental_start_date, due_date, customer_payment, commission_pct, nfd_fee, income, rental_notes, serial_codes })
-                .eq('id', id);
+                .update({ 
+                    rental_notes: rental_notes_json,
+                    income: totalIncome,
+                    customer_payment: totalCustomerPayment,
+                    nfd_fee: totalNfdFee,
+                    rental_start_date: latestStartDate,
+                    due_date: latestDueDate,
+                    return_completed: latestReturnCompleted
+                })
+                .eq('id', currentEditingPartnerId);
 
             if (!error) {
                 closeEditModal();
                 loadAdminSellers();
             } else {
-                alert('Error saving record: ' + error.message);
+                alert('Error saving rental records: ' + error.message);
             }
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
         }
 
         function downloadPartnerAgreementPDF() {
