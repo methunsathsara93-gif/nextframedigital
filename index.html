@@ -1,1079 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Next Frame Digital</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-    document.addEventListener("mousemove", e=>{
-        const glow = document.getElementById("cursor-glow");
-        if(glow) {
-            glow.style.left = e.clientX + "px";
-            glow.style.top = e.clientY + "px";
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Frame Digital | Something Big is Coming</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-    });
 
-    (function(){
-        emailjs.init("esQFLOliVZrSQ_TNK");
-    })();
-</script>
+        body {
+            background-color: #08090c;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{
-    background: #0a0a0a;
-    color:#fff;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-}
+        /* Ambient Glowing Background Orbs */
+        .glow-1, .glow-2 {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.35;
+            z-index: 0;
+            animation: pulse 8s ease-in-out infinite alternate;
+        }
 
-/* 🪐 SCROLLBAR ANIMATION */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-pipe { background: #111; }
-::-webkit-scrollbar-thumb { background: #ff4d00; border-radius: 10px; }
+        .glow-1 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #ff4d4d, #f9cb28);
+            top: 10%;
+            left: 15%;
+        }
 
-/* 🛸 CURSOR GLOW */
-#cursor-glow{
-    position:fixed;
-    width:250px;
-    height:250px;
-    background:radial-gradient(circle, rgba(255,77,0,0.2) 0%, transparent 70%);
-    pointer-events:none;
-    transform:translate(-50%,-50%);
-    z-index:9999;
-}
+        .glow-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #6c5ce7, #00cec9);
+            bottom: 10%;
+            right: 15%;
+            animation-delay: 3s;
+        }
 
-/* 🎥 ANIMATED LIGHT BACKGROUND */
-body::before{
-    content:"";
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background: radial-gradient(circle at 20% 30%, rgba(255,77,0,0.12), transparent 45%),
-                radial-gradient(circle at 80% 70%, rgba(255,77,0,0.08), transparent 45%);
-    animation: moveLights 12s infinite alternate ease-in-out;
-    z-index:-2;
-}
+        @keyframes pulse {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.15) translate(20px, -20px); }
+        }
 
-@keyframes moveLights{
-    0%{ transform:translate(0,0) scale(1); }
-    100%{ transform:translate(-30px, 30px) scale(1.1); }
-}
+        /* Main Glass Card */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            width: 100%;
+            background: rgba(18, 20, 26, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 50px 35px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1.2s ease-out;
+        }
 
-body::after{
-    content:"";
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:url('https://www.transparenttextures.com/patterns/asfalt-light.png');
-    opacity:0.04;
-    pointer-events:none;
-    z-index: -1;
-}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-/* 🌟 PREMIUM NAVIGATION BAR */
-nav{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px 40px;
-    position:fixed;
-    width:100%;
-    background:rgba(0,0,0,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,77,0,0.1);
-    z-index:1000;
-    transition: 0.4s;
-}
-nav img{height:42px; transition: 0.3s;}
-nav img:hover{ transform: scale(1.05); }
-nav ul{display:flex;gap:25px;list-style:none;align-items:center;}
-nav li{cursor:pointer; font-size: 14px; font-weight: 500; color: #aaa; transition: 0.3s; position: relative;}
-nav li:hover{color:#ff4d00;}
-nav li::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -5px;
-    left: 0;
-    background-color: #ff4d00;
-    transition: width 0.3s ease;
-}
-nav li:hover::after { width: 100%; }
+        /* Brand Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #d1d5db;
+            margin-bottom: 25px;
+        }
 
-/* --- 🔑 CLIENT PORTAL HEADER UI ADDITIONS --- */
-.client-portal-wrapper {
-    position: relative;
-    display: inline-block;
-}
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff88;
+            animation: blink 2s infinite;
+        }
 
-.nav-portal-btn {
-    background: transparent;
-    border: 1px solid rgba(255, 77, 0, 0.5);
-    color: #ffffff;
-    padding: 8px 18px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
 
-.nav-portal-btn:hover {
-    background: #ff4d00;
-    border-color: #ff4d00;
-    box-shadow: 0 0 15px rgba(255, 77, 0, 0.4);
-}
+        /* Brand Title */
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ffffff 30%, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.profile-dropdown-container {
-    position: relative;
-}
+        .highlight {
+            background: linear-gradient(135deg, #ff6b6b, #ffbe76);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.profile-trigger {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 30px;
-    transition: background 0.3s ease;
-}
+        /* Description */
+        p {
+            font-size: 1.05rem;
+            color: #9ca3af;
+            line-height: 1.7;
+            margin-bottom: 35px;
+            font-weight: 300;
+        }
 
-#nav-user-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: #ffffff;
-}
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
 
-.avatar-circle {
-    width: 35px;
-    height: 35px;
-    background: rgba(255, 77, 0, 0.1);
-    border: 1px solid rgba(255, 77, 0, 0.3);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ff4d00;
-    transition: all 0.3s ease;
-}
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
 
-.profile-trigger:hover .avatar-circle {
-    background: #ff4d00;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(255, 77, 0, 0.5);
-}
+        .btn-primary {
+            background: #ffffff;
+            color: #08090c;
+        }
 
-.profile-dropdown-menu {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 45px;
-    background: rgba(15, 15, 15, 0.95);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    width: 180px;
-    padding: 8px 0;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    z-index: 1000;
-    animation: fadeInDropdown 0.2s ease-out;
-}
+        .btn-primary:hover {
+            background: #e4e4e7;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.15);
+        }
 
-.profile-dropdown-menu.show {
-    display: block;
-}
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.04);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
 
-.profile-dropdown-menu a, 
-.profile-dropdown-menu button {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 10px 16px;
-    font-size: 13px;
-    color: #cccccc;
-    text-decoration: none;
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s ease;
-}
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.09);
+            transform: translateY(-2px);
+        }
 
-.profile-dropdown-menu a:hover, 
-.profile-dropdown-menu button:hover {
-    background: rgba(255, 77, 0, 0.1);
-    color: #ff4d00;
-}
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #52525b;
+            letter-spacing: 0.5px;
+        }
 
-.dropdown-divider {
-    border: 0;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.05);
-    margin: 6px 0;
-}
-
-@keyframes fadeInDropdown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* 🔥 HERO SECTION */
-.hero{
-    height:100vh;
-    background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.95)), url('backround1.jpg') center/cover;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding: 0 20px;
-}
-.hero h1{
-    font-size:65px; 
-    font-weight: 700; 
-    letter-spacing: -1px; 
-    animation: fadeInDown 1s ease;
-}
-.hero h1 span{color:#ff4d00; text-shadow: 0 0 30px rgba(255,77,0,0.5);}
-.hero p{
-    font-size: 18px; 
-    color: #ccc; 
-    margin-top: 10px; 
-    letter-spacing: 2px;
-    animation: fadeInUp 1.2s ease;
-}
-
-/* ⚡ PREMIUM BUTTON INTERACTIVES */
-.btn{
-    padding:14px 32px;
-    background:#ff4d00;
-    border:none;
-    color:#fff;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor:pointer;
-    margin-top:25px;
-    position:relative;
-    overflow:hidden;
-    z-index:1;
-    box-shadow:0 0 10px rgba(255,77,0,0.3);
-    transition: all 0.4s ease;
-}
-.btn::before{
-    content:"";
-    position:absolute;
-    top:0;
-    left:-100%;
-    width:100%;
-    height:100%;
-    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition:0.5s;
-}
-.btn:hover::before{ left:100%; }
-.btn:hover{
-    box-shadow:0 0 20px #ff4d00, 0 0 40px rgba(255,77,0,0.5);
-    transform:translateY(-3px) scale(1.03);
-}
-.btn:active{ transform: scale(0.97); }
-
-/* 🛠️ SERVICES & PRODUCTION SECTIONS */
-section{padding:100px 40px; max-width: 1200px; margin: auto;}
-h2{
-    text-align:center;
-    margin-bottom:50px;
-    font-size: 36px;
-    font-weight: 700;
-    position: relative;
-}
-h2::after{
-    content: '';
-    position: absolute;
-    width: 60px;
-    height: 3px;
-    background: #ff4d00;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;}
-
-/* 💎 CARDS GLOW DESIGN */
-.card{
-    background:#111;
-    padding:35px 25px;
-    border-radius:14px;
-    border: 1px solid #1a1a1a;
-    transition:all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    cursor:pointer;
-    text-align:center;
-}
-.card h3 { font-size: 20px; margin-bottom: 8px; transition: 0.3s; }
-.card p { color: #666; font-size: 13px; transition: 0.3s; }
-.card:hover{
-    transform:translateY(-10px);
-    border-color: #ff4d00;
-    box-shadow: 0 15px 30px rgba(255,77,0,0.15);
-}
-.card:hover h3 { color: #ff4d00; }
-.card:hover p { color: #aaa; }
-
-/* 🎬 PORTFOLIO GALLERY BUTTON */
-.gallery-btn{
-    background:linear-gradient(45deg,#ff4d00,#ff8800);
-    color:white;
-    border:none;
-    padding:15px 35px;
-    font-size:16px;
-    font-weight:600;
-    border-radius:50px;
-    cursor:pointer;
-    position:relative;
-    overflow:hidden;
-    transition:0.4s;
-    box-shadow:0 0 15px rgba(255,77,0,0.4);
-    animation:pulse 2s infinite;
-}
-.gallery-btn::before{
-    content:"";
-    position:absolute;
-    top:0;
-    left:-100%;
-    width:100%;
-    height:100%;
-    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
-    transition:0.6s;
-}
-.gallery-btn:hover::before{ left:100%; }
-.gallery-btn:hover{
-    transform:translateY(-5px) scale(1.05);
-    box-shadow: 0 0 20px #ff4d00, 0 0 40px rgba(255,77,0,0.6);
-}
-@keyframes pulse{
-    0%, 100%{ box-shadow:0 0 15px rgba(255,77,0,0.4); }
-    50%{ box-shadow:0 0 30px rgba(255,77,0,0.8); }
-}
-
-.portfolio img{width:100%; border-radius:12px; transition:0.5s ease; border: 1px solid #1a1a1a;}
-.portfolio img:hover{transform:scale(1.04); border-color:#ff4d00; box-shadow: 0 10px 25px rgba(0,0,0,0.5);}
-
-/* 🤝 BEST CLIENTS MATRICES */
-.client{
-    text-align:center;
-    background:#111;
-    padding:30px 20px;
-    border-radius:14px;
-    border: 1px solid #161616;
-    transition:0.4s;
-}
-.client img{
-    width:90px;
-    height:90px;
-    object-fit:contain;
-    margin-bottom:15px;
-    filter:grayscale(100%);
-    opacity: 0.6;
-    transition:0.4s ease;
-}
-.client p{ color:#888; font-size:13px; font-weight:500; transition: 0.3s; }
-.client:hover { border-color: #ff4d00; background: #141414; }
-.client:hover img{ filter:grayscale(0%); opacity: 1; transform:scale(1.08); }
-.client:hover p { color: #fff; }
-
-/* 👥 DYNAMIC CREW MEMBERS */
-.member{text-align:center; background: #111; padding: 20px; border-radius: 14px; border: 1px solid #161616; transition: 0.3s;}
-.member img{width:100%; border-radius:10px; transition: 0.4s;}
-.member h3 { font-size: 16px; margin-top: 15px; }
-.member p{color:#ff4d00; font-size:12px; margin-top: 4px; font-weight: 500;}
-.member:hover { border-color: #222; transform: translateY(-5px); }
-.member:hover img { transform: scale(1.02); }
-
-/* ✍️ DYNAMIC BOOKING & CONTACT ENGINE */
-.contact-form, #booking-form{
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-    max-width:500px;
-    margin:40px auto;
-    background: #111;
-    padding: 35px;
-    border-radius: 16px;
-    border: 1px solid #1a1a1a;
-}
-.contact-form input, .contact-form textarea, #booking-form input, #booking-form textarea, #booking-form select{
-    padding:14px;
-    border:1px solid #222;
-    border-radius:8px;
-    background:#050505;
-    color:#fff;
-    outline: none;
-    font-size: 14px;
-    transition: 0.3s;
-}
-.contact-form input:focus, .contact-form textarea:focus, #booking-form input:focus, #booking-form textarea:focus, #booking-form select:focus {
-    border-color: #ff4d00;
-}
-.contact-form textarea, #booking-form textarea{height:110px; resize:none;}
-
-/* 👑 PRO BOOKING BUTTON */
-.pro-btn{
-    position:relative;
-    padding:14px 30px;
-    border:none;
-    border-radius:8px;
-    background:linear-gradient(45deg,#ff4d00,#ff8800);
-    color:#fff;
-    font-size:15px;
-    font-weight: 600;
-    cursor:pointer;
-    overflow:hidden;
-    transition:0.3s;
-    box-shadow:0 0 15px rgba(255,77,0,0.4);
-}
-.pro-btn span{ position:relative; z-index:2; }
-.pro-btn::before{
-    content:'';
-    position:absolute;
-    top:0;
-    left:-100%;
-    width:100%;
-    height:100%;
-    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
-    transition:0.5s;
-}
-.pro-btn:hover::before{ left:100%; }
-.pro-btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 0 25px rgba(255,77,0,0.8);
-}
-.pro-btn:active{ transform:scale(0.97); }
-
-/* 🛠️ NEW EXECUTIVE AI FLOATING PANEL STYLES */
-.ai-agent-container {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 12px;
-    z-index: 10000;
-}
-.ai-popup-msg {
-    background: rgba(18, 18, 24, 0.9);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 77, 0, 0.2);
-    padding: 12px 16px;
-    border-radius: 14px;
-    max-width: 240px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    display: none;
-    position: relative;
-    animation: slideInBot 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-@keyframes slideInBot {
-    from { opacity: 0; transform: translateY(15px) scale(0.9); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-.ai-popup-msg p { font-size: 13px; color: #e5e7eb; line-height: 1.4; padding-right: 15px; cursor: pointer; }
-.ai-popup-msg span { color: #ff4d00; font-weight: 600; }
-.ai-popup-close {
-    position: absolute; top: 6px; right: 10px;
-    font-size: 12px; color: #555; cursor: pointer; transition: 0.3s;
-}
-.ai-popup-close:hover { color: #ff4d00; }
-
-.ai-floating-btn {
-    width: 60px; height: 60px;
-    background: linear-gradient(135deg, #ff4d00, #ff7733);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 24px; text-decoration: none;
-    box-shadow: 0 8px 25px rgba(255, 77, 0, 0.4);
-    cursor: pointer; position: relative;
-    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    animation: pulseBotGlow 2s infinite;
-}
-.ai-floating-btn:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 12px 30px rgba(255, 77, 0, 0.6);
-}
-.ai-floating-btn::after {
-    content: ''; position: absolute; top: 2px; right: 2px;
-    width: 12px; height: 12px; background: #00ff88;
-    border: 2px solid #060608; border-radius: 50%;
-    box-shadow: 0 0 8px #00ff88;
-}
-@keyframes pulseBotGlow {
-    0% { box-shadow: 0 0 0 0 rgba(255, 77, 0, 0.5); }
-    70% { box-shadow: 0 0 0 15px rgba(255, 77, 0, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 77, 0, 0); }
-}
-
-/* 🎓 FRAME MASTERS SECTION */
-.community-btn{
-    background:linear-gradient(45deg,#ff4d00,#ff8800);
-    color:white;
-    border:none;
-    padding:15px 35px;
-    font-size:15px;
-    font-weight:600;
-    border-radius:50px;
-    cursor:pointer;
-    position:relative;
-    overflow:hidden;
-    transition:0.4s;
-    box-shadow:0 0 15px rgba(255,77,0,0.4);
-}
-.community-btn::before{
-    content:""; position:absolute; top:0; left:-100%; width:100%; height:100%;
-    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent); transition:0.6s;
-}
-.community-btn:hover::before{ left:100%; }
-.community-btn:hover{
-    transform:scale(1.05);
-    box-shadow:0 0 25px #ff4d00, 0 0 50px rgba(255,77,0,0.5);
-}
-
-#subscribe{ text-align:center; padding:60px 20px; border-top: 1px solid #111; }
-#subscribe input{ width:100%; padding:14px; margin:12px 0; border:1px solid #222; border-radius:8px; background:#050505; color:white; outline: none;}
-#subscribe input:focus { border-color: #ff4d00; }
-
-.contact p{margin:12px 0; color:#aaa; font-size: 15px; text-align: center;}
-.contact p i { color: #ff4d00; margin-right: 8px; }
-
-footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px solid #111; font-size: 13px; color: #555;}
-
-/* 🚀 INTERSECTION OBSERVER REVEAL ANIMATIONS */
-.hidden{ opacity:0; transform:translateY(50px); transition: all 1s cubic-bezier(0.165, 0.84, 0.44, 1); }
-.show{ opacity:1; transform:translateY(0); }
-
-/* 📱 FLOATING CONTROLS */
-.floating-buttons{position:fixed;bottom:165px;right:29px;display:flex;flex-direction:column;gap:12px;z-index:999;}
-.floating-buttons a{width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:22px;text-decoration:none;color:#fff;box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s;}
-.floating-buttons a:hover { transform: scale(1.1) translateY(-3px); }
-.whatsapp{background:#25D366;}
-.call{background:#ff4d00;}
-
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-</style>
+        @media (max-width: 600px) {
+            h1 { font-size: 2.1rem; }
+            .container { padding: 40px 20px; }
+        }
+    </style>
 </head>
-
 <body>
-<div id="cursor-glow"></div>
 
-<nav>
-<img src="logo.png" alt="Next Frame Logo">
-<ul>
-<li onclick="scrollToSection('home')">Home</li>
-<li onclick="scrollToSection('services')">Services</li>
-<li onclick="scrollToSection('portfolio')">Works</li>
-<li onclick="scrollToSection('clients')">Clients</li>
-<li onclick="scrollToSection('team')">Team</li>
-<li onclick="scrollToSection('reviews')">Reviews</li>
-<li onclick="scrollToSection('booking')">Booking</li>
-<li onclick="window.location.href='community.html'">Community</li>
-<li onclick="scrollToSection('contact')">Contact</li>
-<a href="rent.html" style="text-decoration: none; display: inline-block;">
-    <button style="background: #111111; color: #ffffff; border: 1px solid #222222; padding: 12px 24px; font-weight: 500; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.4);" onmouseover="this.style.borderColor='#ff4d00'; this.style.color='#ff4d00'; this.style.boxShadow='0 0 15px rgba(255, 77, 0, 0.3)';" onmouseout="this.style.borderColor='#222222'; this.style.color='#ffffff'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.4)';">
-        <i class="fa-solid fa-clapperboard" style="color: #ff4d00;"></i> Explore Gear & Rent
-    </button>
-</a>
+    <!-- Ambient Lighting Effects -->
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
 
-<!-- 🔑 NEW EMBEDDED CLIENT PORTAL / PROFILE SYSTEM -->
-<div class="client-portal-wrapper">
-    <a href="login.html" id="nav-login-btn" class="nav-portal-btn">Client Portal</a>
-    <div id="nav-profile-container" class="profile-dropdown-container" style="display: none;">
-        <div class="profile-trigger" id="profile-trigger">
-            <span id="nav-user-name">Client</span>
-            <div class="avatar-circle">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-            </div>
+    <!-- Main Coming Soon Card -->
+    <div class="container">
+        <div class="badge">
+            <span class="badge-dot"></span> Under Scheduled Upgrade
         </div>
-        <div class="profile-dropdown-menu" id="profile-menu">
-            <a href="download.html">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                    <polyline points="21 15 16 10 5 21"></polyline>
-                </svg> 
-                My Gallery
-            </a>
-            <hr class="dropdown-divider">
-            <button id="nav-logout-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px;">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg> 
-                Logout
-            </button>
-        </div>
-    </div>
-</div>
-</ul>
-</nav>
 
-<section id="home" class="hero">
-<h1>Next <span>Frame</span> Digital</h1>
-<p>We Capture Stories, Not Just Moments</p>
-<button class="btn" onclick="scrollToSection('services')">Explore Work</button>
-</section>
-
-<section id="services">
-<h2>Our Services</h2>
-<div class="grid">
-<div class="card hidden" onclick="openPage('photography.html')"><h3>Photography</h3><p>Click to view production details</p></div>
-<div class="card hidden" onclick="openPage('videography.html')"><h3>Videography</h3><p>Click to view production details</p></div>
-<div class="card hidden" onclick="openPage('drone.html')"><h3>Drone Shoots</h3><p>Click to view production details</p></div>
-<div class="card hidden" onclick="openPage('event.html')"><h3>Event Coverage</h3><p>Click to view production details</p></div>
-<div class="card hidden" onclick="openPage('social.html')"><h3>Social Media Management</h3><p>Click to view production details</p></div>
-<div class="card hidden" onclick="openPage('ads.html')"><h3>Advertising</h3><p>Click to view production details</p></div>
-<div class="card hidden" onclick="openPage('film.html')"><h3>Film Production</h3><p>Click to view production details</p></div>
-</div>
-</section>
-
-<section id="portfolio">
-<h2>Our Works</h2>
-<div style="text-align:center; margin-bottom:40px;">
-    <button class="gallery-btn" onclick="window.location.href='gallery.html'">
-        🎬 View Full Cinematic Portfolio
-    </button>
-</div>
-<div class="grid portfolio">
-
-</div>
-</section>
-<!-- Rent Gear Banner Section (Place this right ABOVE your "Our Works" section) -->
-<section style="background: linear-gradient(180deg, #0a0a0a 0%, #111111 100%); padding: 60px 20px; text-align: center; border-bottom: 1px solid rgba(255, 77, 0, 0.15); font-family: 'Poppins', sans-serif;">
-    <div style="max-width: 900px; margin: 0 auto;">
+        <h1>NEXT FRAME <span class="highlight">DIGITAL</span></h1>
         
-        <!-- Small Subtitle -->
-        <span style="color: #ff4d00; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; display: inline-block; margin-bottom: 10px;">
-            Professional Equipment Rental
-        </span>
-        
-        <!-- Main Heading -->
-        <h2 style="color: #ffffff; font-size: 32px; font-weight: 700; margin-bottom: 15px; letter-spacing: -0.5px; border: none;">
-            Looking for High-End Cameras & Gear for Your Next Shoot?
-        </h2>
-        
-        <!-- Description Statement -->
-        <p style="color: #aaa; font-size: 15px; line-height: 1.6; max-width: 700px; margin: 0 auto 25px auto;">
-            Next Frame Digital වෙතින් ඔබට අවශ්‍ය සියලුම කැමරා, කාච, ගිම්බල් සහ ආලෝකකරණ උපකරණ (Lighting & Audio Gear) පහසු කොන්දේසි යටතේ රෙන්ට් කරගන්න පුළුවන්. 🎬✨
-        </p>
-        
-        <!-- Action Button (Using your Pro Button style) -->
-        <div>
-            <a href="rent.html" style="text-decoration: none; display: inline-block;">
-                <button class="pro-btn" style="padding: 14px 32px; font-size: 15px; display: inline-flex; align-items: center; gap: 10px;">
-                    <span><i class="fa-solid fa-camera-retro"></i> Explore Gear & Rent Now</span>
-                </button>
-            </a>
-        </div>
-        
-    </div>
-</section>
-<section id="clients">
-<h2>Our Best Clients</h2>
-<div class="grid">
-<div class="client hidden">
-<img src="client1.png" alt="Client 1">
-<p>ET ARACHCHI (TUTOR IN SIPWIN KURUNEGALA)</p>
-</div>
-<div class="client hidden">
-<img src="client2.png" alt="Client 2">
-<p>MITHILA FDO (DULMIN CONSTRUCTION)</p>
-</div>
-<div class="client hidden">
-<img src="client3.png" alt="Client 3">
-<p>AKEN KETHAKA (KALAMBARA CHANNEL)</p>
-</div>
-<div class="grid">
-<div class="client hidden">
-<img src="client4.png" alt="Client 4">
-<p>SFT RANE (TUTOR IN SIMAS KURUNEGALA)</p>
-</div>
-<div class="grid">
-<div class="client hidden">
-<img src="client5.png" alt="Client 4">
-<p>SANKA BHAWANA (DANCE SCHOOL CHILAW)</p>
-</div>
-</div>
-</section>
-
-<section id="team">
-<h2>Our Team</h2>
-<div class="grid">
-<div class="member hidden"><img src="team1.jpg"><h3>METHUN SATHSARA (FOUNDER & CEO)</h3><p>Creative Director & Filmmaker</p></div>
-<div class="member hidden"><img src="team2.jpg"><h3>VENURA SAPUMAL (CO.CEO)</h3><p>Photographer & Videographer</p></div>
-<div class="member hidden"><img src="team3.jpg"><h3>SANUJA SAVITHMA</h3><p>Photographer & Lighting Assistant</p></div>
-<div class="member hidden"><img src="team4.jpg"><h3>LOVINDU ERANDITH</h3><p>Photographer & Videographer</p></div>
-<div class="member hidden"><img src="team5.jpg"><h3>KAVINDU GEETHANJANA</h3><p>Graphic Designer</p></div>
-</div>
-</section>
-
-<section id="reviews" style="text-align: center;">
-  <h2>Client Reviews</h2>
-  <p style="color:#888; margin-bottom: 20px;">See what our clients say about our visual deliverables.</p>
-  <div style="display: flex; justify-content: center; width: 100%;">
-    <button onclick="window.location.href='reviews.html'" class="btn">
-      View & Write Reviews
-    </button>
-  </div>
-</section>
-
-<section id="booking">
-<h2>Book a Service</h2>
-<form id="booking-form">
-<input type="text" id="name" placeholder="Your Name" required>
-<input type="email" id="email" placeholder="Your Email" required>
-<input type="tel" id="phone" placeholder="Phone Number" required>
-<select id="service" required>
-<option value="">Select Target Service</option>
-<option>Photography</option>
-<option>Videography</option>
-<option>Drone Shoots</option>
-<option>Event Coverage</option>
-<option>Social Media Management</option>
-<option>Advertising</option>
-<option>Film Production</option>
-</select>
-<input type="date" id="date" required>
-<textarea id="message" placeholder="Details (Location, Set Requirements, Event Overview, etc.)"></textarea>
-<button type="submit" class="pro-btn">
-<span>Book Now</span>
-</button>
-</form>
-</section>
-
-<section style="text-align:center;padding:80px 20px;background:#0f0f0f; border-top: 1px solid #111; border-bottom: 1px solid #111;">
-    <h2 style="color:#ff4d00;font-size:32px;margin-bottom:10px; border:none;">🎓 Frame Masters Community</h2>
-    <p style="color:#ccc;max-width:700px;margin:auto;line-height:1.6; font-size: 14px;">
-        Learn photography, videography, drone skills, editing techniques and share your knowledge with others.
-        Join our growing creative community and level up your skills 🚀📸🎥
-    </p>
-    <br>
-    <button onclick="window.location.href='community.html'" class="community-btn">
-        Enter Community Portal
-    </button>
-</section>
-
-<section id="contact" class="contact">
-<h2>Contact Us</h2>
-<h3 style="text-align:center; font-weight: 500; font-size: 18px; margin-bottom: 10px; color:#ff4d00;">Send Us a Message</h3>
-<form class="contact-form" onsubmit="sendMessage(event)">
-<input type="text" placeholder="Your Name" required>
-<input type="email" placeholder="Your Email" required>
-<textarea placeholder="Your Message Content..." required></textarea>
-<button type="submit" class="btn">Send Message via WhatsApp</button>
-</form>
-
-<div style="margin: 30px auto; max-width: 400px; background: #111; padding: 20px; border-radius: 12px; border: 1px solid #1a1a1a;">
-    <p><i class="fa-solid fa-envelope"></i> contactnextframedigital@gmail.com</p>
-    <p><i class="fa-solid fa-phone"></i> +94705131882</p>
-    <p><i class="fa-solid fa-location-dot"></i> Sri Lanka</p>
-</div>
-
-<p style="font-weight: 600; margin-bottom: 15px;">Follow Our Production Feed</p>
-<div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
-<button onclick="openWhatsApp()" class="btn" style="background:#25D366; box-shadow:none;"><i class="fa-brands fa-whatsapp"></i> WhatsApp Us</button>
-<button onclick="openInstagram()" class="btn" style="background:#E1306C; box-shadow:none;"><i class="fa-brands fa-instagram"></i> Instagram</button>
-<button onclick="openFacebook()" class="btn" style="background:#1877F2; box-shadow:none;"><i class="fa-brands fa-facebook"></i> Facebook</button>
-<button onclick="openTiktok()" class="btn" style="background:#000000; border: 1px solid #333; box-shadow:none;"><i class="fa-brands fa-tiktok"></i> Tiktok</button>
-</div>
-</section>
-
-<footer>
-<section id="subscribe">
-<h2>Join Our Newsletter</h2>
-<p style="max-width:700px;margin:15px auto;color:#aaa;line-height:1.8; font-size:14px;">
-Stay Connected With Next Frame Digital. Join our community to receive exclusive offers, project updates, filmmaking insights, photography tips, and early access to our latest services. 🚀📸🎬
-</p>
-<form id="subscribeForm" style="max-width:500px;margin:auto;">
-<input type="text" id="subName" placeholder="Your Name" required>
-<input type="email" id="subEmail" placeholder="Your Email" required>
-<button type="submit" class="pro-btn" style="width:100%; margin-top: 10px;">
-<span>Subscribe Now</span>
-</button>
-</form>
-<p id="subscribeMsg" style="text-align:center;margin-top:15px; font-weight: 600; font-size: 14px;"></p>
-</section>
-
-</footer>
-
-<div class="floating-buttons">
-<a href="https://wa.me/94705131882" target="_blank" class="whatsapp" title="WhatsApp Chat"><i class="fa-brands fa-whatsapp"></i></a>
-<a href="tel:+94705131882" class="call" title="Call Us Direct"><i class="fa-solid fa-phone"></i></a>
-</div>
-
-<div class="ai-agent-container">
-    <div class="ai-popup-msg" id="aiPopup">
-        <div class="ai-popup-close" onclick="closeAiPopup(event)"><i class="fa-solid fa-xmark"></i></div>
-        <p onclick="window.location.href='bot.html'">Hi! Need help? Chat with <span>Next Frame AI</span>. Ask me anything! 🚀</p>
-    </div>
-    <a href="bot.html" class="ai-floating-btn" title="Chat with Next Frame AI">
-        <i class="fa-solid fa-cube"></i>
-    </a>
-</div>
-
-<script>
-// AI AGENT AUTO POP-UP ENGINE
-document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => {
-        const popup = document.getElementById("aiPopup");
-        if(popup) popup.style.display = "block";
-    }, 3000); // සයිට් එකට ඇවිත් තත්පර 3කින් මැසේජ් එක පෙන්නනවා
-});
-
-function closeAiPopup(e) {
-    e.stopPropagation(); // බටන් එක ක්ලික් කරද්දී bot.html එකට යන එක වලක්වනවා
-    document.getElementById("aiPopup").style.display = "none";
-}
-
-// BOOKING CORE ENGINE WITH DUAL EMAILJS TRANSFERS
-document.getElementById("booking-form").addEventListener("submit", function(e){
-    e.preventDefault();
-
-    const formData = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        phone: document.getElementById("phone").value,
-        service: document.getElementById("service").value,
-        date: document.getElementById("date").value,
-        message: document.getElementById("message").value
-    };
-
-    emailjs.send("service_k8vuk9i", "template_9o537ag", formData)
-    .then(function(response){
-        console.log("Admin email delivered:", response);
-
-        emailjs.send("service_k8vuk9i", "template_7g1gmpa", formData)
-        .then(function(res){
-            alert("Booking sent successfully! ✅ Client confirmation sent!");
-            document.getElementById("booking-form").reset();
-        })
-        .catch(function(err){
-            alert("Booking sent but failed to send confirmation to client ❌");
-            console.log(err);
-        });
-
-    }, function(error){
-        alert("Error sending booking! ❌");
-        console.log(error);
-    });
-});
-
-// INSTANT WHATSAPP ROUTING
-function sendMessage(e){
-    e.preventDefault();
-    let name = document.querySelector(".contact-form input[type=text]").value;
-    let email = document.querySelector(".contact-form input[type=email]").value;
-    let message = document.querySelector(".contact-form textarea").value;
-    let fullMessage = `Name: ${name}%0AEmail: ${email}%0AMessage: ${message}`;
-    window.open(`https://wa.me/94705131882?text=${fullMessage}`, "_blank");
-}
-
-function scrollToSection(id){
-    const target = document.getElementById(id);
-    if(target) {
-        target.scrollIntoView({behavior:'smooth'});
-    }
-}
-
-function openPage(url){ window.location.href = url; }
-
-// INTERSECTION INTERACTION ENGINE
-const observer = new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-        if(entry.isIntersecting){ entry.target.classList.add('show'); }
-    });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.hidden').forEach(el=>observer.observe(el));
-
-function openWhatsApp(){ window.open("https://wa.me/94705131882", "_blank"); }
-function openInstagram(){ window.open("https://www.instagram.com/nextframedigitallk", "_blank"); }
-function openFacebook(){ window.open("https://www.facebook.com/share/194MP5wtjQ/", "_blank"); }
-function openTiktok(){ window.open("https://www.tiktok.com/@next.frame.digita?_r=1&_t=ZS-95L4ZpTt0VR", "_blank"); }
-</script>
-
-<script>
-// --- 🔑 PORTAL SECURITY & PROFILE ENGINE ---
-document.addEventListener("DOMContentLoaded", () => {
-    const supabaseUrl = "https://xuxdkjeypwrhccgthepn.supabase.co";
-    const supabaseKey = "sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI";
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-    // Newsletter Submission Module (ඔයාගේ කලින් කේතය)
-    const form = document.getElementById("subscribeForm");
-    if(form) {
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const name = document.getElementById("subName").value.trim();
-            const email = document.getElementById("subEmail").value.trim();
-            const msgBox = document.getElementById("subscribeMsg");
-
-            msgBox.style.color = "#ff4d00";
-            msgBox.innerHTML = "Submitting secure payload...";
-
-            const { data, error } = await supabase
-                .from("subscribers")
-                .insert([{ name: name, email: email }]);
-
-            if(error){
-                console.error(error);
-                msgBox.style.color = "#dc3545";
-                msgBox.innerHTML = "❌ Error: " + error.message;
-                return;
-            }
-
-            msgBox.style.color = "#00ff88";
-            msgBox.innerHTML = "✅ Successfully Subscribed to Next Frame family!";
-            form.reset();
-        });
-    }
-
-    // Dynamic Auth / Navbar Module
-    async function initNavbarAuth() {
-        try {
-            const { data: { user }, error } = await supabase.auth.getUser();
-
-            const loginBtn = document.getElementById('nav-login-btn');
-            const profileContainer = document.getElementById('nav-profile-container');
-            const navUserName = document.getElementById('nav-user-name');
-
-            if (user && !error) {
-                // යූසර් ලොග් වෙලා නම්, Login බටන් එක හංගලා Profile එක පෙන්වන්න
-                if(loginBtn) loginBtn.style.display = 'none';
-                if(profileContainer) profileContainer.style.display = 'block';
-
-                // client_galleries ටේබල් එකෙන් නම කියවීම
-                const { data: clientData } = await supabase
-                    .from('client_galleries')
-                    .select('client_name')
-                    .eq('client_email', user.email);
-
-                if (clientData && clientData.length > 0 && clientData[0].client_name) {
-                    const firstName = clientData[0].client_name.split(' ')[0];
-                    if(navUserName) navUserName.innerText = firstName;
-                } else {
-                    if(navUserName) navUserName.innerText = "Client";
-                }
-            } else {
-                // ලොග් වෙලා නැත්නම් Client Portal බටන් එක පෙන්වන්න
-                if(loginBtn) loginBtn.style.display = 'inline-block';
-                if(profileContainer) profileContainer.style.display = 'none';
-            }
-        } catch (err) {
-            console.error("Navbar Auth Setup Error:", err);
-        }
-    }
-
-    // Profile Trigger Event
-    const profileTrigger = document.getElementById('profile-trigger');
-    const profileMenu = document.getElementById('profile-menu');
-
-    if (profileTrigger && profileMenu) {
-        profileTrigger.addEventListener('click', function(e) {
-            e.stopPropagation();
-            profileMenu.classList.toggle('show');
-        });
-    }
-
-    // පිටත ක්ලික් කළොත් Dropdown එක වහන්න
-    window.addEventListener('click', function() {
-        if (profileMenu && profileMenu.classList.contains('show')) {
-            profileMenu.classList.remove('show');
-        }
-    });
-
-    // Portal Logout Trigger
-    const logoutBtn = document.getElementById('nav-logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async function() {
-            const { error } = await supabase.auth.signOut();
-            if (!error) {
-                window.location.reload();
-            } else {
-                alert("Logout failed: " + error.message);
-            }
-        });
-    }
-
-    // Auth Engine එක Initialize කිරීම
-    initNavbarAuth();
-});
-</script>
-<!-- Client Portal Floating Button Section -->
-<section style="text-align: center; padding: 40px 20px; background: #0a0a0a;">
-    <div style="max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 20px; background: #111; border: 1px solid rgba(255, 77, 0, 0.2);">
-        <h3 style="color: #fff; margin-bottom: 15px; font-weight: 500;">Access Your Project Dashboard</h3>
-        <p style="color: #888; font-size: 0.9rem; margin-bottom: 25px;">Track your production status and download your final high-resolution assets securely.</p>
-        
-        <a href="login.html" style="display: inline-block; padding: 15px 40px; background: #ff4d00; color: white; text-decoration: none; font-weight: 600; border-radius: 50px; transition: 0.4s; box-shadow: 0 0 15px rgba(255, 77, 0, 0.4);">
-            GO TO CLIENT PORTAL →
-        </a>
-    </div>
-</section>
-<footer style="background-color: #050505; border-top: 1px solid rgba(255, 102, 0, 0.15); padding: 50px 20px; text-align: center; color: #9ca3af; font-family: 'Inter', system-ui, sans-serif;">
-    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px;">
-        
-        <!-- Logo / Brand Title -->
-        <div style="font-size: 20px; font-weight: 700; color: #f3f4f6; letter-spacing: -0.5px;">
-            Next Frame <span style="color: #ff6600;">Digital</span>
-        </div>
-        
-        <!-- Description -->
-        <p style="font-size: 13px; max-width: 500px; line-height: 1.6; margin: 0; color: #9ca3af;">
-            Stay Connected With Next Frame Digital. Professional camera gear rentals, commission hubs, and digital production solutions. 🚀 📁 🎬
+        <p>
+            අපගේ නිල වෙබ් අඩවිය වඩාත් උසස් අත්දැකීමක් සහ නවීන තාක්ෂණය සමඟින් ඉක්මනින්ම ඔබ වෙත ගෙන ඒමට සූදානම් වෙමින් සිටිමු. රැඳී සිටින්න!
         </p>
 
-        <!-- Exact Theme Matching Quick Action Button -->
-        <div style="margin-top: 10px;">
-            <a href="rent.html" style="text-decoration: none; display: inline-block;">
-                <button style="background: linear-gradient(135deg, #ff6600 0%, #ff8800 100%); color: #ffffff; border: none; padding: 14px 30px; font-weight: 700; border-radius: 8px; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(255, 102, 0, 0.4);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 25px rgba(255, 102, 0, 0.6)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(255, 102, 0, 0.4)';">
-                    <i class="fa-solid fa-clapperboard"></i> Explore Gear & Rent
-                </button>
+        <div class="actions">
+            <!-- අවශ්‍ය නම් ඔබගේ WhatsApp අංකය මෙතනට දාන්න පුළුවන් -->
+            <a href="https://wa.me/94705131882" class="btn btn-primary" target="_blank">
+                Contact now on whatsapp
             </a>
+           
         </div>
 
-        <!-- Copyright -->
-        <div style="font-size: 12px; color: #6b7280; border-top: 1px solid rgba(255,255,255,0.03); width: 100%; padding-top: 20px; margin-top: 15px;">
-            &copy; 2026 Next Frame Digital. All Rights Reserved.
+        <div class="footer">
+            &copy; Next Frame Digital. All Rights Reserved.
         </div>
-        
     </div>
-</footer>
+
 </body>
 </html>
