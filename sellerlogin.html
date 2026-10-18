@@ -458,7 +458,6 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI';
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const ADMIN_EMAIL = 'admin@nfd.lk';
         const ADMIN_WHATSAPP_PHONE = '94705131882';
         let activeSerialInputId = null;
         let loggedInSellerData = null;
@@ -580,7 +579,6 @@
                 }
             } catch(e) {}
             
-            // Backward compatibility fallback to legacy single record columns
             return [{
                 notes: profile.rental_notes || 'Gear Rental Payout',
                 serials: profile.serial_codes || '',
@@ -670,13 +668,7 @@
             const errBox = document.getElementById('login-error');
             errBox.classList.add('hidden');
 
-            if (email === ADMIN_EMAIL && password === 'admin123') {
-                localStorage.setItem('nfd_session', JSON.stringify({ role: 'admin', email: ADMIN_EMAIL }));
-                showScreen('admin');
-                loadAdminSellers();
-                return;
-            }
-
+            // Secure Database Verification
             const { data, error } = await supabaseClient
                 .from('profiles')
                 .select('*')
@@ -690,8 +682,14 @@
                 return;
             }
 
-            localStorage.setItem('nfd_session', JSON.stringify({ role: 'seller', email: data.email }));
-            checkUserStatusAndRoute(data.email);
+            if (data.role === 'admin') {
+                localStorage.setItem('nfd_session', JSON.stringify({ role: 'admin', email: data.email }));
+                showScreen('admin');
+                loadAdminSellers();
+            } else {
+                localStorage.setItem('nfd_session', JSON.stringify({ role: 'seller', email: data.email }));
+                checkUserStatusAndRoute(data.email);
+            }
         }
 
         async function checkUserStatusAndRoute(email) {
@@ -842,7 +840,7 @@
             
             if (data) {
                 data.forEach(item => {
-                    if(item.email !== ADMIN_EMAIL) {
+                    if(item.role !== 'admin') {
                         const statusVal = item.status ? item.status.toLowerCase() : 'pending';
                         const rentals = parseRentals(item);
                         let totalInc = 0;
@@ -1101,7 +1099,7 @@
             doc.setFontSize(9);
             doc.setFont("helvetica", "normal");
             doc.text("Official Gear Partner & Platform Disclaimer Agreement", 14, 28);
-            doc.text("www.nextframe.lk | contactnextframedigital@gmail.com", 14, 34);
+            doc.text("www.nextframedigital.lk | contactnextframedigital@gmail.com", 14, 34);
 
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(10);
@@ -1183,7 +1181,7 @@
             doc.setFontSize(10);
             doc.setFont("helvetica", "normal");
             doc.text("Partner Commission Statement & Payout Hub", 14, 31);
-            doc.text("Web: www.nextframe.lk | Email: contactnextframedigital@gmail.com", 14, 38);
+            doc.text("Web: www.nextframedigital.lk | Email: contactnextframedigital@gmail.com", 14, 38);
 
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(11);

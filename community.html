@@ -777,7 +777,7 @@ button:hover {
     </div>
 </div>
 
-<!-- 🚫 Public Banned Creator Notice Modal (When viewing a banned user's post/profile) -->
+<!-- 🚫 Public Banned Creator Notice Modal -->
 <div id="banned-profile-modal" class="modal-overlay">
     <div class="dashboard-modal">
         <h3>
@@ -872,13 +872,6 @@ const supabaseKey = "sb_publishable_M4-FbzuUKIxiBmRJicI1jA_zoCu9-IV";
 emailjs.init(EMAILJS_PUBLIC_KEY);
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-const TEAM_MEMBERS = {
-    "methun2008216@gmail.com": { title: "Founder & CEO", icon: "fa-crown" },
-    "venurasapumal2@gmail.com": { title: "CO CEO", icon: "fa-user-tie" },
-    "sanujasavithma198@gmail.com": { title: "NFD PHOTOGRAPHER ", icon: "fa-camera" },
-    "lovindu.ee123@gmail.com": { title: "NFD PHOTOGRAPHER VIDEOGRAPHER", icon: "fa-video" }
-};
-
 let currentUser = null;
 let userDisplayName = "";
 let editPostId = null;
@@ -954,15 +947,23 @@ window.toggleAuthMode = function(mode) {
     }
 };
 
-function getTeamMemberRole(email) {
+/* Database එකෙන් Admin/Team Status එක Dynamically Check කිරීම */
+async function getTeamMemberRole(email) {
     if (!email) return null;
-    return TEAM_MEMBERS[email.trim().toLowerCase()] || null;
+    const { data } = await supabase
+        .from('team_members')
+        .select('title, icon')
+        .ilike('email', email.trim())
+        .maybeSingle();
+    return data || null;
 }
 
-function getContributorBadge(email, totalLikes = 0) {
+async function getContributorBadge(email, totalLikes = 0) {
     if (!email) return null;
     const cleanEmail = email.trim().toLowerCase();
-    if (TEAM_MEMBERS[cleanEmail]) return null;
+    
+    const isTeam = await getTeamMemberRole(cleanEmail);
+    if (isTeam) return null;
     
     const count = globalUserPostCounts[cleanEmail] || 0;
     const likes = totalLikes || (globalUserLikesCounts[cleanEmail] || 0);
@@ -1013,10 +1014,9 @@ window.clearSelectedImages = function() {
     document.getElementById('remove-image-btn').classList.add('hidden');
 }
 
-/* Helper function to check if an email is banned */
 async function isEmailBanned(email) {
     if(!email) return false;
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from('banned_emails')
         .select('email')
         .ilike('email', email.trim())
@@ -1024,7 +1024,6 @@ async function isEmailBanned(email) {
     return !!data;
 }
 
-/* ⚡ SUPABASE REALTIME SUBSCRIPTION FOR AUTOMATIC REALTIME BAN DETECTION & UPDATES */
 supabase
     .channel('realtime-community-changes')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'banned_emails' }, async (payload) => {
@@ -1044,7 +1043,6 @@ supabase
     })
     .subscribe();
 
-/* Supabase Session Listener (Handles User Removal Auto Logout & Guidelines Modal) */
 supabase.auth.onAuthStateChange(async (event, session) => {
     if (event === 'USER_DELETED' || (currentUser && !session && event === 'AUTO SIGNED_OUT')) {
         const wasLoggedIn = !!currentUser;
@@ -1055,7 +1053,6 @@ supabase.auth.onAuthStateChange(async (event, session) => {
             showRemovalNoticeModal();
         }
     } else if (session) {
-        // Double check if account or email is banned
         const banned = await isEmailBanned(session.user.email);
         if (banned) {
             await supabase.auth.signOut();
@@ -1099,7 +1096,7 @@ window.closeBannedProfileModal = function() {
     document.getElementById("banned-profile-modal").classList.remove("active");
 };
 
-function updateUI(isLoggedIn) {
+async function updateUI(isLoggedIn) {
     const navProfileBtn = document.getElementById("nav-user-profile-btn");
     const navAvatarImg = document.getElementById("nav-avatar-img");
     const navAvatarIcon = document.getElementById("nav-avatar-icon");
@@ -1122,8 +1119,8 @@ function updateUI(isLoggedIn) {
             navAvatarIcon.classList.remove("hidden");
         }
         
-        const teamRole = getTeamMemberRole(currentUser.email);
-        const contributorRole = getContributorBadge(currentUser.email);
+        const teamRole = await getTeamMemberRole(currentUser.email);
+        const contributorRole = await getContributorBadge(currentUser.email);
         const previewContainer = document.getElementById("account-badge-preview");
         
         if (teamRole) {
@@ -1158,7 +1155,6 @@ async function handleLogin() {
     const passwordValue = document.getElementById("auth-password").value.trim();
     if(!email || !passwordValue) return alert("Please enter both email and password.");
 
-    // Check if banned
     const banned = await isEmailBanned(email);
     if(banned) {
         showRemovalNoticeModal();
@@ -1183,7 +1179,7 @@ async function saveDisplayName() {
     const chosenName = document.getElementById("custom-display-name").value.trim();
     if(!chosenName) return alert("Please type a valid name!");
 
-    const { data: existingUser, error: checkError } = await supabase
+    const { data: existingUser } = await supabase
         .from("profiles")
         .select("email")
         .ilike("display_name", chosenName)
@@ -1205,7 +1201,6 @@ async function saveDisplayName() {
     if (profileError) return alert(profileError.message);
 
     await supabase.auth.updateUser({ data: { display_name: chosenName } });
-    
     await supabase.from("posts").update({ author: chosenName }).eq("author_email", currentUser.email);
 
     userDisplayName = chosenName;
@@ -1228,7 +1223,6 @@ async function handleSignUp() {
     if(!email || !password || !confirmPassword) return alert("Please fill in email, password, and confirm password fields.");
     if(password !== confirmPassword) return alert("Passwords do not match! Please re-check.");
 
-    // Check if email is in Banned list before Sign Up
     const banned = await isEmailBanned(email);
     if(banned) {
         showRemovalNoticeModal();
@@ -1265,7 +1259,6 @@ async function handleVerifyOTP() {
     const generatedOTP = sessionStorage.getItem("pending_signup_otp");
 
     if (userEnteredCode === generatedOTP && realEmail) {
-        // Double check ban on OTP submit
         const banned = await isEmailBanned(realEmail);
         if(banned) {
             sessionStorage.clear();
@@ -1492,12 +1485,12 @@ async function loadPosts() {
     }
 
     if (currentUser) {
-        updateUI(true);
+        await updateUI(true);
     }
 
     updateLeaderboard(rawPostsData);
     const sortVal = document.getElementById("sort-posts-select") ? document.getElementById("sort-posts-select").value : "latest";
-    loadPostsUI(rawPostsData, sortVal);
+    await loadPostsUI(rawPostsData, sortVal);
 }
 
 async function loadPostsUI(data, sortBy = "latest") {
@@ -1529,9 +1522,10 @@ async function loadPostsUI(data, sortBy = "latest") {
     for(const post of uniquePosts){
         const isVerified = post.verified === true;
         const isPinned = post.is_pinned === true;
-        const teamInfo = getTeamMemberRole(post.author_email);
-        const contributorInfo = getContributorBadge(post.author_email, post.likes || 0);
-        const isAdmin = currentUser && getTeamMemberRole(currentUser.email);
+        const teamInfo = await getTeamMemberRole(post.author_email);
+        const contributorInfo = await getContributorBadge(post.author_email, post.likes || 0);
+        const currentUserTeamRole = currentUser ? await getTeamMemberRole(currentUser.email) : null;
+        const isAdmin = !!currentUserTeamRole;
 
         const authorAvatarUrl = post.author_avatar || globalUserAvatars[post.author_email?.trim().toLowerCase()] || "https://via.placeholder.com/150/111/fff?text=User";
 
@@ -1543,7 +1537,7 @@ async function loadPostsUI(data, sortBy = "latest") {
             : `<div class="auth-msg" style="font-size:12px; padding: 12px 0 0 0; text-align:left; background:none; border:none;">🔒 Log in to respond to this discussion.</div>`;
 
         let creatorControlsHTML = "";
-        let isOwnerOrAdmin = currentUser && (post.user_id === currentUser.id || post.author === userDisplayName || getTeamMemberRole(currentUser.email));
+        let isOwnerOrAdmin = currentUser && (post.user_id === currentUser.id || post.author === userDisplayName || isAdmin);
         if (isOwnerOrAdmin) {
             const encTitle = safeB64Encode(post.title || "");
             const encContent = safeB64Encode(post.content || "");
@@ -1682,7 +1676,6 @@ window.openPublicProfile = async function(encName, encEmail) {
     const authorName = safeB64Decode(encName);
     const authorEmail = safeB64Decode(encEmail).trim().toLowerCase();
 
-    // Check if author is banned in banned_emails table
     const banned = await isEmailBanned(authorEmail);
     if (banned) {
         document.getElementById("banned-profile-modal").classList.add("active");
@@ -1710,8 +1703,8 @@ window.openPublicProfile = async function(encName, encEmail) {
     const badgesBox = document.getElementById("pub-badges-container");
     badgesBox.innerHTML = "";
     
-    const teamRole = getTeamMemberRole(authorEmail);
-    const contributorBadge = getContributorBadge(authorEmail, likesCount);
+    const teamRole = await getTeamMemberRole(authorEmail);
+    const contributorBadge = await getContributorBadge(authorEmail, likesCount);
 
     if (teamRole) badgesBox.innerHTML += `<span class="badge-team"><i class="fa-solid ${teamRole.icon}"></i> ${teamRole.title}</span>`;
     if (contributorBadge) badgesBox.innerHTML += `<span class="badge-contributor"><i class="fa-solid ${contributorBadge.icon}"></i> ${contributorBadge.title}</span>`;
@@ -1853,8 +1846,7 @@ function forceTextAreaCopy(text) {
 
 async function createPost(){
     if(!currentUser) return alert("You must be logged in to post!");
-    
-    // Check if email is banned before creating post
+
     const banned = await isEmailBanned(currentUser.email);
     if(banned) {
         await supabase.auth.signOut();
@@ -1872,7 +1864,7 @@ async function createPost(){
     const videoUrl = document.getElementById("video-url").value.trim();
     if(!title || !content) return alert("Please fill in all fields.");
 
-    const isTeamMember = getTeamMemberRole(currentUser.email);
+    const isTeamMember = await getTeamMemberRole(currentUser.email);
     const userAvatar = currentUser.user_metadata?.avatar_url || "";
     let imageUrls = [];
     const imageFiles = document.getElementById("post-image-file").files;
@@ -1983,7 +1975,6 @@ async function deletePost(id) {
 async function addComment(postId, authorEmail, encTitle){
     if(!currentUser) return alert("You must be logged in to comment!");
 
-    // Check if email is banned before posting comment
     const banned = await isEmailBanned(currentUser.email);
     if(banned) {
         await supabase.auth.signOut();
@@ -2033,9 +2024,11 @@ async function loadComments(postId){
         }
     }
 
-    uniqueComments.forEach(comment => {
+    const currentUserTeamRole = currentUser ? await getTeamMemberRole(currentUser.email) : null;
+
+    for (const comment of uniqueComments) {
         let commentControlsHTML = "";
-        let canManageComment = currentUser && (comment.user_id === currentUser.id || comment.name === userDisplayName || getTeamMemberRole(currentUser.email));
+        let canManageComment = currentUser && (comment.user_id === currentUser.id || comment.name === userDisplayName || currentUserTeamRole);
         if (canManageComment) {
             const encComment = safeB64Encode(comment.comment || "");
             commentControlsHTML = `
@@ -2054,7 +2047,7 @@ async function loadComments(postId){
                 ${commentControlsHTML}
             </div>
         `;
-    });
+    }
 }
 
 window.triggerEditComment = function(postId, commentId, encComment) {
@@ -2167,8 +2160,8 @@ window.openProfileDashboard = async function() {
     const badgesBox = document.getElementById("dash-badges-container");
     badgesBox.innerHTML = "";
     
-    const teamRole = getTeamMemberRole(currentUser.email);
-    const contributorBadge = getContributorBadge(currentUser.email, totalLikes);
+    const teamRole = await getTeamMemberRole(currentUser.email);
+    const contributorBadge = await getContributorBadge(currentUser.email, totalLikes);
 
     if (teamRole) badgesBox.innerHTML += `<span class="badge-team"><i class="fa-solid ${teamRole.icon}"></i> ${teamRole.title}</span>`;
     if (contributorBadge) badgesBox.innerHTML += `<span class="badge-contributor"><i class="fa-solid ${contributorBadge.icon}"></i> ${contributorBadge.title}</span>`;
@@ -2219,7 +2212,7 @@ window.uploadProfilePicture = async function(event) {
     } else {
         await supabase.from("posts").update({ author_avatar: newAvatarUrl }).eq("author_email", currentUser.email);
         alert("🎉 Profile picture updated successfully! Task Completed! (+20 XP)");
-        updateUI(true);
+        await updateUI(true);
         openProfileDashboard();
         loadPosts();
     }

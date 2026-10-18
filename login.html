@@ -49,7 +49,6 @@
 </div>
 
 <script>
-    
     const SUPABASE_URL = "https://xuxdkjeypwrhccgthepn.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -63,23 +62,23 @@
             return;
         }
 
-        // 1. Admin Login පරීක්ෂා කිරීම (මෙතන Adminලාගේ විස්තර දාන්න)
-        const admins = [
-            { email: "methun2008216@gmail.com", password: "123456", name: "Methun Sathsara" },
-            { email: "admin2@email.com", password: "123456", name: "Keshawa Ekanayake" }
-            // තව ඕනෑම Admin කෙනෙක් මෙතනට එකතු කරන්න
-        ];
+        // 1. Supabase Profiles table indha Admin validation check maduvudu
+        const { data: adminData, error: adminError } = await client
+            .from('profiles')
+            .select('*')
+            .eq('email', email)
+            .eq('password', password)
+            .eq('role', 'admin')
+            .maybeSingle();
 
-        const admin = admins.find(a => a.email === email && a.password === password);
-
-        if (admin) {
+        if (adminData) {
             localStorage.setItem('isAdmin', 'true');
-            localStorage.setItem('adminName', admin.name); // Admin ගේ නම Save කිරීම
+            localStorage.setItem('adminName', adminData.full_name || 'Admin');
             window.location.href = "admin.html";
             return;
         }
 
-        // 2. සාමාන්‍ය Client Login පරීක්ෂා කිරීම
+        // 2. Client Login Check (Supabase Auth)
         const { data, error } = await client.auth.signInWithPassword({
             email: email,
             password: password,

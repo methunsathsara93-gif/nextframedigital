@@ -3,7 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Next Frame Digital</title>
+
+<!-- 🚀 ADVANCED SEO & GOOGLE AI OPTIMIZATION META TAGS -->
+<title>Next Frame Digital | Professional Photography, Videography & Media Production Sri Lanka</title>
+<meta name="description" content="Next Frame Digital is a premier media production company in Sri Lanka specializing in high-end photography, videography, drone cinematography, film production, event coverage, and digital media services.">
+<meta name="keywords" content="Next Frame Digital, Photography Sri Lanka, Videography Sri Lanka, Drone Shoots, Film Production, Event Coverage, Camera Rental Sri Lanka, Media Production Agency">
+<meta name="author" content="Next Frame Digital">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="canonical" href="https://nextframedigital.lk/">
+<link rel="icon" type="image/png" href="/favicon.png">
+
+<!-- Open Graph / Social Media Meta Tags -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nextframedigital.com/">
+<meta property="og:title" content="Next Frame Digital | We Capture Stories, Not Just Moments">
+<meta property="og:description" content="Premier visual media production company in Sri Lanka. Expert photography, videography, cinematography, and creative digital agency services.">
+<meta property="og:image" content="https://nextframedigital.lk/logo.png">
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Next Frame Digital | Professional Media Production">
+<meta name="twitter:description" content="High-end photography, videography, and drone cinematography services in Sri Lanka.">
+<meta name="twitter:image" content="https://nextframedigital.lk/logo.png">
+
+<!-- 🧬 JSON-LD STRUCTURED DATA FOR GOOGLE & AI RECOGNITION -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProductionCompany",
+  "name": "Next Frame Digital",
+  "url": "https://nextframedigital.lk/",
+  "logo": "https://nextframedigital.lk/logo.png",
+  "image": "https://nextframedigital.lk/logo.png",
+  "description": "Professional photography and videography services, capturing life's most unforgettable moments across Sri Lanka.",
+  "telephone": "+94705131882",
+  "email": "contactnextframedigital@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "LK",
+    "addressLocality": "Sri Lanka"
+  },
+  "sameAs": [
+    "https://www.facebook.com/share/194MP5wtjQ/",
+    "https://www.instagram.com/nextframedigitallk",
+    "https://www.tiktok.com/@next.frame.digita"
+  ],
+  "priceRange": "$$"
+}
+</script>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -13,11 +60,19 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    document.addEventListener("mousemove", e=>{
-        const glow = document.getElementById("cursor-glow");
-        if(glow) {
-            glow.style.left = e.clientX + "px";
-            glow.style.top = e.clientY + "px";
+    document.addEventListener("DOMContentLoaded", () => {
+        // Safe Touch-device check to optimize Cursor Glow on mobile
+        if (!('ontouchstart' in window)) {
+            document.addEventListener("mousemove", e => {
+                const glow = document.getElementById("cursor-glow");
+                if(glow) {
+                    glow.style.left = e.clientX + "px";
+                    glow.style.top = e.clientY + "px";
+                }
+            });
+        } else {
+            const glow = document.getElementById("cursor-glow");
+            if(glow) glow.style.display = "none";
         }
     });
 
@@ -33,12 +88,12 @@ body{
     color:#fff;
     overflow-x: hidden;
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
 }
 
 /* 🪐 SCROLLBAR ANIMATION */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-pipe { background: #111; }
 ::-webkit-scrollbar-thumb { background: #ff4d00; border-radius: 10px; }
 
 /* 🛸 CURSOR GLOW */
@@ -50,6 +105,7 @@ body{
     pointer-events:none;
     transform:translate(-50%,-50%);
     z-index:9999;
+    will-change: transform, left, top;
 }
 
 /* 🎥 ANIMATED LIGHT BACKGROUND */
@@ -94,11 +150,12 @@ nav{
     width:100%;
     background:rgba(0,0,0,0.85);
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,77,0,0.1);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,77,0,0.15);
     z-index:1000;
-    transition: 0.4s;
+    transition: all 0.4s ease;
 }
-nav img{height:42px; transition: 0.3s;}
+nav img{height:42px; transition: 0.3s ease;}
 nav img:hover{ transform: scale(1.05); }
 nav ul{display:flex;gap:25px;list-style:none;align-items:center;}
 nav li{cursor:pointer; font-size: 14px; font-weight: 500; color: #aaa; transition: 0.3s; position: relative;}
@@ -114,6 +171,15 @@ nav li::after {
     transition: width 0.3s ease;
 }
 nav li:hover::after { width: 100%; }
+
+.mobile-toggle {
+    display: none;
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+.mobile-toggle:hover { color: #ff4d00; }
 
 /* --- 🔑 CLIENT PORTAL HEADER UI ADDITIONS --- */
 .client-portal-wrapper {
@@ -187,11 +253,11 @@ nav li:hover::after { width: 100%; }
     background: rgba(15, 15, 15, 0.95);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     width: 180px;
     padding: 8px 0;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
     z-index: 1000;
     animation: fadeInDropdown 0.2s ease-out;
 }
@@ -220,14 +286,14 @@ nav li:hover::after { width: 100%; }
 
 .profile-dropdown-menu a:hover, 
 .profile-dropdown-menu button:hover {
-    background: rgba(255, 77, 0, 0.1);
+    background: rgba(255, 77, 0, 0.12);
     color: #ff4d00;
 }
 
 .dropdown-divider {
     border: 0;
     height: 1px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
     margin: 6px 0;
 }
 
@@ -239,7 +305,7 @@ nav li:hover::after { width: 100%; }
 /* 🔥 HERO SECTION */
 .hero{
     height:100vh;
-    background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.95)), url('backround1.jpg') center/cover;
+    background:linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.95)), url('backround1.jpg') center/cover;
     display:flex;
     flex-direction:column;
     justify-content:center;
@@ -332,7 +398,7 @@ h2::after{
 .card:hover{
     transform:translateY(-10px);
     border-color: #ff4d00;
-    box-shadow: 0 15px 30px rgba(255,77,0,0.15);
+    box-shadow: 0 15px 30px rgba(255,77,0,0.18);
 }
 .card:hover h3 { color: #ff4d00; }
 .card:hover p { color: #aaa; }
@@ -399,13 +465,67 @@ h2::after{
 .client:hover img{ filter:grayscale(0%); opacity: 1; transform:scale(1.08); }
 .client:hover p { color: #fff; }
 
-/* 👥 DYNAMIC CREW MEMBERS */
-.member{text-align:center; background: #111; padding: 20px; border-radius: 14px; border: 1px solid #161616; transition: 0.3s;}
-.member img{width:100%; border-radius:10px; transition: 0.4s;}
-.member h3 { font-size: 16px; margin-top: 15px; }
-.member p{color:#ff4d00; font-size:12px; margin-top: 4px; font-weight: 500;}
-.member:hover { border-color: #222; transform: translateY(-5px); }
-.member:hover img { transform: scale(1.02); }
+/* 👥 DYNAMIC CREW MEMBERS - PRO COMPACT CIRCLE PHOTO DESIGN */
+.member {
+    text-align: center;
+    background: linear-gradient(145deg, #121214, #0a0a0c);
+    padding: 24px 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.member-img-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 15px;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(135deg, rgba(255, 77, 0, 0.8), rgba(255, 136, 0, 0.2));
+    box-shadow: 0 6px 18px rgba(255, 77, 0, 0.25);
+    transition: all 0.4s ease;
+}
+.member img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 2px solid #0a0a0a;
+    transition: transform 0.4s ease;
+}
+.member h3 { 
+    font-size: 15px; 
+    margin-top: 5px; 
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    transition: color 0.3s ease;
+}
+.member p {
+    color: #ff4d00; 
+    font-size: 12px; 
+    margin-top: 4px; 
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+.member:hover { 
+    border-color: rgba(255, 77, 0, 0.5); 
+    transform: translateY(-8px); 
+    box-shadow: 0 12px 30px rgba(255, 77, 0, 0.2);
+}
+.member:hover .member-img-wrapper {
+    transform: scale(1.08);
+    box-shadow: 0 8px 25px rgba(255, 77, 0, 0.5);
+    background: linear-gradient(135deg, #ff4d00, #ff8800);
+}
+.member:hover h3 {
+    color: #ff4d00;
+}
 
 /* ✍️ DYNAMIC BOOKING & CONTACT ENGINE */
 .contact-form, #booking-form{
@@ -479,10 +599,10 @@ h2::after{
     z-index: 10000;
 }
 .ai-popup-msg {
-    background: rgba(18, 18, 24, 0.9);
+    background: rgba(18, 18, 24, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 77, 0, 0.2);
+    border: 1px solid rgba(255, 77, 0, 0.25);
     padding: 12px 16px;
     border-radius: 14px;
     max-width: 240px;
@@ -562,7 +682,125 @@ h2::after{
 .contact p{margin:12px 0; color:#aaa; font-size: 15px; text-align: center;}
 .contact p i { color: #ff4d00; margin-right: 8px; }
 
-footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px solid #111; font-size: 13px; color: #555;}
+/* 🎯 CUSTOM PRO FOOTER STYLES BASED ON ATTACHED DESIGN */
+.pro-footer-container {
+    background-color: #08080a;
+    border-top: 1px solid rgba(255, 77, 0, 0.2);
+    padding: 60px 40px 30px 40px;
+    color: #a3a3a3;
+    font-size: 14px;
+}
+
+.pro-footer-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+}
+
+.footer-col h3 {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    position: relative;
+    display: inline-block;
+}
+
+.footer-col h3::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 35px;
+    height: 3px;
+    background: #ff4d00;
+}
+
+.footer-col p {
+    line-height: 1.6;
+    margin-top: 15px;
+    color: #888888;
+}
+
+.footer-icon-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.footer-icon-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-icon-btn:hover {
+    border-color: #ff4d00;
+    color: #ff4d00;
+    background: rgba(255, 77, 0, 0.1);
+    transform: translateY(-3px);
+}
+
+.footer-links-list {
+    list-style: none;
+    margin-top: 15px;
+}
+
+.footer-links-list li {
+    margin-bottom: 12px;
+}
+
+.footer-links-list a {
+    color: #888888;
+    text-decoration: none;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-links-list a:hover {
+    color: #ff4d00;
+}
+
+.seller-link {
+    color: #ff4d00 !important;
+    font-weight: 600;
+}
+
+.footer-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    color: #888888;
+}
+
+.footer-contact-item i {
+    color: #ff4d00;
+    font-size: 16px;
+}
+
+.footer-copyright {
+    max-width: 1200px;
+    margin: 40px auto 0 auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    font-size: 13px;
+    color: #777777;
+    letter-spacing: 0.5px;
+}
 
 /* 🚀 INTERSECTION OBSERVER REVEAL ANIMATIONS */
 .hidden{ opacity:0; transform:translateY(50px); transition: all 1s cubic-bezier(0.165, 0.84, 0.44, 1); }
@@ -583,6 +821,35 @@ footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px so
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* 📱 MOBILE RESPONSIVE OPTIMIZATION */
+@media (max-width: 900px) {
+    nav { padding: 15px 20px; }
+    .mobile-toggle { display: block; }
+    nav ul {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background: rgba(10, 10, 10, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 40px;
+        gap: 20px;
+        transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        overflow-y: auto;
+    }
+    nav ul.nav-active { left: 0; }
+    .hero h1 { font-size: 40px; }
+    .hero p { font-size: 14px; letter-spacing: 1px; }
+    section { padding: 60px 20px; }
+    .pro-footer-container { padding: 40px 20px 20px 20px; }
+    .floating-buttons { bottom: 100px; right: 20px; }
+    .ai-agent-container { bottom: 20px; right: 20px; }
+}
 </style>
 </head>
 
@@ -591,7 +858,10 @@ footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px so
 
 <nav>
 <img src="logo.png" alt="Next Frame Logo">
-<ul>
+<div class="mobile-toggle" id="menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu">
+    <i class="fa-solid fa-bars"></i>
+</div>
+<ul id="nav-list">
 <li onclick="scrollToSection('home')">Home</li>
 <li onclick="scrollToSection('services')">Services</li>
 <li onclick="scrollToSection('portfolio')">Works</li>
@@ -601,11 +871,6 @@ footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px so
 <li onclick="scrollToSection('booking')">Booking</li>
 <li onclick="window.location.href='community.html'">Community</li>
 <li onclick="scrollToSection('contact')">Contact</li>
-<a href="rent.html" style="text-decoration: none; display: inline-block;">
-    <button style="background: #111111; color: #ffffff; border: 1px solid #222222; padding: 12px 24px; font-weight: 500; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.4);" onmouseover="this.style.borderColor='#ff4d00'; this.style.color='#ff4d00'; this.style.boxShadow='0 0 15px rgba(255, 77, 0, 0.3)';" onmouseout="this.style.borderColor='#222222'; this.style.color='#ffffff'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.4)';">
-        <i class="fa-solid fa-clapperboard" style="color: #ff4d00;"></i> Explore Gear & Rent
-    </button>
-</a>
 
 <!-- 🔑 NEW EMBEDDED CLIENT PORTAL / PROFILE SYSTEM -->
 <div class="client-portal-wrapper">
@@ -674,36 +939,7 @@ footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px so
 
 </div>
 </section>
-<!-- Rent Gear Banner Section (Place this right ABOVE your "Our Works" section) -->
-<section style="background: linear-gradient(180deg, #0a0a0a 0%, #111111 100%); padding: 60px 20px; text-align: center; border-bottom: 1px solid rgba(255, 77, 0, 0.15); font-family: 'Poppins', sans-serif;">
-    <div style="max-width: 900px; margin: 0 auto;">
-        
-        <!-- Small Subtitle -->
-        <span style="color: #ff4d00; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; display: inline-block; margin-bottom: 10px;">
-            Professional Equipment Rental
-        </span>
-        
-        <!-- Main Heading -->
-        <h2 style="color: #ffffff; font-size: 32px; font-weight: 700; margin-bottom: 15px; letter-spacing: -0.5px; border: none;">
-            Looking for High-End Cameras & Gear for Your Next Shoot?
-        </h2>
-        
-        <!-- Description Statement -->
-        <p style="color: #aaa; font-size: 15px; line-height: 1.6; max-width: 700px; margin: 0 auto 25px auto;">
-            Next Frame Digital වෙතින් ඔබට අවශ්‍ය සියලුම කැමරා, කාච, ගිම්බල් සහ ආලෝකකරණ උපකරණ (Lighting & Audio Gear) පහසු කොන්දේසි යටතේ රෙන්ට් කරගන්න පුළුවන්. 🎬✨
-        </p>
-        
-        <!-- Action Button (Using your Pro Button style) -->
-        <div>
-            <a href="rent.html" style="text-decoration: none; display: inline-block;">
-                <button class="pro-btn" style="padding: 14px 32px; font-size: 15px; display: inline-flex; align-items: center; gap: 10px;">
-                    <span><i class="fa-solid fa-camera-retro"></i> Explore Gear & Rent Now</span>
-                </button>
-            </a>
-        </div>
-        
-    </div>
-</section>
+
 <section id="clients">
 <h2>Our Best Clients</h2>
 <div class="grid">
@@ -719,14 +955,12 @@ footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px so
 <img src="client3.png" alt="Client 3">
 <p>AKEN KETHAKA (KALAMBARA CHANNEL)</p>
 </div>
-<div class="grid">
 <div class="client hidden">
 <img src="client4.png" alt="Client 4">
 <p>SFT RANE (TUTOR IN SIMAS KURUNEGALA)</p>
 </div>
-<div class="grid">
 <div class="client hidden">
-<img src="client5.png" alt="Client 4">
+<img src="client5.png" alt="Client 5">
 <p>SANKA BHAWANA (DANCE SCHOOL CHILAW)</p>
 </div>
 </div>
@@ -735,11 +969,41 @@ footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px so
 <section id="team">
 <h2>Our Team</h2>
 <div class="grid">
-<div class="member hidden"><img src="team1.jpg"><h3>METHUN SATHSARA (FOUNDER & CEO)</h3><p>Creative Director & Filmmaker</p></div>
-<div class="member hidden"><img src="team2.jpg"><h3>VENURA SAPUMAL (CO.CEO)</h3><p>Photographer & Videographer</p></div>
-<div class="member hidden"><img src="team3.jpg"><h3>SANUJA SAVITHMA</h3><p>Photographer & Lighting Assistant</p></div>
-<div class="member hidden"><img src="team4.jpg"><h3>LOVINDU ERANDITH</h3><p>Photographer & Videographer</p></div>
-<div class="member hidden"><img src="team5.jpg"><h3>KAVINDU GEETHANJANA</h3><p>Graphic Designer</p></div>
+<div class="member hidden">
+    <div class="member-img-wrapper">
+        <img src="team1.jpg" alt="Methun Sathsara">
+    </div>
+    <h3 style="text-transform: uppercase;">METHUN SATHSARA (FOUNDER & CEO)</h3>
+    <p>Creative Director & Filmmaker</p>
+</div>
+<div class="member hidden">
+    <div class="member-img-wrapper">
+        <img src="team2.jpg" alt="Venura Sapumal">
+    </div>
+    <h3 style="text-transform: uppercase;">VENURA SAPUMAL (CO.CEO)</h3>
+    <p>Photographer & Videographer</p>
+</div>
+<div class="member hidden">
+    <div class="member-img-wrapper">
+        <img src="team3.jpg" alt="Sanuja Savithma">
+    </div>
+    <h3 style="text-transform: uppercase;">SANUJA SAVITHMA</h3>
+    <p>Photographer & Lighting Assistant</p>
+</div>
+<div class="member hidden">
+    <div class="member-img-wrapper">
+        <img src="team4.jpg" alt="Lovindu Erandith">
+    </div>
+    <h3 style="text-transform: uppercase;">LOVINDU ERANDITH</h3>
+    <p>Photographer & Videographer</p>
+</div>
+<div class="member hidden">
+    <div class="member-img-wrapper">
+        <img src="team5.jpg" alt="Kavindu Geethanjana">
+    </div>
+    <h3 style="text-transform: uppercase;">KAVINDU GEETHANJANA</h3>
+    <p>Graphic Designer</p>
+</div>
 </div>
 </section>
 
@@ -756,9 +1020,9 @@ footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px so
 <section id="booking">
 <h2>Book a Service</h2>
 <form id="booking-form">
-<input type="text" id="name" placeholder="Your Name" required>
-<input type="email" id="email" placeholder="Your Email" required>
-<input type="tel" id="phone" placeholder="Phone Number" required>
+<input type="text" id="name" placeholder="Your Name" required autocomplete="name">
+<input type="email" id="email" placeholder="Your Email" required autocomplete="email">
+<input type="tel" id="phone" placeholder="Phone Number" required autocomplete="tel">
 <select id="service" required>
 <option value="">Select Target Service</option>
 <option>Photography</option>
@@ -793,8 +1057,8 @@ footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px so
 <h2>Contact Us</h2>
 <h3 style="text-align:center; font-weight: 500; font-size: 18px; margin-bottom: 10px; color:#ff4d00;">Send Us a Message</h3>
 <form class="contact-form" onsubmit="sendMessage(event)">
-<input type="text" placeholder="Your Name" required>
-<input type="email" placeholder="Your Email" required>
+<input type="text" placeholder="Your Name" required autocomplete="name">
+<input type="email" placeholder="Your Email" required autocomplete="email">
 <textarea placeholder="Your Message Content..." required></textarea>
 <button type="submit" class="btn">Send Message via WhatsApp</button>
 </form>
@@ -814,26 +1078,71 @@ footer{text-align:center; padding:40px 20px; background:#000; border-top: 1px so
 </div>
 </section>
 
-<footer>
-<section id="subscribe">
-<h2>Join Our Newsletter</h2>
-<p style="max-width:700px;margin:15px auto;color:#aaa;line-height:1.8; font-size:14px;">
-Stay Connected With Next Frame Digital. Join our community to receive exclusive offers, project updates, filmmaking insights, photography tips, and early access to our latest services. 🚀📸🎬
-</p>
-<form id="subscribeForm" style="max-width:500px;margin:auto;">
-<input type="text" id="subName" placeholder="Your Name" required>
-<input type="email" id="subEmail" placeholder="Your Email" required>
-<button type="submit" class="pro-btn" style="width:100%; margin-top: 10px;">
-<span>Subscribe Now</span>
-</button>
-</form>
-<p id="subscribeMsg" style="text-align:center;margin-top:15px; font-weight: 600; font-size: 14px;"></p>
+<!-- Client Portal Floating Button Section -->
+<section style="text-align: center; padding: 40px 20px; background: #0a0a0a;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 20px; background: #111; border: 1px solid rgba(255, 77, 0, 0.2);">
+        <h3 style="color: #fff; margin-bottom: 15px; font-weight: 500;">Access Your Project Dashboard</h3>
+        <p style="color: #888; font-size: 0.9rem; margin-bottom: 25px;">Track your production status and download your final high-resolution assets securely.</p>
+        
+        <a href="login.html" style="display: inline-block; padding: 15px 40px; background: #ff4d00; color: white; text-decoration: none; font-weight: 600; border-radius: 50px; transition: 0.4s; box-shadow: 0 0 15px rgba(255, 77, 0, 0.4);">
+            GO TO CLIENT PORTAL →
+        </a>
+    </div>
 </section>
 
+<!-- 🌐 MATCHING SCREENSHOT DESIGN FOOTER -->
+<footer class="pro-footer-container">
+    <div class="pro-footer-grid">
+        
+        <!-- Column 1: Brand Info -->
+        <div class="footer-col">
+            <h3>Next Frame Digital</h3>
+            <p>Professional photography, videography and dronegraphy services, capturing life's most unforgettable moments across Sri Lanka.</p>
+            <div class="footer-icon-row">
+                <a href="https://nextframedigital.lk/" target="_blank" rel="noopener noreferrer" class="footer-icon-btn" title="Official Website"><i class="fa-solid fa-globe"></i></a>
+                <a href="https://wa.me/94705131882" target="_blank" rel="noopener noreferrer" class="footer-icon-btn" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="tel:+94705131882" class="footer-icon-btn" title="Call Us"><i class="fa-solid fa-phone"></i></a>
+            </div>
+        </div>
+
+        <!-- Column 2: Quick Links -->
+        <div class="footer-col">
+            <h3>Quick Links</h3>
+            <ul class="footer-links-list">
+                <li><a href="index.html">Official Website</a></li>
+                <li><a href="rent.html" class="seller-link"><i class="fa-solid fa-store"></i> Become a Seller</a></li>
+                <li><a href="tel:+94705131882">Hotline: 070 513 1882</a></li>
+                <li><a href="rent.html">Search Available Gear</a></li>
+            </ul>
+        </div>
+
+        <!-- Column 3: Support & Contact -->
+        <div class="footer-col">
+            <h3>Support & Contact</h3>
+            <div class="footer-contact-item">
+                <i class="fa-solid fa-phone"></i>
+                <span>Hotline: 070 513 1882</span>
+            </div>
+            <div class="footer-contact-item">
+                <i class="fa-solid fa-envelope"></i>
+                <span>contactnextframedigital@gmail.com</span>
+            </div>
+            <div class="footer-contact-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Sri Lanka</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-copyright">
+        &copy; 2026 Next Frame Digital. All Rights Reserved. <br>
+        <span style="color: #ff4d00; font-size: 12px; font-weight: 500; display: inline-block; margin-top: 6px;">NEXT - LEVEL DIGITAL CREATIVITY</span>
+    </div>
 </footer>
 
 <div class="floating-buttons">
-<a href="https://wa.me/94705131882" target="_blank" class="whatsapp" title="WhatsApp Chat"><i class="fa-brands fa-whatsapp"></i></a>
+<a href="https://wa.me/94705131882" target="_blank" rel="noopener noreferrer" class="whatsapp" title="WhatsApp Chat"><i class="fa-brands fa-whatsapp"></i></a>
 <a href="tel:+94705131882" class="call" title="Call Us Direct"><i class="fa-solid fa-phone"></i></a>
 </div>
 
@@ -848,16 +1157,33 @@ Stay Connected With Next Frame Digital. Join our community to receive exclusive 
 </div>
 
 <script>
+// SECURITY HELPER: HTML Sanitization function to prevent XSS attacks
+function sanitizeInput(str) {
+    if(!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+// MOBILE MENU TOGGLE
+function toggleMobileMenu() {
+    const navList = document.getElementById("nav-list");
+    navList.classList.toggle("nav-active");
+}
+
 // AI AGENT AUTO POP-UP ENGINE
 document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         const popup = document.getElementById("aiPopup");
         if(popup) popup.style.display = "block";
-    }, 3000); // සයිට් එකට ඇවිත් තත්පර 3කින් මැසේජ් එක පෙන්නනවා
+    }, 3000); 
 });
 
 function closeAiPopup(e) {
-    e.stopPropagation(); // බටන් එක ක්ලික් කරද්දී bot.html එකට යන එක වලක්වනවා
+    e.stopPropagation(); 
     document.getElementById("aiPopup").style.display = "none";
 }
 
@@ -866,12 +1192,12 @@ document.getElementById("booking-form").addEventListener("submit", function(e){
     e.preventDefault();
 
     const formData = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        phone: document.getElementById("phone").value,
-        service: document.getElementById("service").value,
-        date: document.getElementById("date").value,
-        message: document.getElementById("message").value
+        name: sanitizeInput(document.getElementById("name").value),
+        email: sanitizeInput(document.getElementById("email").value),
+        phone: sanitizeInput(document.getElementById("phone").value),
+        service: sanitizeInput(document.getElementById("service").value),
+        date: sanitizeInput(document.getElementById("date").value),
+        message: sanitizeInput(document.getElementById("message").value)
     };
 
     emailjs.send("service_k8vuk9i", "template_9o537ag", formData)
@@ -894,20 +1220,26 @@ document.getElementById("booking-form").addEventListener("submit", function(e){
     });
 });
 
-// INSTANT WHATSAPP ROUTING
+// INSTANT WHATSAPP ROUTING WITH SAFE ENCODING
 function sendMessage(e){
     e.preventDefault();
-    let name = document.querySelector(".contact-form input[type=text]").value;
-    let email = document.querySelector(".contact-form input[type=email]").value;
-    let message = document.querySelector(".contact-form textarea").value;
-    let fullMessage = `Name: ${name}%0AEmail: ${email}%0AMessage: ${message}`;
-    window.open(`https://wa.me/94705131882?text=${fullMessage}`, "_blank");
+    let nameInputs = document.querySelectorAll(".contact-form input[type=text]");
+    let emailInputs = document.querySelectorAll(".contact-form input[type=email]");
+    let messageInputs = document.querySelectorAll(".contact-form textarea");
+
+    let name = nameInputs.length > 0 ? sanitizeInput(nameInputs[0].value) : '';
+    let email = emailInputs.length > 0 ? sanitizeInput(emailInputs[0].value) : '';
+    let message = messageInputs.length > 0 ? sanitizeInput(messageInputs[0].value) : '';
+
+    let fullMessage = `Name: ${name}\nEmail: ${email}\nMessage: ${message}`;
+    window.open(`https://wa.me/94705131882?text=${encodeURIComponent(fullMessage)}`, "_blank", "noopener,noreferrer");
 }
 
 function scrollToSection(id){
     const target = document.getElementById(id);
     if(target) {
         target.scrollIntoView({behavior:'smooth'});
+        document.getElementById("nav-list").classList.remove("nav-active");
     }
 }
 
@@ -922,10 +1254,10 @@ const observer = new IntersectionObserver(entries=>{
 
 document.querySelectorAll('.hidden').forEach(el=>observer.observe(el));
 
-function openWhatsApp(){ window.open("https://wa.me/94705131882", "_blank"); }
-function openInstagram(){ window.open("https://www.instagram.com/nextframedigitallk", "_blank"); }
-function openFacebook(){ window.open("https://www.facebook.com/share/194MP5wtjQ/", "_blank"); }
-function openTiktok(){ window.open("https://www.tiktok.com/@next.frame.digita?_r=1&_t=ZS-95L4ZpTt0VR", "_blank"); }
+function openWhatsApp(){ window.open("https://wa.me/94705131882", "_blank", "noopener,noreferrer"); }
+function openInstagram(){ window.open("https://www.instagram.com/nextframedigitallk", "_blank", "noopener,noreferrer"); }
+function openFacebook(){ window.open("https://www.facebook.com/share/194MP5wtjQ/", "_blank", "noopener,noreferrer"); }
+function openTiktok(){ window.open("https://www.tiktok.com/@next.frame.digita?_r=1&_t=ZS-95L4ZpTt0VR", "_blank", "noopener,noreferrer"); }
 </script>
 
 <script>
@@ -934,35 +1266,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const supabaseUrl = "https://xuxdkjeypwrhccgthepn.supabase.co";
     const supabaseKey = "sb_publishable_dFQviBlIr8Wnj2p4xjHgDw_jqCQNzzI";
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-    // Newsletter Submission Module (ඔයාගේ කලින් කේතය)
-    const form = document.getElementById("subscribeForm");
-    if(form) {
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const name = document.getElementById("subName").value.trim();
-            const email = document.getElementById("subEmail").value.trim();
-            const msgBox = document.getElementById("subscribeMsg");
-
-            msgBox.style.color = "#ff4d00";
-            msgBox.innerHTML = "Submitting secure payload...";
-
-            const { data, error } = await supabase
-                .from("subscribers")
-                .insert([{ name: name, email: email }]);
-
-            if(error){
-                console.error(error);
-                msgBox.style.color = "#dc3545";
-                msgBox.innerHTML = "❌ Error: " + error.message;
-                return;
-            }
-
-            msgBox.style.color = "#00ff88";
-            msgBox.innerHTML = "✅ Successfully Subscribed to Next Frame family!";
-            form.reset();
-        });
-    }
 
     // Dynamic Auth / Navbar Module
     async function initNavbarAuth() {
@@ -974,11 +1277,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const navUserName = document.getElementById('nav-user-name');
 
             if (user && !error) {
-                // යූසර් ලොග් වෙලා නම්, Login බටන් එක හංගලා Profile එක පෙන්වන්න
                 if(loginBtn) loginBtn.style.display = 'none';
                 if(profileContainer) profileContainer.style.display = 'block';
 
-                // client_galleries ටේබල් එකෙන් නම කියවීම
                 const { data: clientData } = await supabase
                     .from('client_galleries')
                     .select('client_name')
@@ -986,12 +1287,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (clientData && clientData.length > 0 && clientData[0].client_name) {
                     const firstName = clientData[0].client_name.split(' ')[0];
-                    if(navUserName) navUserName.innerText = firstName;
+                    if(navUserName) navUserName.innerText = sanitizeInput(firstName);
                 } else {
                     if(navUserName) navUserName.innerText = "Client";
                 }
             } else {
-                // ලොග් වෙලා නැත්නම් Client Portal බටන් එක පෙන්වන්න
                 if(loginBtn) loginBtn.style.display = 'inline-block';
                 if(profileContainer) profileContainer.style.display = 'none';
             }
@@ -1011,7 +1311,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // පිටත ක්ලික් කළොත් Dropdown එක වහන්න
     window.addEventListener('click', function() {
         if (profileMenu && profileMenu.classList.contains('show')) {
             profileMenu.classList.remove('show');
@@ -1026,54 +1325,13 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!error) {
                 window.location.reload();
             } else {
-                alert("Logout failed: " + error.message);
+                alert("Logout failed: " + sanitizeInput(error.message));
             }
         });
     }
 
-    // Auth Engine එක Initialize කිරීම
     initNavbarAuth();
 });
 </script>
-<!-- Client Portal Floating Button Section -->
-<section style="text-align: center; padding: 40px 20px; background: #0a0a0a;">
-    <div style="max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 20px; background: #111; border: 1px solid rgba(255, 77, 0, 0.2);">
-        <h3 style="color: #fff; margin-bottom: 15px; font-weight: 500;">Access Your Project Dashboard</h3>
-        <p style="color: #888; font-size: 0.9rem; margin-bottom: 25px;">Track your production status and download your final high-resolution assets securely.</p>
-        
-        <a href="login.html" style="display: inline-block; padding: 15px 40px; background: #ff4d00; color: white; text-decoration: none; font-weight: 600; border-radius: 50px; transition: 0.4s; box-shadow: 0 0 15px rgba(255, 77, 0, 0.4);">
-            GO TO CLIENT PORTAL →
-        </a>
-    </div>
-</section>
-<footer style="background-color: #050505; border-top: 1px solid rgba(255, 102, 0, 0.15); padding: 50px 20px; text-align: center; color: #9ca3af; font-family: 'Inter', system-ui, sans-serif;">
-    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px;">
-        
-        <!-- Logo / Brand Title -->
-        <div style="font-size: 20px; font-weight: 700; color: #f3f4f6; letter-spacing: -0.5px;">
-            Next Frame <span style="color: #ff6600;">Digital</span>
-        </div>
-        
-        <!-- Description -->
-        <p style="font-size: 13px; max-width: 500px; line-height: 1.6; margin: 0; color: #9ca3af;">
-            Stay Connected With Next Frame Digital. Professional camera gear rentals, commission hubs, and digital production solutions. 🚀 📁 🎬
-        </p>
-
-        <!-- Exact Theme Matching Quick Action Button -->
-        <div style="margin-top: 10px;">
-            <a href="rent.html" style="text-decoration: none; display: inline-block;">
-                <button style="background: linear-gradient(135deg, #ff6600 0%, #ff8800 100%); color: #ffffff; border: none; padding: 14px 30px; font-weight: 700; border-radius: 8px; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(255, 102, 0, 0.4);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 25px rgba(255, 102, 0, 0.6)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(255, 102, 0, 0.4)';">
-                    <i class="fa-solid fa-clapperboard"></i> Explore Gear & Rent
-                </button>
-            </a>
-        </div>
-
-        <!-- Copyright -->
-        <div style="font-size: 12px; color: #6b7280; border-top: 1px solid rgba(255,255,255,0.03); width: 100%; padding-top: 20px; margin-top: 15px;">
-            &copy; 2026 Next Frame Digital. All Rights Reserved.
-        </div>
-        
-    </div>
-</footer>
 </body>
 </html>
