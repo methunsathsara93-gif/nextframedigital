@@ -650,8 +650,8 @@ h2::after{
     100% { box-shadow: 0 0 0 0 rgba(255, 77, 0, 0); }
 }
 
-/* 🎓 FRAME MASTERS SECTION */
-.community-btn{
+/* 🎓 FRAME MASTERS SECTION & RENT BUTTONS */
+.community-btn, .rent-btn{
     background:linear-gradient(45deg,#ff4d00,#ff8800);
     color:white;
     border:none;
@@ -664,19 +664,29 @@ h2::after{
     overflow:hidden;
     transition:0.4s;
     box-shadow:0 0 15px rgba(255,77,0,0.4);
+    margin-top: 25px;
 }
-.community-btn::before{
+.community-btn::before, .rent-btn::before{
     content:""; position:absolute; top:0; left:-100%; width:100%; height:100%;
     background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent); transition:0.6s;
 }
-.community-btn:hover::before{ left:100%; }
-.community-btn:hover{
+.community-btn:hover::before, .rent-btn:hover::before{ left:100%; }
+.community-btn:hover, .rent-btn:hover{
     transform:scale(1.05);
     box-shadow:0 0 25px #ff4d00, 0 0 50px rgba(255,77,0,0.5);
 }
 
-#subscribe{ text-align:center; padding:60px 20px; border-top: 1px solid #111; }
-#subscribe input{ width:100%; padding:14px; margin:12px 0; border:1px solid #222; border-radius:8px; background:#050505; color:white; outline: none;}
+#subscribe{ 
+    text-align:center; 
+    padding:100px 20px; 
+    margin-top: 40px; 
+    margin-bottom: 40px; 
+    border-top: 1px solid #111; 
+    border-bottom: 1px solid #111; 
+    background: #0c0c0e; 
+}
+#subscribe-form{ max-width: 450px; margin: 30px auto 0 auto; display: flex; flex-direction: column; gap: 18px; }
+#subscribe input{ width:100%; padding:14px; border:1px solid #222; border-radius:8px; background:#050505; color:white; outline: none;}
 #subscribe input:focus { border-color: #ff4d00; }
 
 .contact p{margin:12px 0; color:#aaa; font-size: 15px; text-align: center;}
@@ -870,6 +880,7 @@ h2::after{
 <li onclick="scrollToSection('reviews')">Reviews</li>
 <li onclick="scrollToSection('booking')">Booking</li>
 <li onclick="window.location.href='community.html'">Community</li>
+<li onclick="window.location.href='rent.html'">Rent Gear</li>
 <li onclick="scrollToSection('contact')">Contact</li>
 
 <!-- 🔑 NEW EMBEDDED CLIENT PORTAL / PROFILE SYSTEM -->
@@ -1041,16 +1052,40 @@ h2::after{
 </form>
 </section>
 
-<section style="text-align:center;padding:80px 20px;background:#0f0f0f; border-top: 1px solid #111; border-bottom: 1px solid #111;">
-    <h2 style="color:#ff4d00;font-size:32px;margin-bottom:10px; border:none;">🎓 Frame Masters Community</h2>
-    <p style="color:#ccc;max-width:700px;margin:auto;line-height:1.6; font-size: 14px;">
+<section style="text-align:center; padding:100px 20px; background:#0f0f0f; border-top: 1px solid #111; border-bottom: 1px solid #111; margin-top: 50px; margin-bottom: 50px;">
+    <h2 style="color:#ff4d00; font-size:32px; margin-bottom:15px; border:none;">🎓 Frame Masters Community</h2>
+    <p style="color:#ccc; max-width:700px; margin:auto; line-height:1.8; font-size: 15px;">
         Learn photography, videography, drone skills, editing techniques and share your knowledge with others.
         Join our growing creative community and level up your skills 🚀📸🎥
     </p>
-    <br>
     <button onclick="window.location.href='community.html'" class="community-btn">
         Enter Community Portal
     </button>
+</section>
+
+<!-- 🎥 CAMERA & GEAR RENTALS SECTION -->
+<section style="text-align:center; padding:100px 20px; background:#08080a; border-top: 1px solid #111; border-bottom: 1px solid #111; margin-top: 50px; margin-bottom: 50px;">
+    <h2 style="color:#ff4d00; font-size:32px; margin-bottom:15px; border:none;">📸 Rent Production Gear</h2>
+    <p style="color:#ccc; max-width:700px; margin:auto; line-height:1.8; font-size: 15px;">
+        Need high-end cameras, lenses, drones, or lighting equipment for your next shoot? 
+        Browse available production gear or list your own equipment as a verified seller.
+    </p>
+    <button onclick="window.location.href='rent.html'" class="rent-btn">
+        Explore Gear Marketplace
+    </button>
+</section>
+
+<!-- 📧 NEWSLETTER / SUBSCRIBE SECTION -->
+<section id="subscribe">
+    <h2 style="color:#fff; font-size:32px; margin-bottom:12px; border:none;">Subscribe for Updates</h2>
+    <p style="color:#888; font-size:15px; max-width:600px; margin: 0 auto; line-height: 1.6;">Join our newsletter to receive the latest media production tips, preset drops, and gear rental offers.</p>
+    <form id="subscribe-form" onsubmit="handleSubscribe(event)">
+        <input type="text" id="sub-name" placeholder="Your Name" required autocomplete="name">
+        <input type="email" id="sub-email" placeholder="Your Email Address" required autocomplete="email">
+        <button type="submit" class="pro-btn" style="margin-top: 10px;">
+            <span>Subscribe Now</span>
+        </button>
+    </form>
 </section>
 
 <section id="contact" class="contact">
@@ -1299,6 +1334,37 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Navbar Auth Setup Error:", err);
         }
     }
+
+    // Subscribe Submission Handler with Supabase Database Engine
+    window.handleSubscribe = async function(e) {
+        e.preventDefault();
+        const subName = sanitizeInput(document.getElementById("sub-name").value.trim());
+        const subEmail = sanitizeInput(document.getElementById("sub-email").value.trim());
+
+        if(!subName || !subEmail) {
+            alert("Please provide both name and email address!");
+            return;
+        }
+
+        try {
+            const { data, error } = await supabase
+                .from('subscribers')
+                .insert([
+                    { name: subName, email: subEmail }
+                ]);
+
+            if (error) {
+                console.error("Supabase Subscribe Error:", error);
+                alert("Subscription failed or email already registered: " + error.message);
+            } else {
+                alert("🎉 Thank you for subscribing to Next Frame Digital!");
+                document.getElementById("subscribe-form").reset();
+            }
+        } catch (err) {
+            console.error("Unexpected Subscribe Error:", err);
+            alert("An error occurred while saving your subscription. Please try again.");
+        }
+    };
 
     // Profile Trigger Event
     const profileTrigger = document.getElementById('profile-trigger');

@@ -881,6 +881,7 @@ let globalUserLikesCounts = {};
 let globalUserAvatars = {};
 let currentAuthMode = 'signup'; 
 let rawPostsData = [];
+let isAdminUser = false; // Dynamically calculated Admin check flag
 
 function safeB64Encode(str) { return btoa(unescape(encodeURIComponent(str))); }
 function safeB64Decode(str) { return decodeURIComponent(escape(atob(str))); }
@@ -947,7 +948,22 @@ window.toggleAuthMode = function(mode) {
     }
 };
 
-/* Database එකෙන් Admin/Team Status එක Dynamically Check කිරීම */
+/* Database validation check for Admin & Team member privileges */
+async function checkAdminStatus(email) {
+    if (!email) {
+        isAdminUser = false;
+        return false;
+    }
+    const { data } = await supabase
+        .from('team_members')
+        .select('title, icon')
+        .ilike('email', email.trim())
+        .maybeSingle();
+
+    isAdminUser = !!data;
+    return isAdminUser;
+}
+
 async function getTeamMemberRole(email) {
     if (!email) return null;
     const { data } = await supabase
@@ -1033,6 +1049,7 @@ supabase
                 await supabase.auth.signOut();
                 currentUser = null;
                 userDisplayName = "";
+                isAdminUser = false;
                 updateUI(false);
                 showRemovalNoticeModal();
             }
@@ -1048,6 +1065,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
         const wasLoggedIn = !!currentUser;
         currentUser = null;
         userDisplayName = "";
+        isAdminUser = false;
         updateUI(false);
         if (wasLoggedIn) {
             showRemovalNoticeModal();
@@ -1058,27 +1076,31 @@ supabase.auth.onAuthStateChange(async (event, session) => {
             await supabase.auth.signOut();
             currentUser = null;
             userDisplayName = "";
+            isAdminUser = false;
             updateUI(false);
             showRemovalNoticeModal();
             return;
         }
 
-        supabase.auth.getUser().then(({ data, error }) => {
+        supabase.auth.getUser().then(async ({ data, error }) => {
             if (error || !data.user) {
                 supabase.auth.signOut();
                 currentUser = null;
                 userDisplayName = "";
+                isAdminUser = false;
                 updateUI(false);
                 showRemovalNoticeModal();
             } else {
                 currentUser = session.user;
                 userDisplayName = currentUser.user_metadata?.display_name || "";
+                await checkAdminStatus(currentUser.email);
                 updateUI(true);
             }
         });
     } else {
         currentUser = null;
         userDisplayName = "";
+        isAdminUser = false;
         updateUI(false);
     }
     loadPosts(); 
@@ -1165,9 +1187,16 @@ async function handleLogin() {
     if(error) {
         alert("Login Failed: " + error.message);
     } else {
-        alert("Welcome Back! Logged in successfully.");
         currentUser = data.user;
         userDisplayName = currentUser.user_metadata?.display_name || "";
+        await checkAdminStatus(currentUser.email);
+        
+        if(isAdminUser) {
+            alert("Welcome Admin! Logged in with Executive Administrator privileges.");
+        } else {
+            alert("Welcome Back! Logged in successfully.");
+        }
+
         updateUI(true);
         loadPosts();
         document.getElementById("auth-email").value = "";
@@ -1187,7 +1216,7 @@ async function saveDisplayName() {
         .maybeSingle();
 
     if (existingUser) {
-        return alert("⚠️ මේ නම වෙනත් ගිණුමක පාවිච්චි කර ඇත. වෙනත් නමක් තෝරන්න!");
+        return alert("⚠️ This display name is already in use by another user. Please choose another!");
     }
 
     const { error: profileError } = await supabase
@@ -1272,6 +1301,7 @@ async function handleVerifyOTP() {
         else {
             currentUser = data.user;
             userDisplayName = currentUser.user_metadata?.display_name || "";
+            await checkAdminStatus(currentUser.email);
             document.getElementById("verification-otp-box").classList.add("hidden");
             document.getElementById("main-auth-inputs").classList.remove("hidden");
             document.getElementById("auth-action-buttons").classList.remove("hidden");
@@ -1361,6 +1391,7 @@ async function handleLogout() {
     await supabase.auth.signOut(); 
     currentUser = null;
     userDisplayName = "";
+    isAdminUser = false;
     updateUI(false);
 }
 
@@ -1485,6 +1516,7 @@ async function loadPosts() {
     }
 
     if (currentUser) {
+        await checkAdminStatus(currentUser.email);
         await updateUI(true);
     }
 
@@ -1524,8 +1556,6 @@ async function loadPostsUI(data, sortBy = "latest") {
         const isPinned = post.is_pinned === true;
         const teamInfo = await getTeamMemberRole(post.author_email);
         const contributorInfo = await getContributorBadge(post.author_email, post.likes || 0);
-        const currentUserTeamRole = currentUser ? await getTeamMemberRole(currentUser.email) : null;
-        const isAdmin = !!currentUserTeamRole;
 
         const authorAvatarUrl = post.author_avatar || globalUserAvatars[post.author_email?.trim().toLowerCase()] || "https://via.placeholder.com/150/111/fff?text=User";
 
@@ -1537,14 +1567,15 @@ async function loadPostsUI(data, sortBy = "latest") {
             : `<div class="auth-msg" style="font-size:12px; padding: 12px 0 0 0; text-align:left; background:none; border:none;">🔒 Log in to respond to this discussion.</div>`;
 
         let creatorControlsHTML = "";
-        let isOwnerOrAdmin = currentUser && (post.user_id === currentUser.id || post.author === userDisplayName || isAdmin);
+        let isOwnerOrAdmin = currentUser && (post.user_id === currentUser.id || post.author === userDisplayName || isAdminUser);
+        
         if (isOwnerOrAdmin) {
             const encTitle = safeB64Encode(post.title || "");
             const encContent = safeB64Encode(post.content || "");
             const encCategory = safeB64Encode(post.category || "");
 
             let pinButtonHTML = "";
-            if (isAdmin) {
+            if (isAdminUser) {
                 pinButtonHTML = `<button class="btn-control btn-control-pin" onclick="togglePinPost(${post.id}, ${isPinned})"><i class="fa-solid fa-thumbtack"></i> ${isPinned ? 'Unpin' : 'Pin'}</button>`;
             }
 
@@ -1555,7 +1586,7 @@ async function loadPostsUI(data, sortBy = "latest") {
                     <button class="btn-control btn-control-delete" onclick="deletePost(${post.id})"><i class="fa-solid fa-trash"></i> Delete</button>
                 </div>
             `;
-        } else if (isAdmin) {
+        } else if (isAdminUser) {
             creatorControlsHTML = `
                 <div class="creator-control">
                     <button class="btn-control btn-control-pin" onclick="togglePinPost(${post.id}, ${isPinned})"><i class="fa-solid fa-thumbtack"></i> ${isPinned ? 'Unpin' : 'Pin'}</button>
@@ -1852,6 +1883,7 @@ async function createPost(){
         await supabase.auth.signOut();
         currentUser = null;
         userDisplayName = "";
+        isAdminUser = false;
         updateUI(false);
         showRemovalNoticeModal();
         return;
@@ -1942,6 +1974,7 @@ async function createPost(){
 }
 
 async function togglePinPost(postId, currentPinnedStatus) {
+    if(!isAdminUser) return alert("Unauthorized access! Admin privileges required.");
     const newStatus = !currentPinnedStatus;
     const { error } = await supabase.from("posts").update({ is_pinned: newStatus }).eq("id", postId);
     if (error) {
@@ -1980,6 +2013,7 @@ async function addComment(postId, authorEmail, encTitle){
         await supabase.auth.signOut();
         currentUser = null;
         userDisplayName = "";
+        isAdminUser = false;
         updateUI(false);
         showRemovalNoticeModal();
         return;
@@ -2024,11 +2058,9 @@ async function loadComments(postId){
         }
     }
 
-    const currentUserTeamRole = currentUser ? await getTeamMemberRole(currentUser.email) : null;
-
     for (const comment of uniqueComments) {
         let commentControlsHTML = "";
-        let canManageComment = currentUser && (comment.user_id === currentUser.id || comment.name === userDisplayName || currentUserTeamRole);
+        let canManageComment = currentUser && (comment.user_id === currentUser.id || comment.name === userDisplayName || isAdminUser);
         if (canManageComment) {
             const encComment = safeB64Encode(comment.comment || "");
             commentControlsHTML = `
@@ -2078,6 +2110,7 @@ async function likePost(id, currentLikes){
             await supabase.auth.signOut();
             currentUser = null;
             userDisplayName = "";
+            isAdminUser = false;
             updateUI(false);
             showRemovalNoticeModal();
             return;
